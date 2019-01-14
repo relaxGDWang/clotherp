@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>裁剪任务</title>
-    <link rel="stylesheet" href="style/font-awesome.css"/>
-    <link rel="stylesheet" href="style/elementui2.4.11.css"/>
-    <link rel="stylesheet" href="style/cssreset3.css?v=5"/>
-    <link rel="stylesheet" href="style/list.css?v=21"/>
+    <link rel="stylesheet" href="/library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="/library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="/library/style/cssreset3.css"/>
+    <link rel="stylesheet" href="/style/list.css"/>
 </head>
 <body>
 <div class="outFrame" id="app">
@@ -128,141 +128,13 @@
         </div>
     </div>
 </div>
-<script src="script/configBG.js"></script>
-<script src="script/configBG.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/vue.min.js"></script>
-<script src="js/elementui2.4.11.js"></script>
-<script src="js/rexfunction.js"></script>
-<script src="js/rexajax2.js"></script>
-<script src="js/rexdialog.js"></script>
-<script>
-    var vu=new Vue({
-        el: '#app',
-        data:{
-            listType: 'doing',
-            tableHeight: 100,
-            tableHeight2: 100,
-            nowEdit:'',
-            tableData3: [{
-                id: 1,
-                identifier: 'G01-01',
-                batch: '10200301',
-                customer: '老李',
-                orderlen:'10.4',
-                store:'G01-03',
-                len:'100',
-                type:'客户订单'
-            },{
-                id: 2,
-                identifier: 'G01-01',
-                batch: '10200301',
-                customer: '老李',
-                orderlen:'14.5',
-                store:'G01-03',
-                len:'100',
-                type:'客户订单'
-            },{
-                id: 3,
-                identifier: 'G01-01',
-                batch: '10200301',
-                customer: '--',
-                orderlen:'0.4',
-                store:'G01-03',
-                len:'100',
-                type:'废弃'
-            },{
-                id: 4,
-                identifier: 'G01-01',
-                batch: '10200301',
-                customer: '王总',
-                orderlen:'16.2',
-                store:'G01-03',
-                len:'100',
-                type:'客户订单'
-            },{
-                id: 5,
-                identifier: 'G01-01',
-                batch: '10200301',
-                customer: '--',
-                orderlen:'18.4',
-                store:'G01-03',
-                len:'100',
-                type:'分裁'
-            }],
-            tableData2:[{
-                id:1,
-                start:12.6,
-                end:12.8,
-                type:''
-            },{
-                id:2,
-                start:29,
-                end:29.5,
-                type:''
-            },{
-                id:3,
-                start:31.2,
-                end:31.3,
-                type:''
-            },{
-                id:4,
-                start:42.3,
-                end:43.3,
-                type:''
-            }],
-            tableData1:[{
-                id:1,
-                who:'小杨',
-                datetime:'2018-12-03 12:33',
-                do:'裁剪20米',
-                order:'1029348813'
-            },{
-                id:2,
-                who:'老胡',
-                datetime:'2018-12-01 14:33',
-                do:'裁剪16.7米',
-                order:'1029348813'
-            },{
-                id:3,
-                who:'小杨',
-                datetime:'2018-11-29 09:45',
-                do:'裁剪20米',
-                order:'1029348811'
-            }]
-        },
-        methods:{
-            openDetails: function(index){
-                this.nowEdit=index;
-                dialog.open('opDetails');
-            },
-            tableRowClassName: function({row, rowIndex}){
-                if (row.id===this.nowEdit){
-                    return 'sel';
-                }else{
-                    return '';
-                }
-            }
-        }
-    });
-
-    $(function(){
-        vu.tableHeight=$('body').height()-70;
-        vu.tableHeight2=vu.tableHeight+50;
-        var timeID;
-        $(window).resize(function(){
-            if (timeID){
-                clearTimeout(timeID);
-                timeID='';
-            }
-            timeID=setTimeout(function(){
-                vu.tableHeight=$('body').height()-70;
-                vu.tableHeight2=vu.tableHeight+50;
-            },100);
-        });
-    });
-
-    var dialog=relaxDialog();
-</script>
+<script src="/library/js/jquery.min.js"></script>
+<script src="/library/js/vue.min.js"></script>
+<script src="/library/js/rexfunction.js"></script>
+<script src="/library/js/rexajax2.js"></script>
+<script src="/library/js/rexdialog.js"></script>
+<script src="/library/js/elementui2.4.11.js"></script>
+<script src="/script/configBG.js"></script>
+<script src="/script/missioncut.js"></script>
 </body>
 </html>

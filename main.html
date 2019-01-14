@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>后台管理</title>
-    <link rel="stylesheet" href="style/font-awesome.css"/>
-    <link rel="stylesheet" href="style/cssreset3.css?v=5"/>
-    <link rel="stylesheet" href="style/main.css"/>
+    <link rel="stylesheet" href="/library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="/library/style/cssreset3.css"/>
+    <link rel="stylesheet" href="/style/main.css"/>
 </head>
 <body>
     <div class="rexSysFrame">
@@ -30,8 +30,8 @@
             <div class="dialogFrame">
                 <div class="dialog-title"><h3>信息提示</h3></div>
                 <div class="dialog-buttonBar">
-                    <button class="rexButton opBtn btn-close" size="M">取 消</button>
-                    <button class="rexButton opBtn btn-sure" size="M">确 定</button>
+                    <button class="rexButton opBtn btn-close">取 消</button>
+                    <button class="rexButton opBtn btn-sure">确 定</button>
                 </div>
                 <div class="dialog-content">
                     <div class="diy" style="padding:10px;"></div>
@@ -39,43 +39,12 @@
             </div>
         </div>
     </div>
-    <script src="script/configBG.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/vue.min.js"></script>
-    <script src="js/rexfunction.js"></script>
-    <script src="js/rexajax2.js"></script>
-    <script src="js/rexdialog.js"></script>
-    <script>
-        $(function(){
-            var dialog=relaxDialog();
-            var tempArray=$('.systemMenu [href]');
-            tempArray.click(function(e){
-                if ($(this).parent().hasClass('sel')){
-                    protectEvent(e);
-                    return false;
-                }
-                var path=this.href;
-                this.href=refreshURL(path);
-                $('.systemMenu .sel').removeClass('sel');
-                $(this).parent().addClass('sel');
-            });
-
-            $('iframe')[0].src=refreshURL(tempArray[0].href);
-
-            $('#loginOut').click(function(){
-                dialog.open('sysInfo',{content:'是否回到登录界面以重新登录？',closeCallback:function(id,typeStr,btnType){
-                    if (btnType==='sure') top.location.href='login.html';
-                }});
-            });
-
-            function refreshURL(path){
-                if (/^.+\.html$/.test(path)){
-                    return path+'?v='+Math.random();
-                }else{
-                    return path.replace(/([?&])v=[^&]+/,'$1v='+Math.random());
-                }
-            }
-        });
-    </script>
+    <script src="/library/js/jquery.min.js"></script>
+    <script src="/library/js/vue.min.js"></script>
+    <script src="/library/js/rexfunction.js"></script>
+    <script src="/library/js/rexajax2.js"></script>
+    <script src="/library/js/rexdialog.js"></script>
+    <script src="/script/configBG.js"></script>
+    <script src="/script/main.js"></script>
 </body>
 </html>

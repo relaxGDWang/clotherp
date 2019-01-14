@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import 'config2.scss';
+@import '../library/style/config2.scss';
 
 $color1: #336666;
 $color2: #669999;
@@ -320,3 +320,26 @@ $color4: #069393;
 .elseList{ margin-top:5px; width:100%;}
 .flawList{ float:left; width:50%;}
 .operateList{ float:left; width:50%;}
+
+/* 检验任务详细 */
+#checkMission{
+  .dialogFrame{ width:92%;}
+  .dialog-title .opBtn{ font-size:28px;}
+}
+.checkMission{
+  padding:10px;
+  h3{ font-size:16px; color:$color4; line-height:30px;}
+  .baseInfo{
+    background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size:100% 30px; overflow:hidden; margin-bottom:10px;
+    li{ float:left; width:25%; min-width:240px; line-height:30px;}
+    label{ color:#999; margin-right:5px;}
+    .showLength{ width:100%; background:#f2f2f2; border-bottom:1px solid #ccc; text-align:center;}
+    .showLength>div{ display:inline-block; width:20%;}
+  }
+  .bottomPart{ margin-top:30px;}
+  .flawList{
+    height:100%; padding-top:30px; padding-right:5px;
+    h3{ margin-top:-30px;}
+  }
+  .el-table{ height:100%;}
+}

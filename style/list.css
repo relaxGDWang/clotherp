@@ -80,4 +80,20 @@
 
 .operateList { float: left; width: 50%; }
 
+/* 检验任务详细 */
+#checkMission .dialogFrame { width: 92%; }
+#checkMission .dialog-title .opBtn { font-size: 28px; }
+
+.checkMission { padding: 10px; }
+.checkMission h3 { font-size: 16px; color: #069393; line-height: 30px; }
+.checkMission .baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
+.checkMission .baseInfo li { float: left; width: 25%; min-width: 240px; line-height: 30px; }
+.checkMission .baseInfo label { color: #999; margin-right: 5px; }
+.checkMission .baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
+.checkMission .baseInfo .showLength > div { display: inline-block; width: 20%; }
+.checkMission .bottomPart { margin-top: 30px; }
+.checkMission .flawList { height: 100%; padding-top: 30px; padding-right: 5px; }
+.checkMission .flawList h3 { margin-top: -30px; }
+.checkMission .el-table { height: 100%; }
+
 /*# sourceMappingURL=list.css.map */

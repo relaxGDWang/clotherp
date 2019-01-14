@@ -16,7 +16,7 @@ var vu = new Vue({
     data: {
         flagFocus: false,
         input: {
-            telnumber: '',
+            telnumber: '13811111111',
             password: ''
         },
         msg:{
@@ -52,7 +52,7 @@ var vu = new Vue({
             }
             ajax.send({
                 data:{
-                    telnumber: this.input.telnumber,
+                    mobile: this.input.telnumber,
                     password: this.input.password
                 }
             });
@@ -67,7 +67,7 @@ var vu = new Vue({
             this.setMsg({type:'ok', text:'管理员登录成功，页面即将跳转...'});
             //存储登录信息
             //localStorage.setItem(CFG.token,JSON.stringify({code:data.adminToken,live:getUnixTime()+CFG.tokenLive*1000}));
-            localStorage.setItem(CFG.admin,JSON.stringify({username:this.input.username}));
+            localStorage.setItem(CFG.admin,JSON.stringify({token:data.api_token, mobile:data.mobile, name:data.name}));
             setTimeout(function(){
                 top.location.href=CFG.defaultPage;
             },100);

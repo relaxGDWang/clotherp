@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>检验任务</title>
-    <link rel="stylesheet" href="style/font-awesome.css"/>
-    <link rel="stylesheet" href="style/elementui2.4.11.css"/>
-    <link rel="stylesheet" href="style/cssreset3.css?v=5"/>
-    <link rel="stylesheet" href="style/list.css?v=6"/>
+    <link rel="stylesheet" href="/library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="/library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="/library/style/cssreset3.css"/>
+    <link rel="stylesheet" href="/style/list.css?v=20"/>
 </head>
 <body>
     <div class="outFrame" id="app">
@@ -18,7 +18,7 @@
                 <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="finished" name="listType"/><label>已完成</label></span>
                 <div class="equipment">登录：<strong>老刘</strong></div>
             </div>
-            <el-table :data="tableData3" :height="tableHeight" border stripe style="width: 100%;">
+            <el-table :data="tableData3" :height="tableHeight" border stripe style="width: 100%;" :row-class-name="tableRowClassName">
                 <el-table-column prop="identifier" label="商品编号" width="180"></el-table-column>
                 <el-table-column prop="batch" label="批号" width="180"></el-table-column>
                 <el-table-column prop="tagLen" label="标记米数"></el-table-column>
@@ -27,177 +27,90 @@
                 <el-table-column prop="status" label="状态"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button size="mini">详情</el-button>
+                        <el-button @click="showDetials(scope.$index)">详情</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-    </div>
-    <script src="script/configBG.js"></script>
-    <script src="script/configBG.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/vue.min.js"></script>
-    <script src="js/elementui2.4.11.js"></script>
-    <script src="js/rexfunction.js"></script>
-    <script src="js/rexajax2.js"></script>
-    <script src="js/rexdialog.js"></script>
-    <script>
-        var vu=new Vue({
-           el: '#app',
-           data:{
-               listType: 'doing',
-               tableHeight: 100,
-               tableData3: [{
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }, {
-                   identifier: 'G01-01',
-                   batch: '10200301',
-                   tagLen: '100米',
-                   checkLen:'--',
-                   typeStr:'胚布',
-                   status:'待检验'
-               }]
-           },
-           methods:{}
-        });
 
-        $(function(){
-            vu.tableHeight=$('body').height()-70;
-            var timeID;
-            $(window).resize(function(){
-                if (timeID){
-                    clearTimeout(timeID);
-                    timeID='';
-                }
-                timeID=setTimeout(function(){
-                    vu.tableHeight=$('body').height()-70;
-                },100);
-            });
-        });
-    </script>
+        <div class="extMenu right" id="checkMission">
+            <div class="dialogFrame">
+                <div class="dialog-title">
+                    <span class="right opBtn btn-close">&times;</span>
+                    <h4>处理检验任务</h4>
+                </div>
+                <div class="dialog-content">
+                    <div class="checkMission">
+                        <h3>布匹基本资料</h3>
+                        <ul class="baseInfo nohead" v-if="getEditobj">
+                            <li><label>商品编号：</label><span>{{getEditobj.identifier}}</span></li>
+                            <li><label>批&emsp;&emsp;号：</label><span>{{getEditobj.batch}}</span></li>
+                            <li><label>流&emsp;&emsp;程：</label><span>{{getEditobj.typeStr}}</span></li>
+                            <li><label>当前仓位：</label><span>{{getEditobj.store}}</span></li>
+                            <li><label>供&ensp;应&ensp;商：</label><span>{{getEditobj.supply}}</span></li>
+                            <li><label>类&emsp;&emsp;型：</label><span>{{getEditobj.classStr}}</span></li>
+                            <li class="showLength">
+                                <div>
+                                    <label>入库米数：</label><span>100米</span>
+                                </div><div>
+                                    <label>已裁米数：</label><span>0</span>
+                                </div><div>
+                                    <label>剩余米数：</label><span>100米</span>
+                                </div><div>
+                                    <label>损耗米数：</label><span>0</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <h3>当前疵点概览</h3>
+                        <div class="clothShow">
+                            <div class="cloth">
+                                <span class="flaw" index="1"></span>
+                                <span class="flaw" index="2"></span>
+                                <span class="flaw" index="3"></span>
+                                <span class="flaw" index="4"></span>
+                            </div>
+                            <div class="ruler"><span>120</span><span>0</span></div>
+                        </div>
+                        <div class="bottomPart">
+                            <div class="flawList">
+                                <h3>疵点列表</h3>
+                                <el-table :data="tableData2" border stripe style="width: 100%;">
+                                    <el-table-column prop="id" label="#" width="40"></el-table-column>
+                                    <el-table-column label="位置">
+                                        <template slot-scope="scope">
+                                            <span class="lenShow">{{scope.row.start}}</span>~<span class="lenShow">{{scope.row.end}}M</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="长度">
+                                        <template slot-scope="scope">
+                                            {{(scope.row.end - scope.row.start).toFixed(2)-0}}M
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="type" label="类型"></el-table-column>
+                                    <el-table-column label="操作">
+                                        <template slot-scope="scope">
+                                            <el-button>删除</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                            <div class="checkOperate">
+                                <h3>检验操作</h3>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/library/js/jquery.min.js"></script>
+    <script src="/library/js/vue.min.js"></script>
+    <script src="/library/js/rexfunction.js"></script>
+    <script src="/library/js/rexajax2.js"></script>
+    <script src="/library/js/rexdialog.js"></script>
+    <script src="/library/js/elementui2.4.11.js"></script>
+    <script src="/script/configBG.js"></script>
+    <script src="/script/missioncheck.js"></script>
 </body>
 </html>
