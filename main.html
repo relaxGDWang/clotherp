@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>后台管理</title>
+    <link rel="stylesheet" href="style/font-awesome.css"/>
+    <link rel="stylesheet" href="style/cssreset3.css?v=5"/>
+    <link rel="stylesheet" href="style/main.css"/>
+</head>
+<body>
+    <div class="rexSysFrame">
+        <header class="partTop"></header>
+        <div class="partRight"></div>
+        <footer class="partBottom"></footer>
+        <nav class="partLeft">
+            <h1 class="fa fa-hand-o-right"><span>生产流程管理</span></h1>
+            <ul class="systemMenu">
+                <li class="sel"><a class="fa fa-instagram" href="missionCheck.html" target="mainContent">检验任务</a></li>
+                <li><a class="fa fa-cut" href="missionCut.html" target="mainContent">裁剪任务</a></li>
+                <li><a class="fa fa-gear" href="setting.html" target="mainContent">账户设置</a></li>
+                <li><a id="loginOut" class="fa fa-power-off">退出登录</a></li>
+            </ul>
+        </nav>
+        <div class="partContent">
+            <iframe src="" name="mainContent"></iframe>
+        </div>
+        <div class="extDialog" id="sysInfo">
+            <div class="dialogFrame">
+                <div class="dialog-title"><h3>信息提示</h3></div>
+                <div class="dialog-buttonBar">
+                    <button class="rexButton opBtn btn-close" size="M">取 消</button>
+                    <button class="rexButton opBtn btn-sure" size="M">确 定</button>
+                </div>
+                <div class="dialog-content">
+                    <div class="diy" style="padding:10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script/configBG.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/rexfunction.js"></script>
+    <script src="js/rexajax2.js"></script>
+    <script src="js/rexdialog.js"></script>
+    <script>
+        $(function(){
+            var dialog=relaxDialog();
+            var tempArray=$('.systemMenu [href]');
+            tempArray.click(function(e){
+                if ($(this).parent().hasClass('sel')){
+                    protectEvent(e);
+                    return false;
+                }
+                var path=this.href;
+                this.href=refreshURL(path);
+                $('.systemMenu .sel').removeClass('sel');
+                $(this).parent().addClass('sel');
+            });
+
+            $('iframe')[0].src=refreshURL(tempArray[0].href);
+
+            $('#loginOut').click(function(){
+                dialog.open('sysInfo',{content:'是否回到登录界面以重新登录？',closeCallback:function(id,typeStr,btnType){
+                    if (btnType==='sure') top.location.href='login.html';
+                }});
+            });
+
+            function refreshURL(path){
+                if (/^.+\.html$/.test(path)){
+                    return path+'?v='+Math.random();
+                }else{
+                    return path.replace(/([?&])v=[^&]+/,'$1v='+Math.random());
+                }
+            }
+        });
+    </script>
+</body>
+</html>

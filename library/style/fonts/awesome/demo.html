@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>font awesome demo</title>
+  <link rel="stylesheet" href="../../font-awesome.css">
+  <style type="text/css">
+    *{ box-sizing:border-box;}
+    ul{ list-style:none; padding:10px;}
+    .icon_lists{ border-top:1px solid #ccc; background-color:#ffebd4; overflow:hidden;}
+    .icon_lists li{ border-radius:6px; float:left; width:50%; max-width:400px;}
+    .fontclass{ padding:5px; margin:1px 5px; border-radius:6px; background-color:rgba(0,0,0,0.3); min-height:40px; cursor:pointer;}
+    .fontclass:hover{ background-color:#945103; color:#fff;}
+    .fontclass .fa{ font-size:40px; margin-right:10px;}
+  </style>
+</head>
+<body>
+<div class="main markdown">
+  <h1>IconFont</h1>
+  <div>
+    <div>其他功能类说明</div>
+    <ul>
+      <li>
+        <strong>fa-lg, fa-2x, fa-3x, fa-4x, fa-5x</strong>
+        <span>不同尺寸的图标</span>
+      </li>
+      <li>
+        <strong>fa-pull-left, fa-pull-right</strong>
+        <span>类似于block元素的float:left, float:right浮动</span>
+      </li>
+      <li>
+        <strong>fa-border</strong>
+        <span>为图表字体加上边框</span>
+      </li>
+      <li>
+        <strong>fa-spin</strong>
+        <span>以1/8的圆为频率做周期旋转运动，IE8/IE9不支持</span>
+      </li>
+      <li>
+        <strong>fa-rotate-90, fa-rotate-180, fa-rotate-270</strong>
+        <span>对图标进行不同角度的旋转</span>
+      </li>
+      <li>
+        <strong>fa-flip-horizontal, fa-flip-vertical</strong>
+        <span>对图标进行水平翻转或者垂直翻转</span>
+      </li>
+      <li>
+        <strong>fa-stack, fa-stack-1x, fa-stack-2x</strong>
+        <span>堆叠图标，先建立一个父DOM并定义为fa-stack，在其下定义两个图标，一般把外框定义为fa-stack-2x，内容定义为fa-stack-1x</span>
+      </li>
+      <li>
+        <strong>fa-fw</strong>
+        <span>用于列表中的图标大小的统一</span>
+      </li>
+    </ul>
+  </div>
+  <ul class="icon_lists clear" id="showList">
+    <li class="template">
+      <div class="fontclass"><i class="fa {#selector#}"></i>{#selector2#}</div>
+    </li>
+  </ul>
+</div>
+<script src="../../../js/jquery.min.js"></script>
+<script>
+  var template=$(".template").eq(0).prop("outerHTML").replace(/\r\n/g,"").replace(' class="template"',"");
+  $(".template").eq(0).remove();
+  var htmlStr="";
+
+  var seachConfig=/^\.fa.+:before$/i;
+  for (var i=0; i<document.styleSheets.length; i++){
+    var temp=document.styleSheets[i];
+    if (!temp.href) continue;
+    if (temp.href.indexOf("font-awesome.css")>-1){
+      var cssArray=temp.cssRules;
+      for(var j=0; j<cssArray.length; j++){
+        //console.log(cssArray[j]);
+        var selector=cssArray[j].selectorText;
+        if (selector && seachConfig.test(selector)){
+		  var tt=cssArray[j].cssText.match(/"[^"]+"/);
+		  if (tt && tt.length>0){
+			tt=tt[0].replace(/"/g,'').charCodeAt(0).toString(16);
+		  }else{
+			tt='';
+		  }
+          var tempArray=selector.split(",");
+          var fillIcon="";
+          var fillName="";
+          for (var k=0; k<tempArray.length; k++){
+            fillIcon=tempArray[k].replace("::before","").replace(".","");
+            fillName? fillName+=","+fillIcon : fillName=fillIcon;
+          }
+          htmlStr+=template.replace("{#selector#}",fillIcon).replace("{#selector2#}",fillName+' ['+tt+']');
+        }
+      }
+    }
+  }
+
+  $("#showList").html(htmlStr);
+</script>
+</body>
+</html>

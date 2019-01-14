@@ -1,0 +1,37 @@
+body { background: #000; }
+
+.outFrame { width: 100%; height: 100%; overflow: hidden; position: relative; text-align: center; }
+.outFrame:before { content: ''; display: inline-block; width: 0; height: 100%; vertical-align: middle; overflow: hidden; }
+.outFrame:after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: url(images/loginBack.jpg) no-repeat center; background-size: cover; opacity: .9; transform-origin: 50% 50%; transition-property: transform, filter, opacity; transition-duration: 1s; }
+.outFrame.focus:after { transform: scale(1.02, 1.02); filter: blur(5px); opacity: .3; }
+
+.loginFrame { display: inline-block; width: 30%; min-width: 500px; vertical-align: middle; }
+
+.loginContent { overflow: hidden; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); background: #fff; background: rgba(255, 255, 255, 0.7); transition: box-shadow 1s; }
+
+.focus .loginContent { box-shadow: none; }
+
+h1 { width: 1000px; transform: translateX(-50%); margin-left: 50%; height: 130px; border-radius: 0 0 50% 50% / 0 0 100px 100px; background: #336666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+h1 span { position: relative; top: 50%; transform: translateY(-50%); font-size: 40px; color: #fff; }
+h1 .fa:before { display: inline-block; font-size: 60px; vertical-align: middle; transform: rotate(-90deg); background: #fff; padding: 10px; border-radius: 50%; color: #069393; margin-right: 20px; }
+
+.loginForm { padding: 10px 10px 20px 10px; list-style: none; }
+.loginForm li { padding: 8px; font-size: 16px; }
+.loginForm button, .loginForm .rexIconInput { width: 260px; }
+.loginForm .rexIconInput .fa:first-child:before { color: #069393; font-size: 20px; }
+.loginForm .rexButton[color='green'] { border: 1px solid #336666; background-color: #336666; color: #fff; }
+.loginForm .rexButton[color='green']:hover { border-color: #669999; background-color: #669999; }
+.loginForm .rexButton[color='green']:active { border-color: #336666; background-color: #cccc99; color: #336666; }
+
+.tipMessage span { display: inline-block; padding: .4em .8em; border: 1px solid #999; background: #fff; font-size: 14px; }
+.tipMessage span .loadingBlock { display: none; }
+.tipMessage span.warning { border-color: #f90; color: #f90; background: #ffefd2; }
+.tipMessage span.warning:before { content: '\f071'; }
+.tipMessage span.loading { border-color: #999; color: #666; }
+.tipMessage span.loading .loadingBlock { display: inline-block; }
+.tipMessage span.error { border-color: red; color: red; background: #f6d9d9; }
+.tipMessage span.error:before { content: '\f057'; }
+.tipMessage span.ok { border-color: #028342; color: #028342; background: #e3fff1; }
+.tipMessage span.ok:before { content: '\f058'; }
+
+/*# sourceMappingURL=login.css.map */

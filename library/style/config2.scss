@@ -1,0 +1,248 @@
+@charset "UTF-8";
+$fontColor: #333; //全局字体色
+$fontSize: 14px; //全局字体大小
+$fontFamily: Arial, Helvetica, sans-serif; //全局字体
+$borderRadius: 4px; //圆角值
+$ctlHeight: 40px; //单行控件的高
+$clrBorder: #999; //控件默认边框颜色
+$hzlPadding: 10px; //控件水平空白
+$buttonPaddingVtl: ($ctlHeight - $fontSize)/ 2 - 1px;
+
+$colorNormal: #999 #aaa #eee #f3f3f3; //默认颜色 灰色系颜色
+$colorOK: #009900 #66cc66 #ccffcc #f2fff2; //正确提示颜色 绿色系
+$colorAlert: #f02a2a #ff8787 #ffe5e5 #fff4f4; //错误提示颜色 红色系
+$colorWarning: #ff9900 #ffcc66 #fff3db #fff8e9; //警告颜色 橙色系
+$colorInfo: #005be3 #3884f4 #d7e7ff #ebf3ff; //提示信息颜色 蓝色系
+$colorDisabled: #a0a0a0 #bfbfbf #939393 #999 #ccc #eee; //禁用时的颜色
+$colorMap: (Normal: $colorNormal, OK: $colorOK, Alert: $colorAlert, Warning: $colorWarning, Info: $colorInfo, disabled: $colorDisabled);
+
+@mixin setHzlPadding() {
+  padding-left: $hzlPadding;
+  padding-right: $hzlPadding;
+}
+
+//设置按钮颜色
+@mixin setButtonColor($type, $color) {
+  @if $type=='Normal' {
+    border: 1px solid nth($color, 1);
+    background-color: nth($color, 3);
+    color: $fontColor;
+    &:hover {
+      border-color: nth($color, 2);
+      background-color: #fff;
+    }
+    &:active {
+      border-color: nth($color, 2);
+      background-color: nth($color, 2);
+      color: #fff;
+    }
+  } @else if $type=='disabled' {
+    border: 1px solid nth($color, 1);
+    background-color: nth($color, 2);
+    color: nth($color, 3);
+    &:hover {
+      border-color: nth($color, 1);
+      background-color: nth($color, 2);
+    }
+    &:active {
+      border: 1px solid nth($color, 1);
+      background-color: nth($color, 2);
+      color: nth($color, 3);
+    }
+  } @else {
+    border: 1px solid nth($color, 1);
+    background-color: nth($color, 1);
+    color: #fff;
+    &:hover {
+      border-color: nth($color, 2);
+      background-color: nth($color, 2);
+    }
+    &:active {
+      border-color: nth($color, 1);
+      background-color: nth($color, 3);
+      color: nth($color, 1);
+    }
+  }
+}
+
+//设置输入框颜色
+@mixin setInputColor($type, $color) {
+  @if $type != 'disabled' {
+    border: 1px solid nth($color, 1);
+    &:hover {
+      background-color: nth($color, 4);
+    }
+    &:focus {
+      background-color: #fff;
+      box-shadow: 0 0 2px nth($color, 1), 0 0 2px nth($color, 1) inset;
+    }
+  } @else {
+    border-color:nth($color, 1);
+    background-color:nth($color,5);
+    color:nth($color,4);
+    &:hover {
+      background-color:nth($color,5);
+    }
+    &:focus {
+      background-color:nth($color,5);
+      box-shadow: none;
+    }
+  }
+}
+
+//块级单选复选按钮
+@mixin setCheckColor($type, $color){
+  @if $type == 'Normal' {
+    label{
+       border:1px solid nth($color,2);
+       background-color: #fff;
+       color: $fontColor;
+    }
+    &:hover label{
+      background-color: nth($color,3);
+    }
+    input:checked + label{
+      background-image:linear-gradient(-45deg,nth($color,2) 0,nth($color,2) 10px,transparent 0,transparent 100%);
+    }
+  }@else if $type == 'disabled' {
+    input[disabled] + label, &:hover input[disabled] + label, input[disabled]:checked + label{
+      border-color:nth($color,2);
+      background-color: nth($color,6);
+      color: nth($color,1);
+    }
+    input[disabled]:checked + label{
+      background-image:linear-gradient(-45deg,nth($color,2) 0,nth($color,2) 10px,transparent 0,transparent 100%);
+    }
+  } @else {
+    &:hover label, input:checked + label{
+      border-color: nth($color,1);
+      background-color: nth($color,4);
+      color: nth($color, 1);
+    }
+    input:checked + label{
+      background-image:linear-gradient(-45deg,nth($color,1) 0,nth($color,1) 10px,transparent 0,transparent 100%);
+    }
+  }
+}
+
+//设置图标输入框颜色
+@mixin setIconInputColor($type, $color){
+  @if $type != 'disabled' {
+    border: 1px solid nth($color, 1);
+    &:hover {
+      background-color: nth($color, 4);
+    }
+    &.active {
+      background-color: #fff;
+      box-shadow: 0 0 2px nth($color, 1), 0 0 2px nth($color, 1) inset;
+    }
+    .fa:before{
+      color: nth($color, 1);
+    }
+    .fa.sp{
+      border-color: nth($color, 1);
+    }
+    .btn:hover:before{
+      background-color: nth($color, 1);
+    }
+    .btn:active:before{
+      background-color: nth($color, 2);
+    }
+  } @else {
+    border-color:nth($color, 1);
+    background-color:nth($color,5);
+    color:nth($color,4);
+    &:hover {
+      background-color:nth($color,5);
+    }
+    &:focus {
+      background-color:nth($color,5);
+      box-shadow: none;
+    }
+    input{
+      cursor: not-allowed;
+    }
+    .fa:before{
+      color: nth($color,4);
+      opacity:1;
+    }
+    .fa.sp{
+      border-color: nth($color,1);
+    }
+    .btn{
+      cursor: not-allowed;
+      &:hover:before, &:active:before{ background-color: transparent; color:nth($color,4);}
+    }
+  }
+}
+
+//颜色风格设置
+//type 需要设置对象的类型 button, check, input
+@mixin setControlStyle($type, $colorStyle: 'Normal') {
+  $color: map-get($colorMap, $colorStyle);
+  @if $type=='button' { //按钮样式设置
+    @if $colorStyle == 'Normal' {
+      cursor: pointer;
+      border-radius: $borderRadius;
+      @include setButtonColor('Normal', $color);
+    } @else if $colorStyle=='disabled' {
+      &[disabled] {
+        cursor: not-allowed;
+        @include setButtonColor('disabled', $color);
+      }
+    } @else {
+      &[color=#{$colorStyle}] {
+        @include setButtonColor($colorStyle, $color);
+      }
+    }
+  } @else if $type =='input' { //输入框样式设置
+    @if $colorStyle == 'Normal' {
+      background-color: #fff;
+      color: $fontColor;
+      border-radius: $borderRadius;
+      transition-property: box-shadow;
+      transition-duration: .3s;
+      @include setInputColor('Normal', $color);
+    } @else if $colorStyle=='disabled' {
+      &[disabled] {
+        cursor: not-allowed;
+        @include setInputColor('disabled', $color);
+      }
+    } @else {
+      &[color=#{$colorStyle}] {
+        @include setInputColor($colorStyle, $color);
+      }
+    }
+  } @else if $type == 'check' {  //块状选择按钮
+    @if $colorStyle == 'Normal' {
+      label {
+        border-radius: $borderRadius;
+      }
+      @include setCheckColor('Normal', $color);
+    }@else if $colorStyle == 'disabled'{
+      @include setCheckColor('disabled', $color);
+    }@else{
+      &[color=#{$colorStyle}] {
+        @include setCheckColor($colorStyle, $color);
+      }
+    }
+  } @else if $type == 'iconInput' {
+    @if $colorStyle == 'Normal' {
+      background-color: #fff;
+      border-radius: $borderRadius;
+      transition-property: box-shadow;
+      transition-duration: .3s;
+      @include setIconInputColor('Normal', $color);
+    } @else if $colorStyle=='disabled' {
+      &[disabled] {
+        cursor: not-allowed;
+        @include setIconInputColor('disabled', $color);
+      }
+    } @else {
+      &[color=#{$colorStyle}] {
+        @include setIconInputColor($colorStyle, $color);
+      }
+    }
+  }
+}
+

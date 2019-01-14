@@ -1,0 +1,759 @@
+@charset "UTF-8";
+@import 'config2.scss';
+
+//加载中动画
+@keyframes loadingShow{
+  0% { transform: scaleY(1);}
+  25% {transform: scaleY(1.5);}
+  50% { transform: scaleY(1);}
+  75% { transform: scaleY(.5);}
+  100% { transform: scaleY(1);}
+}
+@keyframes loadingShow2 {
+  0% { transform: rotate(0);}
+  50%{ transform: rotate(360deg);}
+  100%{ transform: rotate(360deg);}
+}
+
+//遗留问题记录如下
+//1.【5】 SVG兼容 WIN10 IE11下 SVG内嵌的background-image无法显示出来，导致单选，复选无法正常显示
+//2.【4】 垂直对齐 安卓手机 浏览器下 rexIconInput输入框获得焦点，输入中文时，输入框会自动上移，在ISO端的safair下，rexIconInput输入文本的光标不垂直对齐，而是靠上对齐
+//3.【4】 垂直对齐 IE11下，输入框控件的输入时垂直定位变动，初始显示时不对齐
+*, *:after, *:before {
+  box-sizing: border-box;
+}
+
+html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, form, iframe, object {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, select, button, option {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+//去掉移动端firefox a标签的虚线框 PC chrome文本输入框的边框焦点时候的颜色
+a:active, a:focus, input:active, input:focus, button:active, button:focus {
+  outline: none;
+}
+
+//去掉移动端firefox 按钮获得焦点显示虚线框的样式
+input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, button::-moz-focus-inner {
+  border: none;
+}
+
+//在IE8下引起了iframe的空白BUG 但需要考虑根元素绝对定位的问题
+//如果html不加overflow:hidden 在某些移动端浏览器上会出现html可滚动的情况
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  color: $fontColor;
+  font-family: $fontFamily;
+}
+
+html {
+  font-size: $fontSize;
+}
+
+body {
+  font-size: $fontSize;
+}
+
+//注意 某些版本的IE中（IE9）会导致iframe的内容定位错误，请参考是否去掉该属性，或者为iframe增加relative的属性
+iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: 0;
+}
+
+//清除现代IE浏览器的输入框和密码框的默认交互按钮 主要用于设定自己的清空按钮和密码可见按钮时不冲突
+input::-ms-clear, input::-ms-reveal {
+  display: none;
+}
+
+ul.nohead, ol.nohead{ list-style:none;}
+
+.rexTable {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.rexButton, .rexInput, .rexIconInput input, .rexCheck input, .rexBlockCheck input{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin:0;
+  padding:0;
+  white-space: nowrap;
+}
+.rexButton, .rexInput, .rexIconInput, .rexCheck, .rexBlockCheck, .rexCombine{
+  display: inline-block;
+}
+
+//按钮控件
+.rexButton {
+  min-width: $ctlHeight;
+  @include setHzlPadding();
+  padding-top: $buttonPaddingVtl;
+  padding-bottom: $buttonPaddingVtl;
+  line-height:1;
+  text-align:center;
+  position:relative;
+  @include setControlStyle('button');
+  @include setControlStyle('button','OK');
+  @include setControlStyle('button','Alert');
+  @include setControlStyle('button','Warning');
+  @include setControlStyle('button','Info');
+  @include setControlStyle('button','disabled');
+  //块级按钮
+  &.block {
+    display: block;
+    width: 100%;
+  }
+  //图标按钮
+  .fa{
+    line-height:0;
+    position:relative;
+    vertical-align:middle;
+  }
+  .fa:before{
+    position: absolute;
+    top:50%;
+    transform:translateY(-50%);
+    margin-top:-1px;
+    opacity:.7;
+  }
+  &:hover .fa:before{
+    opacity:1;
+  }
+  .fa:first-child{
+    margin-right:22px;
+    &:before{ left:0;}
+  }
+  .fa:last-child{
+    margin-left:22px;
+    &:before{ right:0;}
+  }
+  .fa:only-child{
+    margin-right:0; margin-left:0;
+    &:before{ left:50%; right: auto; transform:translate(-50%, -50%);}
+  }
+}
+
+//输入框控件
+.rexInput{
+  height: $ctlHeight;
+  width: 180px;
+  @include setHzlPadding();
+  line-height: $ctlHeight;
+  @include setControlStyle('input');
+  @include setControlStyle('input','OK');
+  @include setControlStyle('input','Alert');
+  @include setControlStyle('input','Warning');
+  @include setControlStyle('input','Info');
+  @include setControlStyle('input','disabled');
+  &.block{
+    display: block;
+    width: 100%;
+  }
+}
+
+//选择按钮控件
+.rexCheck{
+  position: relative;
+  height: $ctlHeight;
+  label {
+    display: block;
+    line-height: $ctlHeight;
+    padding-left: 1.2em;
+    position: relative;
+    &:before {
+      content: '';
+      height: 1em;
+      width: 1em;
+      position: absolute;
+      left: 0;
+      line-height: 0;
+      top: 50%;
+      transform:translateY(-50%);
+      background: no-repeat / cover;
+    }
+  }
+  input {
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    &[disabled]{
+      cursor:not-allowed;
+      & + label{
+        color:nth($colorDisabled,4);
+      }
+    }
+  }
+  [type='radio']{
+    & + label:before{
+      background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20fill%3D%22%23111%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%2F%3E%3Ccircle%20fill%3D%22%23fff%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2226%22%2F%3E%3C%2Fsvg%3E');
+    }
+    &:checked + label:before{
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20fill%3D%22%23111%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%2F%3E%3Ccircle%20fill%3D%22%23fff%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2226%22%2F%3E%3Ccircle%20fill%3D%22%23111%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2214%22%2F%3E%3C%2Fsvg%3E');
+    }
+    &[disabled] + label:before{
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20fill%3D%22%23ccc%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%2F%3E%3Ccircle%20fill%3D%22%23fff%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2226%22%2F%3E%3C%2Fsvg%3E');
+    }
+    &[disabled]:checked + label:before{
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20fill%3D%22%23ccc%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%2F%3E%3Ccircle%20fill%3D%22%23fff%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2226%22%2F%3E%3Ccircle%20fill%3D%22%23ccc%22%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2214%22%2F%3E%3C%2Fsvg%3E');
+    }
+  }
+  [type='checkbox']{
+    & + label:before{
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20fill%3D%22%23111%22%20x%3D%225%22%20y%3D%225%22%20width%3D%2254%22%20height%3D%2254%22%2F%3E%3Crect%20fill%3D%22%23fff%22%20x%3D%229%22%20y%3D%229%22%20width%3D%2246%22%20height%3D%2246%22%2F%3E%3C%2Fsvg%3E');
+    }
+    &:checked + label:before {
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20fill%3D%22%23111%22%20x%3D%225%22%20y%3D%225%22%20width%3D%2254%22%20height%3D%2254%22%2F%3E%3Crect%20fill%3D%22%23fff%22%20x%3D%229%22%20y%3D%229%22%20width%3D%2246%22%20height%3D%2246%22%2F%3E%3Crect%20fill%3D%22%23111%22%20x%3D%2219%22%20y%3D%2219%22%20width%3D%2226%22%20height%3D%2226%22%2F%3E%3C%2Fsvg%3E');
+    }
+    &[disabled] + label:before{
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20fill%3D%22%23ccc%22%20x%3D%225%22%20y%3D%225%22%20width%3D%2254%22%20height%3D%2254%22%2F%3E%3Crect%20fill%3D%22%23fff%22%20x%3D%229%22%20y%3D%229%22%20width%3D%2246%22%20height%3D%2246%22%2F%3E%3C%2Fsvg%3E');
+    }
+    &[disabled]:checked + label:before{
+      background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20fill%3D%22%23ccc%22%20x%3D%225%22%20y%3D%225%22%20width%3D%2254%22%20height%3D%2254%22%2F%3E%3Crect%20fill%3D%22%23fff%22%20x%3D%229%22%20y%3D%229%22%20width%3D%2246%22%20height%3D%2246%22%2F%3E%3Crect%20fill%3D%22%23ccc%22%20x%3D%2219%22%20y%3D%2219%22%20width%3D%2226%22%20height%3D%2226%22%2F%3E%3C%2Fsvg%3E');
+    }
+  }
+}
+//块状选择按钮
+.rexBlockCheck {
+  position: relative;
+  height: $ctlHeight;
+  label {
+    display: block;
+    line-height: $ctlHeight - 2px;
+    @include setHzlPadding();
+    position: relative;
+  }
+  input {
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    &[disabled] {
+      cursor: not-allowed;
+    }
+  }
+  input[type="checkbox"]:checked + label:after{
+    content:'\ac';
+    position:absolute;
+    right:0;
+    bottom:6px;
+    color:#fff;
+    font-weight:bold;
+    line-height:0;
+    transform:rotate(120deg);
+  }
+  @include setControlStyle('check');
+  @include setControlStyle('check','OK');
+  @include setControlStyle('check','Alert');
+  @include setControlStyle('check','Warning');
+  @include setControlStyle('check','Info');
+  @include setControlStyle('check','disabled');
+}
+
+//带图标的输入框
+.rexIconInput {
+  $iconWidth: 2em;  //图标部分的宽度
+  position: relative;
+  height: $ctlHeight;
+  width: 180px;
+  input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    line-height: $ctlHeight - 2px;
+    background-color: transparent;
+  }
+  .fa {
+    text-align: center;
+    position: absolute;
+    width: $iconWidth;
+    line-height: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    &:before{ opacity:.7;}
+    &:first-child{
+      left:0;
+    }
+    &:last-child{
+      right:0;
+    }
+  }
+  &:hover .fa:before{ opacity:1;}
+  & > input {
+    padding-right: $iconWidth;
+    padding-left: $iconWidth;
+    //对于有分割线的左侧内容，协调左侧空白
+    &.idtLeft{
+      padding-left: $iconWidth + .4em;
+    }
+    &.idtRight{
+      padding-right: $iconWidth + .4em;
+    }
+    &:first-child {
+      padding-left: $hzlPadding;
+    }
+    &:last-child {
+      padding-right: $hzlPadding;
+    }
+  }
+  //带分割线的图标输入框
+  .fa.sp{ border-right:1px solid #ccc;}
+  .fa.btn{ cursor:pointer;}
+  .fa.btn:hover{ border:0;}
+  .fa.btn:hover:before{ display:inline-block; color:#fff; width:24px; line-height:24px; border-radius:50%;}
+  input ~ .fa.sp{ border-right:0; border-left:1px solid #ccc;}
+  @include setControlStyle('iconInput');
+  @include setControlStyle('iconInput','OK');
+  @include setControlStyle('iconInput','Alert');
+  @include setControlStyle('iconInput','Warning');
+  @include setControlStyle('iconInput','Info');
+  @include setControlStyle('iconInput','disabled');
+  //清除操作，密码可见性操作按钮样式
+  .fa.cleanBtn, .fa.appearBtn{
+    visibility: hidden;
+    &:before{ color:#999;}
+  }
+  .fa.cleanBtn:hover, .fa.appearBtn:hover{
+    &:before{
+      color:red;
+    }
+  }
+  .fa.cleanBtn:active, .fa.appearBtn:active{
+    &:before{
+      color:#000;
+    }
+  }
+  &:hover .fa.cleanBtn, &:hover .fa.appearBtn{ visibility: visible; cursor:pointer;}
+  &.active .fa.cleanBtn, &.active .fa.appearBtn{ visibility: visible; cursor:pointer;}
+  &[disabled]:hover .fa.cleanBtn, &[disabled]:hover .fa.appearBtn{ display:none;}
+}
+
+//组合框
+.rexCombine {
+  white-space: nowrap;
+  font-size: 0;
+  & > * {
+    font-size: $fontSize;
+  }
+  & > *, & > .rexIconInput > input {
+    border-radius: 0;
+    border-right-width: 0;
+  }
+  & > *:first-child, & > .rexIconInput:first-child > input {
+    border-radius: $borderRadius 0 0 $borderRadius;
+  }
+  & > *:last-child, & > .rexIconInput:last-child > input {
+    border-radius: 0 $borderRadius $borderRadius 0;
+    border-right-width: 1px;
+  }
+}
+
+/* ============ 对话框 ======================*/
+/* 对话框通用的标题栏和按钮栏样式 */
+.extDialog, .miniDialog, .extMenu, .extPage {
+  position: fixed;
+}
+
+.extDialog.none, .extMenu.none {
+  background-color: transparent;
+}
+
+.dialog-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 42px;
+  line-height: 42px;
+  z-index: 5;
+  background-color: #e5e5e5;
+  border-bottom: 1px solid #ccc;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  .opBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 0;
+    z-index: 10;
+    cursor: pointer;
+    :active {
+      color: #f90;
+    }
+    :before {
+      line-height: 0;
+    }
+  }
+  .left {
+    left: .5em;
+  }
+  .right {
+    right: .5em;
+  }
+  h4 {
+    line-height: 42px;
+  }
+  h4.left {
+    text-align: left;
+    padding-left: 4em;
+  }
+}
+
+.dialog-buttonBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  z-index: 5;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+  line-height: 50px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hidden .dialog-title, .hidden .dialog-buttonBar {
+  height: 0;
+  transition: height .5s;
+}
+
+.dialog-title ~ .dialog-content {
+  border-top: 42px solid transparent;
+}
+
+.dialog-buttonBar ~ .dialog-content {
+  border-bottom: 50px solid transparent;
+}
+
+.hidden .dialog-content {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+/* 普通弹出框 */
+.extDialog {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  text-align: center;
+  white-space: nowrap;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, .6);
+  font-size: 0;
+  &.white {
+    background-color: rgba(255, 255, 255, .6);
+  }
+  &:before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 0;
+    font-size: 0;
+    overflow: hidden;
+    vertical-align: middle;
+  }
+  &.show {
+    visibility: visible;
+  }
+  .dialogFrame {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    min-width: 300px;
+    max-width: 650px;
+    background-color: #fff;
+    position: relative;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .6);
+    border-radius: $borderRadius;
+    overflow: hidden;
+    font-size: $fontSize;
+  }
+  //目前垂直居中使用的是inline-block的垂直对齐方法
+  .dialog-content {
+    display: inline-block;
+    width: 100%;
+    max-height: 350px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: normal;
+  }
+}
+
+/* 自隐藏对话框 */
+.miniDialog {
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  text-align: center;
+  padding: 0 1em;
+  opacity: 0;
+  visibility: hidden;
+  transition:transform,opacity .5s ease;
+  pointer-events: none;
+  &.top {
+    top: 0;
+    transform: none;
+  }
+  &.bottom {
+    bottom: 0;
+    transform: none;
+  }
+  .dialog-content {
+    display: inline-block;
+    width: auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    word-break: break-all;
+    border-radius: $borderRadius;
+    background-color: #333;
+    color: #fff;
+    padding: .6em 1em;
+  }
+  &.show.top {
+    transform: translateY(2.5em);
+    opacity: 1;
+    visibility: visible;
+  }
+  &.show.bottom {
+    transform: translateY(-2.5em);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* 平移对话框 */
+.extMenu {
+  z-index: 1000;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition-property: visibility, opacity;
+  transition-duration: .45s;
+  background-color: rgba(0, 0, 0, .6);
+  overflow: hidden;
+  .dialogFrame {
+    position: absolute;
+    background-color: #fff;
+    transition-property: transform;
+    transition-duration: .45s;
+    overflow: hidden;
+  }
+  &.left .dialogFrame {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 75%;
+    min-width: 290px;
+    transform: translateX(-110%);
+  }
+  &.right .dialogFrame {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 75%;
+    min-width: 290px;
+    transform: translateX(110%);
+  }
+  &.top .dialogFrame {
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    height: 40%;
+    min-height: 290px;
+    transform: translateY(-110%);
+  }
+  &.bottom .dialogFrame {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    overflow: hidden;
+    height: 40%;
+    min-height: 290px;
+    transform: translateY(110%);
+  }
+  &.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  &.show .dialogFrame {
+    transform: none;
+  }
+  .dialog-content {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: normal;
+  }
+}
+
+/* 模仿单页对话框 */
+.extPage {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  transform: translateX(110%);
+  visibility: hidden;
+  background-color: #fff;
+  transition:transform .45s ease;
+  overflow: hidden;
+  &.show {
+    visibility: visible;
+    transform: none;
+  }
+  .dialogFrame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .dialog-content {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: normal;
+  }
+}
+//控件尺寸
+[size='M']{
+  $height: 34px;
+  &.rexButton{
+    min-width: $height;
+    padding: ($height - $fontSize - 2px) / 2;
+    line-height: 1;
+  }
+  &.rexInput{
+    height: $height;
+    line-height: $height;
+  }
+  &.rexCheck{
+    height: $height;
+    label{
+      line-height: $height;
+    }
+  }
+  &.rexBlockCheck{
+    height: $height;
+    label{
+      line-height: $height - 2px;
+    }
+  }
+}
+[size='S']{
+  $height: 28px;
+  &.rexButton{
+    min-width: $height;
+    padding: ($height - $fontSize - 2px) / 2;
+    line-height: 1;
+  }
+  &.rexInput{
+    height: $height;
+    line-height: $height;
+  }
+  &.rexCheck{
+    height: $height;
+    label{
+      line-height: $height;
+    }
+  }
+  &.rexBlockCheck{
+    height: $height;
+    label{
+      line-height: $height - 2px;
+    }
+  }
+}
+[size='SS']{
+  $height: 22px;
+  &.rexButton{
+    font-size:12px;
+    min-width: $height;
+    padding: ($height - 14px) / 2;
+    line-height: 1;
+  }
+  &.rexInput{
+    font-size:12px;
+    height: $height;
+    line-height: $height;
+  }
+  &.rexCheck{
+    font-size:12px;
+    height: $height;
+    label{
+      line-height: $height;
+    }
+  }
+  &.rexBlockCheck{
+    font-size:12px;
+    height: $height;
+    label{
+      line-height: $height - 2px;
+    }
+  }
+}
+
+//加载中动画控件
+.loadingBlock{
+  display:inline-block; vertical-align:middle;
+  div{ display:inline-block; width:4px; height:10px; background:#04b008; margin-right:2px;}
+  div:nth-child(1){ animation:loadingShow 2s 0s linear infinite;}
+  div:nth-child(2){ animation:loadingShow 2s .6s linear infinite;}
+  div:nth-child(3){ animation:loadingShow 2s .2s linear infinite;}
+  div:nth-child(4){ animation:loadingShow 2s .8s linear infinite;}
+  div:nth-child(5){ animation:loadingShow 2s .4s linear infinite;}
+}
+.loadingBlock2{
+  display:inline-block; display:none; vertical-align:middle;
+  div{ display:inline-block; width:8px; height:8px; background:#f90; border:1px solid rgba(0,0,0,.3); margin-right:4px;}
+  div:nth-child(1){ animation:loadingShow2 3s 0s linear infinite;}
+  div:nth-child(2){ animation:loadingShow2 3s .3s linear infinite;}
+  div:nth-child(3){ animation:loadingShow2 3s .6s linear infinite;}
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>检验任务</title>
+    <link rel="stylesheet" href="style/font-awesome.css"/>
+    <link rel="stylesheet" href="style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="style/cssreset3.css?v=5"/>
+    <link rel="stylesheet" href="style/list.css?v=6"/>
+</head>
+<body>
+    <div class="outFrame" id="app">
+        <div class="main">
+            <div class="searchBar">
+                <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="doing" name="listType"/><label>待处理</label></span>
+                <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="finished" name="listType"/><label>已完成</label></span>
+                <div class="equipment">登录：<strong>老刘</strong></div>
+            </div>
+            <el-table :data="tableData3" :height="tableHeight" border stripe style="width: 100%;">
+                <el-table-column prop="identifier" label="商品编号" width="180"></el-table-column>
+                <el-table-column prop="batch" label="批号" width="180"></el-table-column>
+                <el-table-column prop="tagLen" label="标记米数"></el-table-column>
+                <el-table-column prop="checkLen" label="检验米数"></el-table-column>
+                <el-table-column prop="typeStr" label="流程"></el-table-column>
+                <el-table-column prop="status" label="状态"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button size="mini">详情</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </div>
+    <script src="script/configBG.js"></script>
+    <script src="script/configBG.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/elementui2.4.11.js"></script>
+    <script src="js/rexfunction.js"></script>
+    <script src="js/rexajax2.js"></script>
+    <script src="js/rexdialog.js"></script>
+    <script>
+        var vu=new Vue({
+           el: '#app',
+           data:{
+               listType: 'doing',
+               tableHeight: 100,
+               tableData3: [{
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }, {
+                   identifier: 'G01-01',
+                   batch: '10200301',
+                   tagLen: '100米',
+                   checkLen:'--',
+                   typeStr:'胚布',
+                   status:'待检验'
+               }]
+           },
+           methods:{}
+        });
+
+        $(function(){
+            vu.tableHeight=$('body').height()-70;
+            var timeID;
+            $(window).resize(function(){
+                if (timeID){
+                    clearTimeout(timeID);
+                    timeID='';
+                }
+                timeID=setTimeout(function(){
+                    vu.tableHeight=$('body').height()-70;
+                },100);
+            });
+        });
+    </script>
+</body>
+</html>

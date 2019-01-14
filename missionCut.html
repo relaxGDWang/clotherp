@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>裁剪任务</title>
+    <link rel="stylesheet" href="style/font-awesome.css"/>
+    <link rel="stylesheet" href="style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="style/cssreset3.css?v=5"/>
+    <link rel="stylesheet" href="style/list.css?v=21"/>
+</head>
+<body>
+<div class="outFrame" id="app">
+    <div class="main">
+        <div class="searchBar">
+            <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="doing" name="listType"/><label>待处理</label></span>
+            <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="finished" name="listType"/><label>已完成</label></span>
+            <div class="equipment">登录：<strong>老刘</strong></div>
+        </div>
+        <el-table :data="tableData3" :height="tableHeight" border stripe style="width: 100%;">
+            <el-table-column prop="identifier" label="商品编号" width="180"></el-table-column>
+            <el-table-column prop="batch" label="批号" width="180"></el-table-column>
+            <el-table-column prop="customer" label="收件人"></el-table-column>
+            <el-table-column prop="orderlen" label="裁剪米数"></el-table-column>
+            <el-table-column prop="store" label="仓库/仓位"></el-table-column>
+            <el-table-column prop="len" label="库存米数"></el-table-column>
+            <el-table-column prop="type" label="类型"></el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button size="mini" @click="openDetails(scope.row.id)">详情</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+
+    <div class="extPage" id="opDetails">
+        <div class="dialogFrame">
+            <div class="dialog-content">
+                <div class="leftList">
+                    <el-table :data="tableData3" :height="tableHeight2" border stripe style="width: 100%;" :row-class-name="tableRowClassName">
+                        <el-table-column prop="identifier" label="商品编号" width="80"></el-table-column>
+                        <el-table-column prop="batch" label="批号"></el-table-column>
+                    </el-table>
+                </div>
+                <div class="rightPart">
+                    <div class="titleBar">
+                        <span class="closeThis opBtn btn-close">&times;</span>
+                        <h2>布匹位于仓库位置<strong>K03-1</strong></h2>
+                    </div>
+                    <div class="clothShow">
+                        <div class="cloth">
+                            <span class="nowBlock"></span>
+                            <span class="clip"><span class="fa fa-cut"></span></span>
+                            <span class="flaw" index="1"></span>
+                            <span class="flaw" index="2"></span>
+                            <span class="flaw" index="3"></span>
+                            <span class="flaw" index="4"></span>
+                        </div>
+                        <div class="ruler"><span>120</span><span>0</span></div>
+                    </div>
+                    <div class="operateShow">
+                        <div class="operate">
+                            <div class="title"><span>当前裁剪</span><strong>客户订单</strong></div>
+                            <span class="cutLength"><b>10.4</b>M</span>
+                            <div class="elseInfo">
+                                <table class="rexTable">
+                                    <tbody>
+                                        <tr>
+                                            <td><label>布段编号：</label><span>6456131165</span></td>
+                                            <td><label>订货长度：</label><span>10.2米</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><label>客户资料：</label><span>李先生（13865445236）</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><label>备注信息：</label><span>无</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="rexTable" style="display:none;">
+                                    <tbody>
+                                        <tr>
+                                            <td>当前裁剪布段将作报废处理</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="operateButton">
+                            <div class="buttonList">
+                                <span class="component">
+                                    <button class="rexButton"><span class="fa fa-tag"></span><span>新疵点</span></button><button class="rexButton"><span class="fa fa-edit"></span><span>布长修正</span></button>
+                                </span><span class="component">
+                                    <button class="rexButton"><span class="fa fa-barcode"></span><span>打印编号</span></button><button class="rexButton"><span class="fa fa-check-square-o"></span><span>完成裁剪</span></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="elseList">
+                        <div class="flawList">
+                            <el-table :data="tableData2" stripe style="width: 100%;">
+                                <el-table-column prop="id" label="#" width="40"></el-table-column>
+                                <el-table-column label="位置">
+                                    <template slot-scope="scope">
+                                        <span class="lenShow">{{scope.row.start}}</span>~<span class="lenShow">{{scope.row.end}}M</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="长度">
+                                    <template slot-scope="scope">
+                                        {{(scope.row.end - scope.row.start).toFixed(2)-0}}M
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="type" label="类型"></el-table-column>
+                            </el-table>
+                        </div>
+                        <div class="operateList">
+                            <el-table :data="tableData1" stripe style="width: 100%">
+                                <el-table-column prop="datetime" label="日期"></el-table-column>
+                                <el-table-column prop="who" label="姓名"></el-table-column>
+                                <el-table-column prop="do" label="处理"></el-table-column>
+                                <el-table-column prop="order" label="订单"></el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="script/configBG.js"></script>
+<script src="script/configBG.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/vue.min.js"></script>
+<script src="js/elementui2.4.11.js"></script>
+<script src="js/rexfunction.js"></script>
+<script src="js/rexajax2.js"></script>
+<script src="js/rexdialog.js"></script>
+<script>
+    var vu=new Vue({
+        el: '#app',
+        data:{
+            listType: 'doing',
+            tableHeight: 100,
+            tableHeight2: 100,
+            nowEdit:'',
+            tableData3: [{
+                id: 1,
+                identifier: 'G01-01',
+                batch: '10200301',
+                customer: '老李',
+                orderlen:'10.4',
+                store:'G01-03',
+                len:'100',
+                type:'客户订单'
+            },{
+                id: 2,
+                identifier: 'G01-01',
+                batch: '10200301',
+                customer: '老李',
+                orderlen:'14.5',
+                store:'G01-03',
+                len:'100',
+                type:'客户订单'
+            },{
+                id: 3,
+                identifier: 'G01-01',
+                batch: '10200301',
+                customer: '--',
+                orderlen:'0.4',
+                store:'G01-03',
+                len:'100',
+                type:'废弃'
+            },{
+                id: 4,
+                identifier: 'G01-01',
+                batch: '10200301',
+                customer: '王总',
+                orderlen:'16.2',
+                store:'G01-03',
+                len:'100',
+                type:'客户订单'
+            },{
+                id: 5,
+                identifier: 'G01-01',
+                batch: '10200301',
+                customer: '--',
+                orderlen:'18.4',
+                store:'G01-03',
+                len:'100',
+                type:'分裁'
+            }],
+            tableData2:[{
+                id:1,
+                start:12.6,
+                end:12.8,
+                type:''
+            },{
+                id:2,
+                start:29,
+                end:29.5,
+                type:''
+            },{
+                id:3,
+                start:31.2,
+                end:31.3,
+                type:''
+            },{
+                id:4,
+                start:42.3,
+                end:43.3,
+                type:''
+            }],
+            tableData1:[{
+                id:1,
+                who:'小杨',
+                datetime:'2018-12-03 12:33',
+                do:'裁剪20米',
+                order:'1029348813'
+            },{
+                id:2,
+                who:'老胡',
+                datetime:'2018-12-01 14:33',
+                do:'裁剪16.7米',
+                order:'1029348813'
+            },{
+                id:3,
+                who:'小杨',
+                datetime:'2018-11-29 09:45',
+                do:'裁剪20米',
+                order:'1029348811'
+            }]
+        },
+        methods:{
+            openDetails: function(index){
+                this.nowEdit=index;
+                dialog.open('opDetails');
+            },
+            tableRowClassName: function({row, rowIndex}){
+                if (row.id===this.nowEdit){
+                    return 'sel';
+                }else{
+                    return '';
+                }
+            }
+        }
+    });
+
+    $(function(){
+        vu.tableHeight=$('body').height()-70;
+        vu.tableHeight2=vu.tableHeight+50;
+        var timeID;
+        $(window).resize(function(){
+            if (timeID){
+                clearTimeout(timeID);
+                timeID='';
+            }
+            timeID=setTimeout(function(){
+                vu.tableHeight=$('body').height()-70;
+                vu.tableHeight2=vu.tableHeight+50;
+            },100);
+        });
+    });
+
+    var dialog=relaxDialog();
+</script>
+</body>
+</html>
