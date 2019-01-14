@@ -4,6 +4,7 @@ var vu=new Vue({
         listType: 'doing',
         tableHeight: 100,
         editID: '',
+        flagEditLen: false,
         tableData3: [{
             identifier: 'G01-01',
             batch: '10200301',
@@ -145,5 +146,5 @@ $(function(){
         },100);
     });
 
-    vu.getList();
+    //vu.getList();
 });

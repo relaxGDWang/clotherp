@@ -67,12 +67,13 @@
 
 .operateButton { float: left; width: 50%; height: 100%; background: #eee; text-align: center; }
 .operateButton:before { content: ''; display: inline-block; height: 100%; width: 0; overflow: hidden; vertical-align: middle; }
-.operateButton .buttonList { display: inline-block; vertical-align: middle; width: 90%; text-align: left; }
-.operateButton .component { display: inline-block; vertical-align: middle; white-space: nowrap; }
-.operateButton .rexButton { height: 80px; width: 80px; padding: 0; margin: 5px; background: #336666; color: #fff; border-color: #336666; text-align: center; }
-.operateButton .rexButton span { display: block; font-size: 16px; width: 100%; }
-.operateButton .rexButton .fa { font-size: 40px; }
-.operateButton .rexButton .fa:before { position: static; }
+
+.buttonList { display: inline-block; vertical-align: middle; width: 90%; text-align: left; }
+.buttonList .component { display: inline-block; vertical-align: middle; white-space: nowrap; }
+.buttonList .rexButton { height: 80px; width: 80px; padding: 0; margin: 5px; background: #336666; color: #fff; border-color: #336666; text-align: center; }
+.buttonList .rexButton span { display: block; font-size: 16px; width: 100%; }
+.buttonList .rexButton .fa { font-size: 40px; }
+.buttonList .rexButton .fa:before { position: static; }
 
 .elseList { margin-top: 5px; width: 100%; }
 
@@ -92,8 +93,13 @@
 .checkMission .baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
 .checkMission .baseInfo .showLength > div { display: inline-block; width: 20%; }
 .checkMission .bottomPart { margin-top: 30px; }
-.checkMission .flawList { height: 100%; padding-top: 30px; padding-right: 5px; }
-.checkMission .flawList h3 { margin-top: -30px; }
+.checkMission .bottomPart h3 { margin-top: -30px; }
+.checkMission .flawList { height: 100%; padding-top: 30px; padding-right: 5px; width: 50%; float: left; }
 .checkMission .el-table { height: 100%; }
+.checkMission .checkOperate { float: left; padding-top: 30px; padding-left: 5px; width: 50%; }
+.checkMission .fitLength { border: 3px solid #069393; text-align: center; padding: 10px; }
+.checkMission .fitLength strong { font-size: 30px; color: red; font-weight: normal; }
+.checkMission .buttonList { margin-top: 10px; }
+.checkMission .buttonList .rexButton { margin-left: 0; margin-right: 10px; }
 
 /*# sourceMappingURL=list.css.map */

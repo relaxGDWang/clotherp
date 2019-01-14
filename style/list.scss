@@ -296,7 +296,9 @@ $color4: #069393;
     overflow: hidden;
     vertical-align: middle;
   }
-  .buttonList{ display:inline-block; vertical-align: middle; width:90%; text-align:left;}
+}
+.buttonList{
+  display:inline-block; vertical-align: middle; width:90%; text-align:left;
   .component {
     display: inline-block;
     vertical-align: middle;
@@ -305,15 +307,23 @@ $color4: #069393;
   .rexButton {
     height: 80px;
     width: 80px;
-    padding:0;
-    margin:5px;
-    background:$color1;
-    color:#fff;
-    border-color:$color1;
-    text-align:center;
-    span{ display:block; font-size:16px; width:100%;}
-    .fa{ font-size:40px;}
-    .fa:before{ position: static;}
+    padding: 0;
+    margin: 5px;
+    background: $color1;
+    color: #fff;
+    border-color: $color1;
+    text-align: center;
+    span {
+      display: block;
+      font-size: 16px;
+      width: 100%;
+    }
+    .fa {
+      font-size: 40px;
+    }
+    .fa:before {
+      position: static;
+    }
   }
 }
 
@@ -336,10 +346,26 @@ $color4: #069393;
     .showLength{ width:100%; background:#f2f2f2; border-bottom:1px solid #ccc; text-align:center;}
     .showLength>div{ display:inline-block; width:20%;}
   }
-  .bottomPart{ margin-top:30px;}
-  .flawList{
-    height:100%; padding-top:30px; padding-right:5px;
+  .bottomPart{
+    margin-top:30px;
     h3{ margin-top:-30px;}
   }
+  .flawList{
+    height:100%; padding-top:30px; padding-right:5px; width:50%; float:left;
+  }
   .el-table{ height:100%;}
+  .checkOperate{
+    float:left; padding-top:30px; padding-left:5px; width:50%;
+  }
+  .fitLength{
+    border:3px solid $color4; text-align:center; padding:10px;
+    strong{ font-size:30px; color:red; font-weight:normal;}
+  }
+  .buttonList{
+    margin-top:10px;
+    .rexButton{
+      margin-left:0; margin-right:10px;
+    }
+  }
+
 }

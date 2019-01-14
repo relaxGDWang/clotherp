@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/library/style/font-awesome.css"/>
     <link rel="stylesheet" href="/library/style/elementui2.4.11.css"/>
     <link rel="stylesheet" href="/library/style/cssreset3.css"/>
-    <link rel="stylesheet" href="/style/list.css?v=20"/>
+    <link rel="stylesheet" href="/style/list.css?v=22"/>
 </head>
 <body>
     <div class="outFrame" id="app">
@@ -96,7 +96,21 @@
                             </div>
                             <div class="checkOperate">
                                 <h3>检验操作</h3>
-                                <div></div>
+                                <div class="fitLength">
+                                    <span v-if="!flagEditLen">当前布匹标记长度 <strong>100</strong>米</span>
+                                    <span v-if="flagEditLen">请输入当前布匹测量长度 <input class="rexInput" type="tel" value="100"/>米</span>
+                                </div>
+                                <div class="buttonList">
+                                    <button class="rexButton">
+                                        <span class="fa fa-list"></span><span>检验记录</span>
+                                    </button><button class="rexButton">
+                                        <span class="fa fa-tag"></span><span>新增疵点</span>
+                                    </button><button class="rexButton" @click="flagEditLen=true">
+                                        <span class="fa fa-edit"></span><span>重标布长</span>
+                                    </button><button class="rexButton">
+                                        <span class="fa fa-check-square-o"></span><span>完成检验</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -111,6 +125,6 @@
     <script src="/library/js/rexdialog.js"></script>
     <script src="/library/js/elementui2.4.11.js"></script>
     <script src="/script/configBG.js"></script>
-    <script src="/script/missioncheck.js"></script>
+    <script src="/script/missioncheck.js?v=20"></script>
 </body>
 </html>
