@@ -113,7 +113,7 @@ var vu=new Vue({
             ajax.send({
                 data:{v:Math.random()},
                 success:function(data){
-                    alert(data);
+                    //
                 }
             });
         }

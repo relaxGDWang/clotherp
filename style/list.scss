@@ -6,6 +6,7 @@ $color2: #669999;
 $color3: #cccc99;
 $color4: #069393;
 
+// ---------- 公用部分 --------------------
 .outFrame {
   overflow: hidden;
   width: 100%;
@@ -32,193 +33,171 @@ $color4: #069393;
   background: $color2;
   color: #fff;
 }
-
 .el-table--striped .el-table__body tr.el-table__row--striped td {
   background: #e8f9f9;
 }
-
 .el-table--striped .el-table__body tr.el-table__row:hover td {
   background: #f6f6d9;
 }
-
 .el-table--striped .el-table__body tr.el-table__row.sel td {
   background: #f90;
   color: #fff;
 }
 
-/* 详细页面样式 */
-#opDetails .dialog-content {
-  padding: 10px;
-}
-
-.leftList {
-  float: left;
-  width: 220px;
-  height: 100%;
-}
-
-.rightPart {
-  margin-left: 220px;
-  height: 100%;
-  padding: 0 0 0 10px;
-}
-
-.titleBar {
-  line-height: 40px;
-  height: 40px;
-  border-left: 10px solid $color4;
-  h2 {
-    font-size: 14px;
-    height: 100%;
-    font-weight: normal;
-    padding-left: 20px;
-    background: #f0f0f0;
-    margin-right: 45px;
-    strong {
-      color: $color4;
-      margin-left: 10px;
+//详细页面样式
+#opDetails{
+  .dialogFrame{ width:92%;}
+  .dialog-title{
+    background:$color4 linear-gradient(rgba(255,255,255,.3) 0, transparent 15px);
+    h4{
+      font-size:16px; color:rgba(255,255,255,.9);
+    }
+    .opBtn{
+      font-size:28px; color:$color3;
+      &:hover,&:active{ color:red;}
     }
   }
-  .closeThis {
-    float: right;
-    width: 40px;
-    font-size: 30px;
-    background: #666;
-    color: #fff;
-    cursor: pointer;
-    text-align: center;
-    &:hover, &:active {
-      background: $color4;
-    }
+}
+//检验任务详细
+#checkMission{
+  .dialogFrame{ width:92%;}
+  .dialog-title .opBtn{
+    font-size:28px;
+    &:hover,&:active{ color:red;}
+  }
+}
+//加载页面
+#loading{
+  .dialog-content{
+    padding:15px;
   }
 }
 
 /* 布匹概览 */
 .clothShow {
-  margin-top: 40px;
-}
-
-.cloth {
-  background: #eee;
-  background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, .5) 0, rgba(255, 255, 255, .5) 10px, transparent 0, transparent 20px) repeat-x;
-  box-shadow: 0 0 0 1px #ccc inset;
-  width: 100%;
-  height: 80px;
-  position: relative;
-  z-index: 1;
-  .nowBlock {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 100px;
-    border: 1px solid $color4;
-    background: #e4ffff;
-  }
-  .clip {
-    position: absolute;
-    top: -8px;
-    bottom: -8px;
-    width: 1px;
-    right: 100px;
-    background: red;
-    background: repeating-linear-gradient(red 0, red 2px, transparent 0, transparent 3px);
-    .fa {
+  margin-top: 40px; margin-bottom:40px;
+  .cloth {
+    background: #eee;
+    background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, .5) 0, rgba(255, 255, 255, .5) 10px, transparent 0, transparent 20px) repeat-x;
+    box-shadow: 0 0 0 1px #ccc inset;
+    width: 100%;
+    height: 60px;
+    position: relative;
+    z-index: 1;
+    .nowBlock {
       position: absolute;
-      bottom: -20px;
-      left: 50%;
-      transform: translateX(-50%) rotate(-90deg);
-      color: red;
-      font-size: 16px;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 100px;
+      border: 1px solid $color4;
+      background: #e4ffff;
+    }
+    .clip {
+      position: absolute;
+      top: -8px;
+      bottom: -8px;
+      width: 1px;
+      right: 100px;
+      background: red;
+      background: repeating-linear-gradient(red 0, red 2px, transparent 0, transparent 3px);
+      .fa {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-90deg);
+        color: red;
+        font-size: 16px;
+      }
+    }
+    .flaw {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: #000;
+      background: rgba(0, 0, 0, .6);
+      &:before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1px;
+        top: -5px;
+        height: 5px;
+        background: #000;
+        overflow: hidden;
+      }
+      &:after {
+        content: attr(index);
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: -35px;
+        height: 30px;
+        line-height: 30px;
+        padding: 0 3px;
+        background: #000;
+        color: #fff;
+        text-align: center;
+        cursor: pointer;
+      }
+      &:hover:before, &:hover:after {
+        background: #f90;
+      }
+      &[index='1'] {
+        right: 120px;
+        width: 4px;
+      }
+      &[index='2'] {
+        right: 256px;
+        width: 9px;
+      }
+      &[index='3'] {
+        right: 278px;
+        width: 2px;
+      }
+      &[index='4'] {
+        right: 330px;
+        width: 15px;
+      }
     }
   }
-  .flaw {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    background: #000;
-    background: rgba(0, 0, 0, .6);
+  .ruler {
+    height: 10px;
+    background: #ccc;
+    position: relative;
+    z-index: 0;
+    span {
+      position: absolute;
+      top: 18px;
+    }
+    span:first-child {
+      left: 0;
+      margin-left: -4px;
+    }
+    span:last-child {
+      right: 0;
+      margin-right: -4px;
+    }
     &:before {
       content: '';
       position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+      height: 18px;
       width: 1px;
-      top: -5px;
-      height: 5px;
-      background: #000;
-      overflow: hidden;
+      left: 0;
+      background: #ccc;
     }
     &:after {
-      content: attr(index);
+      content: '';
       position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: -35px;
-      height: 30px;
-      line-height: 30px;
-      padding: 0 3px;
-      background: #000;
-      color: #fff;
-      text-align: center;
-      cursor: pointer;
-    }
-    &:hover:before, &:hover:after {
-      background: #f90;
-    }
-    &[index='1'] {
-      right: 120px;
-      width: 4px;
-    }
-    &[index='2'] {
-      right: 256px;
-      width: 9px;
-    }
-    &[index='3'] {
-      right: 278px;
-      width: 2px;
-    }
-    &[index='4'] {
-      right: 330px;
-      width: 15px;
+      height: 18px;
+      width: 1px;
+      right: 0;
+      background: #ccc;
     }
   }
 }
 
-.ruler {
-  height: 10px;
-  background: #ccc;
-  position: relative;
-  z-index: 0;
-  span {
-    position: absolute;
-    top: 18px;
-  }
-  span:first-child {
-    left: 0;
-    margin-left: -4px;
-  }
-  span:last-child {
-    right: 0;
-    margin-right: -4px;
-  }
-  &:before {
-    content: '';
-    position: absolute;
-    height: 18px;
-    width: 1px;
-    left: 0;
-    background: #ccc;
-  }
-  &:after {
-    content: '';
-    position: absolute;
-    height: 18px;
-    width: 1px;
-    right: 0;
-    background: #ccc;
-  }
-}
 
 .operateShow {
   margin-top: 30px;
@@ -331,11 +310,6 @@ $color4: #069393;
 .flawList{ float:left; width:50%;}
 .operateList{ float:left; width:50%;}
 
-/* 检验任务详细 */
-#checkMission{
-  .dialogFrame{ width:92%;}
-  .dialog-title .opBtn{ font-size:28px;}
-}
 .checkMission{
   padding:10px;
   h3{ font-size:16px; color:$color4; line-height:30px;}

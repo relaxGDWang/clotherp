@@ -1,8 +1,8 @@
 //后台管理公共配置文件
 var CFG = {
-    DEBUG: true,
+    DEBUG: false,
     JDTYPE: 'form',
-    URL: 'http://192.168.3.130:8080/',
+    URL: 'http://192.168.3.123:8080/',
     //en: 'en_US',
     //cn: 'zh_Cn',
     loginPage: 'login.html',
@@ -55,11 +55,12 @@ var PATH = {
     lang: '../language/',
     login: CFG.URL+'api/v1/user/login',    //登录接口
     missionCheck: CFG.URL+'api/v1/examine',       //检验任务列表
-    missionCut: CFG.URL+'api/v1/cutout'           //裁剪任务列表
+    missionCut: CFG.URL+'api/v1/cutout'           //裁剪任务列表，裁剪任务详细
 };
 if (CFG.DEBUG){
-    CFG.URL='http://www.cloth.com/server/';
+    CFG.URL='/server/';
     PATH.login=CFG.URL+'login.php';
+    PATH.missionCut=CFG.URL+'cutlist.php';
 }
 //登录状态的通用检测
 (function(){
@@ -83,4 +84,130 @@ if (CFG.DEBUG){
     //localStorage.removeItem(CFG.token);
     localStorage.removeItem(CFG.admin);
     if (!isLogin) top.location.replace(CFG.loginPage);
+})();
+
+//格式化ajax数据通用
+var DFG=(function(){
+    var data={};
+    var excute={
+        cutlist:{
+            length:{
+                type: 'string',
+                format:'$value$米'
+            },
+            current_length:{
+                type: 'string',
+                format:'$value$米'
+            }
+        }
+    };
+
+    //处理数据核心方法
+    function solveData(excuteName, doData){
+        data=doData;
+        var dic=excute[excuteName];
+        for (var x in data) {
+            var per = dic[x];
+            if (!per) continue;
+            switch (per.type) {
+                case 'datetime':
+                    datetimeDo(per, x);
+                    break;
+                case 'date':
+                    datetimeDo(per, x);
+                    break;
+                case 'price':
+                    priceDo(per, x);
+                    break;
+                case 'radio':
+                    radioDo(per, x);
+                    break;
+                case 'array':
+                    arrayDo(per, x);
+                    break;
+                case 'string':
+                    stringDo(per, x);
+                    break;
+            }
+        }
+    }
+
+    //获得字符串日期时间
+    function datetimeDo(conf, key){
+        if (data[key]){
+            var temp;
+            switch(conf.from){
+                case 'unix':
+                    temp=getStringTime(data[key]*1000,'','-',true);
+                    break;
+                case 'unixms':
+                    temp=getStringTime(data[key],'','-',true);
+                    break;
+                case 'datetime':
+                    temp=data[key];
+                    break;
+                case 'date':
+                    temp=data[key]+' 00:00:00';
+                    break;
+            }
+            var result=temp.split(/\s/);
+            switch(conf.type){
+                case 'datetime':
+                    data[key]=result;
+                    break;
+                case 'date':
+                    data[key]=[result[0]];
+                    break;
+                case 'time':
+                    data[key]=[result[1]];
+                    break;
+            }
+        }else{
+            if (conf.emptyfill!==undefined) data[key]=[conf.emptyfill];
+        }
+    }
+    //金额格式化
+    function priceDo(conf, key){
+        var temp=data[key]-0;
+        if (isNaN(temp)){
+            if (conf.emptyfill!==undefined) data[key]=conf.emptyfill;
+        }else{
+            data[key]=temp.toFixed(conf.fixed);
+        }
+    }
+    //单选值格式化
+    function radioDo(conf, key){
+        var temp=data[key];
+        if (conf.from==='string'){
+            temp=temp-0;
+            if (isNaN(temp)) temp=data[key];
+        }
+        if (conf.value) {
+            var index = conf.value.indexOf(temp);
+            if (index >= 0) {
+                data[key] = conf.text[index];
+                return;
+            }
+        }else{
+            data[key]=conf.search[temp];
+            return;
+        }
+        data[key]='unknow';
+    }
+    //处理数组值（多选值，一般为数组）
+    function arrayDo(conf, key){
+        var temp=data[key];
+        for (var i=0; i<temp.length; i++){
+            temp[i]=conf.search[temp[i]];
+        }
+    }
+    //处理字符串加工
+    function stringDo(conf, key){
+        data[key]=conf.format.replace(/\$value\$/g,data[key]);
+    }
+
+    return {
+        'ext': excute,
+        'solve': solveData
+    };
 })();

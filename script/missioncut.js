@@ -1,101 +1,43 @@
 var vu=new Vue({
     el: '#app',
     data:{
-        listType: 'doing',
-        tableHeight: 100,
-        tableHeight2: 100,
-        nowEdit:'',
-        tableData3: [{
-            id: 1,
-            identifier: 'G01-01',
-            batch: '10200301',
-            customer: '老李',
-            orderlen:'10.4',
-            store:'G01-03',
-            len:'100',
-            type:'客户订单'
-        },{
-            id: 2,
-            identifier: 'G01-01',
-            batch: '10200301',
-            customer: '老李',
-            orderlen:'14.5',
-            store:'G01-03',
-            len:'100',
-            type:'客户订单'
-        },{
-            id: 3,
-            identifier: 'G01-01',
-            batch: '10200301',
-            customer: '--',
-            orderlen:'0.4',
-            store:'G01-03',
-            len:'100',
-            type:'废弃'
-        },{
-            id: 4,
-            identifier: 'G01-01',
-            batch: '10200301',
-            customer: '王总',
-            orderlen:'16.2',
-            store:'G01-03',
-            len:'100',
-            type:'客户订单'
-        },{
-            id: 5,
-            identifier: 'G01-01',
-            batch: '10200301',
-            customer: '--',
-            orderlen:'18.4',
-            store:'G01-03',
-            len:'100',
-            type:'分裁'
-        }],
-        tableData2:[{
-            id:1,
-            start:12.6,
-            end:12.8,
-            type:''
-        },{
-            id:2,
-            start:29,
-            end:29.5,
-            type:''
-        },{
-            id:3,
-            start:31.2,
-            end:31.3,
-            type:''
-        },{
-            id:4,
-            start:42.3,
-            end:43.3,
-            type:''
-        }],
-        tableData1:[{
-            id:1,
-            who:'小杨',
-            datetime:'2018-12-03 12:33',
-            do:'裁剪20米',
-            order:'1029348813'
-        },{
-            id:2,
-            who:'老胡',
-            datetime:'2018-12-01 14:33',
-            do:'裁剪16.7米',
-            order:'1029348813'
-        },{
-            id:3,
-            who:'小杨',
-            datetime:'2018-11-29 09:45',
-            do:'裁剪20米',
-            order:'1029348811'
-        }]
+        search:{
+            listType: 'doing'   //doing,finished
+        },
+        username: '',
+        UI:{
+            listHeight: 100,
+        },
+        editObject: {},
+        mission: [],
+        keyIndex:{}
     },
     methods:{
         openDetails: function(index){
-            this.nowEdit=index;
-            dialog.open('opDetails');
+            if (this.keyIndex[index].flag){
+                this.editObject=this.mission[this.keyIndex[index].index];
+                dialog.open('opDetails',{closeCallback:function(){
+                    vu.editObject={};
+                }});
+            }else{
+                ajax.send({
+                    url: PATH.missionCut+'/'+index,
+                    data:{status: this.search.listType},
+                    error: function(){
+                        dialog.close('loading');
+                    },
+                    success:function(data){
+                        dialog.close('loading');
+                        var keyObject=vu.keyIndex[data.bolt_id];
+                        keyObject.flag=true;
+                        vu.mission[keyObject.index].details=data;
+                        vu.editObject=vu.mission[keyObject.index];
+                        dialog.open('opDetails',{closeCallback:function(){
+                            vu.editObject={};
+                        }});
+                    }
+                });
+            }
         },
         tableRowClassName: function({row, rowIndex}){
             if (row.id===this.nowEdit){
@@ -104,40 +46,78 @@ var vu=new Vue({
                 return '';
             }
         },
-        getList: function(){
+        getList: function(){  //获得任务列表
             ajax.send({
-                data:{v:Math.random()},
+                url: PATH.missionCut,
+                data:{status: this.search.listType},
+                error: function(){
+                    dialog.close('loading');
+                },
                 success:function(data){
-                    alert(data);
+                    dialog.close('loading');
+                    vu.mission=[];
+                    for (var i=0; i<data.length; i++){
+                        DFG.solve('cutlist', data[i]);
+                        vu.mission.push(data[i]);
+                        vu.keyIndex[data[i]['bolt_id']]={
+                            index: i,
+                            flag: false,
+                        };
+                    }
                 }
             });
+        },
+        redrawCloth: function(){  //绘制布匹概览
+            var len=$('#cloth').width()-1;
+            var pm=len/this.len;
+            var tempArray=$('#ruler span');
+            var direction=this.direction;
+            var i,pos1,pos2,widthNum;
+            for (i=0; i<tempArray.length; i++){
+                pos1=$(tempArray[i]).attr('pos');
+                $(tempArray[i]).css(direction, pm*pos1);
+            }
+            tempArray=$('#cloth .flaw');
+            for (i=0; i<tempArray.length; i++){
+                pos1=$(tempArray[i]).attr('start');
+                pos2=$(tempArray[i]).attr('end');
+                widthNum=(pos2-pos1)*pm || 1;
+                $(tempArray[i]).css(direction, pm*pos1).css('width', widthNum);
+            }
         }
+    },
+    beforeMount: function () {
+        var temp=JSON.parse(localStorage.getItem(CFG.admin));
+        this.username=temp.name;
     }
 });
 
 var dialog=relaxDialog();
 var ajax=relaxAJAX({
-    url: PATH.missionCut,
     type: 'get',
     contentType: CFG.JDTYPE,
     formater: CFG.ajaxFormater,
-    checker: CFG.ajaxReturnDo
+    checker: CFG.ajaxReturnDo,
+    before: function(){
+        dialog.open('loading');
+    }
 });
 
 $(function(){
-    vu.tableHeight=$('body').height()-70;
-    vu.tableHeight2=vu.tableHeight+50;
-    var timeID;
+    var timeID, body=$('body');
     $(window).resize(function(){
         if (timeID){
             clearTimeout(timeID);
             timeID='';
         }
         timeID=setTimeout(function(){
-            vu.tableHeight=$('body').height()-70;
-            vu.tableHeight2=vu.tableHeight+50;
+            fitUI();
         },100);
     });
-
+    fitUI();
     vu.getList();
+
+    function fitUI(){
+        vu.UI.listHeight=body.height()-70;
+    }
 });

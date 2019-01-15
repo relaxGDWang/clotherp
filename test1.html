@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>测试百分比定位</title>
+    <link rel="stylesheet" href="/library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="/library/style/cssreset3.css"/>
+    <style type="text/css">
+        .frameShow{ width:100%; padding:10px; margin:auto;}
+        .clothShow{ margin:40px 0;}
+        .cloth{ box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:60px; position:relative;}
+        .cloth .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property: left,right; transition-duration: 1s;}
+        .cloth .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
+        .cloth .flaw:hover{ background:#f90; }
+        .cloth .flaw:hover:after{ background:#f90;}
+        .ruler{ height:2px; background:#ccc; position:relative;}
+        .ruler span{ position:absolute; top:2px; height:6px; width:1px; text-align:center; background:#ccc; font-size:12px; color:#666;}
+        .ruler span:before{ content:attr(pos); position:absolute; top:10px; left:50%; transform:translateX(-50%);}
+    </style>
+</head>
+<body>
+    <div class="frameShow" id="app">
+        <div class="clothShow">
+            <div class="cloth" id="cloth">
+                <span class="nowBlock"></span>
+                <span class="clip"><span class="fa fa-cut"></span></span>
+                <span class="flaw" v-for="(item,index) in flaw" :index="index+1" :start="item.start" :end="item.end"></span>
+            </div>
+            <div class="ruler" id="ruler">
+                <span v-for="item in getMark" :pos="item"></span>
+            </div>
+        </div>
+    </div>
+    <script src="/library/js/jquery.min.js"></script>
+    <script src="/library/js/vue.min.js"></script>
+    <script>
+        var vu=new Vue({
+            el: '#app',
+            data: {
+                len: 100,
+                perLen: 10,
+                direction: 'right',
+                flaw:[{
+                    start: 4.6,
+                    end: 4.6,
+                    width: 0
+                },{
+                    start: 13.4,
+                    end: 13.6,
+                    width: 0.2
+                },{
+                    start: 45.4,
+                    end: 45.8,
+                    width: 0.4
+                },{
+                    start: 79.1,
+                    end: 79.9,
+                    width: 0.8
+                }]
+            },
+            computed:{
+                getMark: function(){
+                    var loopCount=Math.ceil(this.len/this.perLen);
+                    var result=[];
+                    for (var i=0; i<loopCount; i++){
+                        result.push(i*this.perLen);
+                    }
+                    result.push(this.len);
+                    return result;
+                }
+            },
+            methods:{
+                redrawCloth: function(){  //绘制布匹概览
+                    var len=$('#cloth').width()-1;
+                    var pm=len/this.len;
+                    var tempArray=$('#ruler span');
+                    var direction=this.direction;
+                    var i,pos1,pos2,widthNum;
+                    for (i=0; i<tempArray.length; i++){
+                        pos1=$(tempArray[i]).attr('pos');
+                        $(tempArray[i]).css(direction, pm*pos1);
+                    }
+                    tempArray=$('#cloth .flaw');
+                    for (i=0; i<tempArray.length; i++){
+                        pos1=$(tempArray[i]).attr('start');
+                        pos2=$(tempArray[i]).attr('end');
+                        widthNum=(pos2-pos1)*pm || 1;
+                        $(tempArray[i]).css(direction, pm*pos1).css('width', widthNum);
+                    }
+                }
+            },
+            mounted:function(){
+                this.redrawCloth();
+            }
+        });
+
+        $(function(){
+            var dom=$('#cloth');
+            var timeID;
+            $(window).resize(function(){
+                timeID=setTimeout(function(){
+                    vu.redrawCloth();
+                },100);
+            })
+        })
+    </script>
+</body>
+</html>

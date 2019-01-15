@@ -14,40 +14,48 @@
 <div class="outFrame" id="app">
     <div class="main">
         <div class="searchBar">
-            <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="doing" name="listType"/><label>待处理</label></span>
-            <span class="rexBlockCheck" color="warning"><input type="radio" v-model="listType" value="finished" name="listType"/><label>已完成</label></span>
-            <div class="equipment">登录：<strong>老刘</strong></div>
+            <span class="rexBlockCheck" color="warning"><input type="radio" v-model="search.listType" value="doing" name="listType"/><label>待处理</label></span>
+            <span class="rexBlockCheck" color="warning"><input type="radio" v-model="search.listType" value="finished" name="listType"/><label>已完成</label></span>
+            <div class="equipment">登录：<strong>{{username}}</strong></div>
         </div>
-        <el-table :data="tableData3" :height="tableHeight" border stripe style="width: 100%;">
-            <el-table-column prop="identifier" label="商品编号" width="180"></el-table-column>
-            <el-table-column prop="batch" label="批号" width="180"></el-table-column>
-            <el-table-column prop="customer" label="收件人"></el-table-column>
-            <el-table-column prop="orderlen" label="裁剪米数"></el-table-column>
-            <el-table-column prop="store" label="仓库/仓位"></el-table-column>
-            <el-table-column prop="len" label="库存米数"></el-table-column>
-            <el-table-column prop="type" label="类型"></el-table-column>
-            <el-table-column label="操作">
+        <el-table :data="mission" :height="UI.listHeight" border stripe>
+            <el-table-column label="#" width="40">
+                <template slot-scope="scope">{{scope.$index+1}}</template>
+            </el-table-column>
+            <el-table-column prop="product_code" label="商品编号" width="140"></el-table-column>
+            <el-table-column prop="bolt_no" label="批号" width="180"></el-table-column>
+            <el-table-column prop="purchaser" label="收件人"></el-table-column>
+            <el-table-column prop="length" label="裁剪米数" width="100"></el-table-column>
+            <el-table-column prop="position" label="仓库/仓位"></el-table-column>
+            <el-table-column prop="current_length" label="库存米数" width="100"></el-table-column>
+            <el-table-column prop="catalog" label="类型" width="80"></el-table-column>
+            <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="openDetails(scope.row.id)">详情</el-button>
+                    <el-button @click="openDetails(scope.row.bolt_id)">详情</el-button>
                 </template>
             </el-table-column>
         </el-table>
     </div>
-
-    <div class="extPage" id="opDetails">
+    <!-- 详细页 -->
+    <div class="extMenu right" id="opDetails" noclick="noclick">
         <div class="dialogFrame">
+            <div class="dialog-title">
+                <span class="right opBtn btn-close">&times;</span>
+                <h4><span class="fa fa-cut"></span> 裁剪任务详细</h4>
+            </div>
             <div class="dialog-content">
-                <div class="leftList">
-                    <el-table :data="tableData3" :height="tableHeight2" border stripe style="width: 100%;" :row-class-name="tableRowClassName">
-                        <el-table-column prop="identifier" label="商品编号" width="80"></el-table-column>
-                        <el-table-column prop="batch" label="批号"></el-table-column>
-                    </el-table>
-                </div>
-                <div class="rightPart">
-                    <div class="titleBar">
-                        <span class="closeThis opBtn btn-close">&times;</span>
-                        <h2>布匹位于仓库位置<strong>K03-1</strong></h2>
-                    </div>
+                <div class="checkMission">
+                    <h3>布匹基本资料</h3>
+                    <ul class="baseInfo nohead" v-if="editObject.details">
+                        <li><label>商品编号：</label><span>{{editObject.product_code}}</span></li>
+                        <li><label>批&emsp;&emsp;号：</label><span>{{editObject.details.bolt_no}}</span></li>
+                        <li><label>收件人：</label><span>{{editObject.purchaser}}</span></li>
+                        <li><label>当前仓位：</label><span>{{editObject.position}}</span></li>
+                        <li class="showLength">
+                            <div><label>当前布匹米数：</label><span>{{editObject.details.current_length}}米</span></div>
+                        </li>
+                    </ul>
+                    <h3>当前裁剪概览</h3>
                     <div class="clothShow">
                         <div class="cloth">
                             <span class="nowBlock"></span>
@@ -59,19 +67,20 @@
                         </div>
                         <div class="ruler"><span>120</span><span>0</span></div>
                     </div>
-                    <div class="operateShow">
+                    <h3>裁剪操作</h3>
+                    <div class="operateShow" v-if="editObject.details">
                         <div class="operate">
-                            <div class="title"><span>当前裁剪</span><strong>客户订单</strong></div>
-                            <span class="cutLength"><b>10.4</b>M</span>
+                            <div class="title"><span>当前裁剪</span><strong>{{editObject.details.status}}</strong></div>
+                            <span class="cutLength"><b>{{editObject.details.cut_length}}</b>米</span>
                             <div class="elseInfo">
                                 <table class="rexTable">
                                     <tbody>
                                         <tr>
                                             <td><label>布段编号：</label><span>6456131165</span></td>
-                                            <td><label>订货长度：</label><span>10.2米</span></td>
+                                            <td><label>订货长度：</label><span>{{editObject.details.order_length}}米</span></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="2"><label>客户资料：</label><span>李先生（13865445236）</span></td>
+                                            <td colspan="2"><label>客户资料：</label><span>{{editObject.details.purchaser}}</span></td>
                                         </tr>
                                         <tr>
                                             <td colspan="2"><label>备注信息：</label><span>无</span></td>
@@ -97,33 +106,62 @@
                             </div>
                         </div>
                     </div>
-                    <div class="elseList">
+                    <div class="elseList" v-if="editObject.details">
                         <div class="flawList">
-                            <el-table :data="tableData2" stripe style="width: 100%;">
-                                <el-table-column prop="id" label="#" width="40"></el-table-column>
+                            <h3>疵点列表</h3>
+                            <el-table :data="editObject.details.defects" stripe>
+                                <el-table-column label="#" width="40">
+                                    <template slot-scope="scope">{{scope.$index+1}}</template>
+                                </el-table-column>
                                 <el-table-column label="位置">
                                     <template slot-scope="scope">
-                                        <span class="lenShow">{{scope.row.start}}</span>~<span class="lenShow">{{scope.row.end}}M</span>
+                                        <span class="lenShow">{{scope.row.start}}</span> ~ <span class="lenShow">{{scope.row.end}}米</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="长度">
                                     <template slot-scope="scope">
-                                        {{(scope.row.end - scope.row.start).toFixed(2)-0}}M
+                                        {{scope.row.length}}米</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="type" label="类型"></el-table-column>
                             </el-table>
                         </div>
                         <div class="operateList">
-                            <el-table :data="tableData1" stripe style="width: 100%">
-                                <el-table-column prop="datetime" label="日期"></el-table-column>
-                                <el-table-column prop="who" label="姓名"></el-table-column>
-                                <el-table-column prop="do" label="处理"></el-table-column>
-                                <el-table-column prop="order" label="订单"></el-table-column>
+                            <h3>操作记录</h3>
+                            <el-table :data="editObject.details.cutouts" stripe>
+                                <el-table-column prop="date" label="日期"></el-table-column>
+                                <el-table-column prop="name" label="姓名"></el-table-column>
+                                <el-table-column label="处理">
+                                    <template slot-scope="scope">
+                                        裁剪 {{scope.row.length}} 米，生成 {{scope.row.bolt_no}}
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ajax加载提示框 -->
+    <div class="extDialog" id="loading" noclick="noclick">
+        <div class="dialogFrame">
+            <div class="dialog-content">
+                <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div> <span class="diy">正在加载数据，请稍等...</span>
+            </div>
+        </div>
+    </div>
+    <!-- ajax出错信息提示 -->
+    <div class="extDialog" id="information" noclick="noclick">
+        <div class="dialogFrame">
+            <div class="dialog-title"><h4>系统信息提示</h4></div>
+            <div class="dialog-buttonBar">
+                <button class="rexButton opBtn btn-cancel">取消</button>
+                <button class="rexButton opBtn btn-sure">确定</button>
+            </div>
+            <div class="dialog-content">
+                <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div> <span class="diy">正在加载数据，请稍等...</span>
             </div>
         </div>
     </div>
