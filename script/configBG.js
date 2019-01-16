@@ -2,7 +2,7 @@
 var CFG = {
     DEBUG: false,
     JDTYPE: 'form',
-    URL: 'http://192.168.3.123:8080/',
+    URL: 'http://192.168.3.109:8080/api/v1/',
     //en: 'en_US',
     //cn: 'zh_Cn',
     loginPage: 'login.html',
@@ -27,7 +27,7 @@ var CFG = {
             return result;
         }
         if (data.success!==true) {
-            result.code = data.success;
+            result.code = 420;
             result.msg = data.message;
             if (data.success+''===CFG.noLogin+''){   //判定登录超时的情况
                 //alert('AJAX获得未登录标记，即将退出');
@@ -52,15 +52,19 @@ var CFG = {
     }
 };
 var PATH = {
-    lang: '../language/',
-    login: CFG.URL+'api/v1/user/login',    //登录接口
-    missionCheck: CFG.URL+'api/v1/examine',       //检验任务列表
-    missionCut: CFG.URL+'api/v1/cutout'           //裁剪任务列表，裁剪任务详细
+    login: CFG.URL+'user/login',    //登录接口
+    missionCheck: CFG.URL+'examine',       //检验任务列表
+    missionCheckDetails: CFG.URL+'examine/{id}',   //检验任务详细
+    missionCut: CFG.URL+'cutout',           //裁剪任务列表
+    missionCutDetails: CFG.URL+'cutout/{bolt_id}',  //裁剪任务详细
+    missionCutFinished: CFG.URL+'cutout/{bolt_id}/cut'  //完成裁剪
 };
 if (CFG.DEBUG){
     CFG.URL='/server/';
     PATH.login=CFG.URL+'login.php';
     PATH.missionCut=CFG.URL+'cutlist.php';
+    PATH.missionCutDetails=CFG.URL+'cutdetails.php';
+    PATH.missionCutFinished=CFG.URL+'cutfinish.php';
 }
 //登录状态的通用检测
 (function(){

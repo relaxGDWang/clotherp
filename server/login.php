@@ -12,7 +12,7 @@ if ($password!=='123456'){
     $out['success']=false;
     $out['message']="手机号码或者登录密码错误";
 }else{
-	$out['data']['api_token']='63650187dbe2a41ccb645bc858bd4866';
+	$out['data']['api_token']='9336ebf25087d91c818ee6e9ec29f8c1';
     $out['data']['mobile']=$telnumber;
 	$out['data']['name']='张三丰';
 }

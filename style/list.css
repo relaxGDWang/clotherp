@@ -8,7 +8,7 @@
 .equipment { float: right; margin-top: 15px; }
 
 /* 表格样式 */
-.el-table th { background: #669999; color: #fff; width:100%;}
+.el-table th { background: #669999; color: #fff; }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
 
@@ -16,7 +16,6 @@
 
 .el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff; }
 
-#opDetails .dialogFrame { width: 92%; }
 #opDetails .dialog-title { background: #069393 linear-gradient(rgba(255, 255, 255, 0.3) 0, transparent 15px); }
 #opDetails .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }
 #opDetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
@@ -28,67 +27,85 @@
 
 #loading .dialog-content { padding: 15px; }
 
-/* 布匹概览 */
-.clothShow { margin-top: 40px; margin-bottom: 40px; }
-.clothShow .cloth { background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.5) 0, rgba(255, 255, 255, 0.5) 10px, transparent 0, transparent 20px) repeat-x; box-shadow: 0 0 0 1px #ccc inset; width: 100%; height: 60px; position: relative; z-index: 1; }
-.clothShow .cloth .nowBlock { position: absolute; top: 0; bottom: 0; right: 0; width: 100px; border: 1px solid #069393; background: #e4ffff; }
-.clothShow .cloth .clip { position: absolute; top: -8px; bottom: -8px; width: 1px; right: 100px; background: red; background: repeating-linear-gradient(red 0, red 2px, transparent 0, transparent 3px); }
-.clothShow .cloth .clip .fa { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%) rotate(-90deg); color: red; font-size: 16px; }
-.clothShow .cloth .flaw { position: absolute; top: 0; bottom: 0; background: #000; background: rgba(0, 0, 0, 0.6); }
-.clothShow .cloth .flaw:before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 1px; top: -5px; height: 5px; background: #000; overflow: hidden; }
-.clothShow .cloth .flaw:after { content: attr(index); position: absolute; left: 50%; transform: translateX(-50%); top: -35px; height: 30px; line-height: 30px; padding: 0 3px; background: #000; color: #fff; text-align: center; cursor: pointer; }
-.clothShow .cloth .flaw:hover:before, .clothShow .cloth .flaw:hover:after { background: #f90; }
-.clothShow .cloth .flaw[index='1'] { right: 120px; width: 4px; }
-.clothShow .cloth .flaw[index='2'] { right: 256px; width: 9px; }
-.clothShow .cloth .flaw[index='3'] { right: 278px; width: 2px; }
-.clothShow .cloth .flaw[index='4'] { right: 330px; width: 15px; }
-.clothShow .ruler { height: 10px; background: #ccc; position: relative; z-index: 0; }
-.clothShow .ruler span { position: absolute; top: 18px; }
-.clothShow .ruler span:first-child { left: 0; margin-left: -4px; }
-.clothShow .ruler span:last-child { right: 0; margin-right: -4px; }
-.clothShow .ruler:before { content: ''; position: absolute; height: 18px; width: 1px; left: 0; background: #ccc; }
-.clothShow .ruler:after { content: ''; position: absolute; height: 18px; width: 1px; right: 0; background: #ccc; }
+.missionDetails h3 { font-size: 16px; color: #069393; line-height: 30px; }
 
-.operateShow { width: 100%; height: 200px; overflow: hidden; }
+.leftPart { width: 190px; float: left; height: 100%; padding: 0 5px 0 5px; background: #f0f0f0; }
+.leftPart .viewList { overflow: auto; }
+.leftPart li { border: 1px solid #ccc; margin-bottom: 5px; padding: 5px 5px 0 5px; overflow: hidden; font-size: 12px; cursor: pointer; background: #fff; border-radius: 4px; transition-property: background-color, border-color; transition-duration: .3s; }
+.leftPart li:hover, .leftPart li:active { background: #cefbfb; border-color: #336666; }
+.leftPart li:hover strong, .leftPart li:active strong { border-color: #336666; }
+.leftPart li.sel { background: #ffedce; border-color: #f90; }
+.leftPart li.sel strong { border-color: #f90; }
+.leftPart strong { line-height: 30px; display: block; border-top: 1px solid #eee; font-weight: normal; text-align: center; margin-top: 5px; transition-property: border-color; transition-duration: .3s; }
+.leftPart .status { display: inline-block; }
+.leftPart .length { float: right; color: #999; }
+.leftPart .length b { font-size: 14px; color: red; font-weight: normal; margin: 0 2px; }
 
-.operate { width: 50%; height: 100%; border: 3px solid #069393; padding: 10px; float: left; }
-.operate .title { float: left; font-size: 16px; padding-top: 4px; padding-left: 20px; text-align: center; width: 100px; }
-.operate .title span { display: block; margin-bottom: 5px; }
-.operate .title strong { display: inline-block; background: #069393; color: #fff; font-weight: normal; font-size: 14px; text-align: center; padding: 5px 10px; }
-.operate .cutLength { display: block; margin-left: 100px; font-size: 30px; color: #999; padding-left: 10%; }
-.operate .cutLength b { font-size: 60px; color: red; margin-right: 5px; font-weight: normal; }
-.operate .elseInfo { border-top: 1px solid #ccc; padding-top: 10px; }
-.operate .elseInfo .rexTable { height: 90px; }
-.operate .elseInfo .rexTable td { vertical-align: middle; }
-.operate .elseInfo .rexTable label { color: #999; }
+.rightPart { width: auto; margin-left: 190px; height: 100%; padding: 0 10px 0 10px; }
+
+.status { line-height: 1.8em; padding: 0 0.5em; }
+.status:before { color: #fff; }
+.status.customer { background: #069393; }
+.status.customer:before { content: '客户订单'; }
+.status.flaw { background: #666; }
+.status.flaw:before { content: '疵点切割'; }
+.status:normal { background: blue; }
+.status:normal:before { content: '分裁入库'; }
+
+.baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
+.baseInfo li { float: left; width: 25%; min-width: 240px; line-height: 30px; }
+.baseInfo label { color: #999; margin-right: 5px; }
+.baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
+.baseInfo .showLength > div { display: inline-block; width: 20%; }
+
+.clothShow { margin: 24px 0 32px 0; }
+
+.cloth { box-shadow: 0 0 0 1px #ccc inset; background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); width: 100%; height: 50px; position: relative; }
+.cloth .flaw { position: absolute; background: #000; top: 0; bottom: 0; transition-property: left,right; transition-duration: 1s; }
+.cloth .flaw:after { content: attr(index); position: absolute; height: 20px; line-height: 20px; padding: 0 3px; background: #000; color: #fff; top: -21px; left: 50%; transform: translateX(-50%); font-size: 12px; border-radius: 2px; cursor: pointer; }
+.cloth .flaw:hover { background: #f90; }
+.cloth .flaw:hover:after { background: #f90; }
+.cloth .nowBlock { background: rgba(8, 142, 144, 0.6); color: #fff; border: 2px dashed #069393; position: absolute; right: 10%; width: 100px; top: 0; bottom: 0; z-index: 1; transition-property: left,right; transition-duration: 1s; }
+.cloth .nowBlock.disabled { background: rgba(155, 155, 155, 0.6); border-color: #ccc; }
+.cloth .clip { width: 1px; background: red; color: red; position: absolute; top: -3px; bottom: -10px; right: 20%; z-index: 2; transition-property: left,right; transition-duration: 1s; }
+.cloth .clip:before { position: absolute; bottom: -20px; transform: rotate(-90deg) translateY(-50%); font-size: 20px; left: 50%; }
+.cloth .clip.hidden { visibility: hidden; }
+
+.ruler { height: 2px; background: #ccc; position: relative; }
+.ruler span { position: absolute; top: 2px; height: 6px; width: 1px; text-align: center; background: #ccc; font-size: 12px; color: #666; }
+.ruler span:before { content: attr(pos); position: absolute; top: 10px; left: 50%; transform: translateX(-50%); }
+
+.operateShow { width: 100%; height: 150px; overflow: hidden; }
+
+.operate { width: 50%; height: 100%; border: 3px solid #069393; padding: 0 10px 10px 10px; float: left; text-align: center; }
+.operate .status { float: left; font-size: 14px; margin-top: 10px; }
+.operate .title { font-size: 16px; display: inline-block; padding-bottom: 10px; }
+.operate .title b { position: relative; top: 10px; font-size: 50px; color: red; vertical-align: text-bottom; font-weight: normal; }
+.operate .elseInfo { border-top: 1px solid #ccc; overflow: hidden; text-align: left; padding-top: 5px; }
+.operate .elseInfo li { width: 50%; float: left; padding: 5px 0; }
+.operate .elseInfo li:last-child { width: 100%; }
+.operate .elseInfo li.center { text-align: center; padding-top: 15px; color: #336666; }
+.operate .elseInfo label { color: #999; }
 
 .operateButton { float: left; width: 50%; height: 100%; background: #eee; text-align: center; }
 .operateButton:before { content: ''; display: inline-block; height: 100%; width: 0; overflow: hidden; vertical-align: middle; }
 
-.buttonList { display: inline-block; vertical-align: middle; width: 90%; text-align: left; }
+.buttonList { display: inline-block; vertical-align: middle; text-align: left; }
 .buttonList .component { display: inline-block; vertical-align: middle; white-space: nowrap; }
-.buttonList .rexButton { height: 80px; width: 80px; padding: 0; margin: 5px; background: #336666; color: #fff; border-color: #336666; text-align: center; }
-.buttonList .rexButton span { display: block; font-size: 16px; width: 100%; }
-.buttonList .rexButton .fa { font-size: 40px; }
+.buttonList .rexButton { height: 60px; width: 80px; padding: 0; margin: 5px; text-align: center; }
+.buttonList .rexButton span { display: block; font-size: 14px; width: 100%; }
+.buttonList .rexButton .fa { font-size: 30px; }
 .buttonList .rexButton .fa:before { position: static; }
 
-.elseList { margin-top: 5px; width: 100%; }
+.elseList { margin-top: 10px; width: 100%; overflow: hidden; }
 
-.flawList { float: left; width: 50%; }
+.flawList { padding-right: 5px; width: 50%; float: left; }
 
-.operateList { float: left; width: 50%; }
+.operateList { float: left; width: 50%; padding-left: 5px; }
 
 .checkMission { padding: 10px; }
-.checkMission h3 { font-size: 16px; color: #069393; line-height: 30px; }
-.checkMission .baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
-.checkMission .baseInfo li { float: left; width: 25%; min-width: 240px; line-height: 30px; }
-.checkMission .baseInfo label { color: #999; margin-right: 5px; }
-.checkMission .baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
-.checkMission .baseInfo .showLength > div { display: inline-block; width: 20%; }
 .checkMission .bottomPart { margin-top: 30px; }
 .checkMission .bottomPart h3 { margin-top: -30px; }
-.checkMission .flawList { height: 100%; padding-top: 30px; padding-right: 5px; width: 50%; float: left; }
-.checkMission .el-table { height: 100%; }
 .checkMission .checkOperate { float: left; padding-top: 30px; padding-left: 5px; width: 50%; }
 .checkMission .fitLength { border: 3px solid #069393; text-align: center; padding: 10px; }
 .checkMission .fitLength strong { font-size: 30px; color: red; font-weight: normal; }

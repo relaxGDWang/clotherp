@@ -2,6 +2,7 @@
 // 基于jquery框架的relax ajax类v2.0
 // code at 2018-11-06
 // Notice 对于跨域请求，如果contentType设置为json，一次ajax通信在浏览器上会有两次请求，第一次是mothed为option的请求，这次请求成功，下次才是真正的ajax数据发送。对于该contentType的数据，服务端接收方法也不太一样，以PHP为例子，from格式可以用$_POST来获取，而json方式，则需要用...来处理
+// modify by relax 2019-1-16 应对某些框架下参数放在url中的情况 比如 www.test.com/getlist/1/get/ 这种，无法用静态url直接设置，现在扩展url的处理方法，可以动态应对data中的数据，使用 www.test.com/{id}/{method}这种方式进行协调
 function relaxAJAX(config) {
     var CON = {
         url: '',      //ajax访问路劲
@@ -87,6 +88,19 @@ function relaxAJAX(config) {
         return true;
     }
 
+    //add 2019-1-16
+    //按url中的替换文本获取在传递参数中的值
+    function _getValueStr(keyStr, data){
+        var tempArray=keyStr.split('.'), i, temp;
+        for (i=0; i<tempArray.length; i++){
+            temp=data[tempArray[i]];
+            if (temp===undefined) break;
+        }
+        //如果是一层结构，删除当前在传递数据中的该值
+        if (temp!==undefined && i===1) delete data[tempArray[0]];
+        return temp;
+    }
+
     /*
       arg参数说明
       url ajax请求路径
@@ -115,12 +129,25 @@ function relaxAJAX(config) {
             _chkEventFunction('error', STA);
             return false;
         }
-        //加工发送的数据
+        //加工发送的数据 modify by relax 2019-1-16 修改了前置处理的逻辑，之前没有参数传递的时候不会调用前置处理，现在不管什么情况都会调用，只要配置了前置处理就行
         var tempData = arg.data ? arg.data : CON.sendData;
-        if (tempData) {
-            if (CON.formater && typeof(CON.formater) === 'function') tempData = CON.formater(tempData);
-            if (CON.contentType === 'json') tempData = JSON.stringify(tempData);
+        if (!tempData) tempData={};
+        if (CON.formater && typeof(CON.formater) === 'function') tempData = CON.formater(tempData);
+
+        //modify 2019-1-16 加工url地址
+        var tempArray=urlStr.match(/{[^}]+}/g), i, tempValue, tempRegexp;
+        if (!tempArray) tempArray=[];
+        for (i=0; i<tempArray.length; i++){
+            tempArray[i]=tempArray[i].replace('{','').replace('}','');
+            tempValue=_getValueStr(tempArray[i], tempData);
+            if (tempValue!==undefined){
+                tempRegexp=new RegExp('{'+ tempArray[i] +'}','g');
+                urlStr=urlStr.replace(tempRegexp,tempValue);
+            }
         }
+        //按通信类型匹调整传递参数
+        if (CON.contentType === 'json') tempData = JSON.stringify(tempData);
+
         //加工自定义头
         var headerData = arg.headers ? arg.headers : CON.headers;
         //加工method
