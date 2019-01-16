@@ -145,8 +145,12 @@ var vu=new Vue({
                     var id=vu.editObject.viewObj.bolt_id;
                     var index=vu.missionKey[id];
                     vu.mission.splice(index,1);
-                    //delete vu.missionKey[id];
+                    delete vu.missionKey[id];
+                    var keyStr=data.bolt_no;
+                    var bidStr=data.bolt_id;
                     if (data.splits.length===0){
+                        delete vu.clothDetails[keyStr];
+                        vu.editObject='';
                         dialog.open('information',{
                             content: '当前布匹上的裁剪任务已经全部处理完毕!',
                             closeCallback: function(){
@@ -155,8 +159,6 @@ var vu=new Vue({
                         });
                         return;
                     }
-                    var keyStr=data.bolt_no;
-                    var bidStr=data.bolt_id;
                     vu._solveCutData(keyStr, data);
                     vu.editObject=vu.clothDetails[keyStr];
                     vu.setViewObject(vu.editObject, '');
@@ -209,6 +211,19 @@ var vu=new Vue({
             widthNum=this.editObject.viewObj.cut_length*pm || 1;
             $('#cloth .nowBlock').css(this.UI.direction, start*pm).css('width', widthNum);
             $('#cloth .clip').css(this.UI.direction, start*pm+widthNum);
+        },
+        showFocus: function(e){
+            var dom=$('#doFinish');
+            if (JS_contains(dom[0], e.target)){
+                if (dom.attr('disabled')){
+                    var dom2=$('#focusDom');
+                    if (dom2.hasClass('focus')) return;
+                    dom2.addClass('focus');
+                    setTimeout(function(){
+                        dom2.removeClass('focus');
+                    },2000);
+                }
+            }
         }
     },
     beforeMount: function () {

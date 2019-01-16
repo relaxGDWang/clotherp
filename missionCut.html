@@ -89,13 +89,14 @@
                             <ul class="elseInfo" v-if="getTypeString(editObject.viewObj)!=='customer'">
                                 <li class="center">当前为疵点处理或者分裁入库</li>
                             </ul>
+                            <div class="maskShow" v-if="editObject.viewObj.bolt_id!==editObject.first"><span id="focusDom">请先处理该布匹的第一个裁剪任务！</span></div>
                         </div>
                         <div class="operateButton">
                             <div class="buttonList">
                                     <span class="component">
                                         <button class="rexButton" color="info"><span class="fa fa-tag"></span><span>新疵点</span></button><button class="rexButton" color="info"><span class="fa fa-edit"></span><span>布长修正</span></button>
-                                    </span><span class="component">
-                                        <button class="rexButton" color="info"><span class="fa fa-barcode"></span><span>打印编号</span></button><button class="rexButton" color="info" :disabled="editObject.viewObj.bolt_id!==editObject.first" @click="askFinish()"><span class="fa fa-check-square-o"></span><span>完成裁剪</span></button>
+                                    </span><span class="component" @mousedown="showFocus($event)">
+                                        <button class="rexButton" color="info"><span class="fa fa-barcode"></span><span>打印编号</span></button><button id="doFinish" class="rexButton" color="info" :disabled="editObject.viewObj.bolt_id!==editObject.first" @click="askFinish()"><span class="fa fa-check-square-o"></span><span>完成裁剪</span></button>
                                     </span>
                             </div>
                         </div>
