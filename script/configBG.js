@@ -1,8 +1,8 @@
 //后台管理公共配置文件
 var CFG = {
-    DEBUG: true,
+    DEBUG: false,
     JDTYPE: 'form',
-    URL: 'http://192.168.3.109:8080/api/v1/',
+    URL: 'http://192.168.3.181:8080/api/v1/',
     //en: 'en_US',
     //cn: 'zh_Cn',
     loginPage: 'login.html',
@@ -54,14 +54,17 @@ var CFG = {
 var PATH = {
     login: CFG.URL+'user/login',    //登录接口
     missionCheck: CFG.URL+'examine',       //检验任务列表
-    missionCheckDetails: CFG.URL+'examine/{id}',   //检验任务详细
+    missionCheckDetails: CFG.URL+'examine/{bolt_id}',   //检验任务详细
     missionCut: CFG.URL+'cutout',           //裁剪任务列表
     missionCutDetails: CFG.URL+'cutout/{bolt_id}',  //裁剪任务详细
-    missionCutFinished: CFG.URL+'cutout/{bolt_id}/cut'  //完成裁剪
+    missionCutFinished: CFG.URL+'cutout/{bolt_id}/cut',  //完成裁剪
+    resetLength: CFG.URL+'bolts/{bolt_id}/length',   //重置布长
+    addFlaw: CFG.URL+'examine/{bolt_id}/defect'      //新增疵点
 };
 if (CFG.DEBUG){
     CFG.URL='/server/';
     PATH.login=CFG.URL+'login.php';
+    PATH.missionCheck=CFG.URL+'examinelist.php'
     PATH.missionCut=CFG.URL+'cutlist.php';
     PATH.missionCutDetails=CFG.URL+'cutdetails.php';
     PATH.missionCutFinished=CFG.URL+'cutfinish.php';

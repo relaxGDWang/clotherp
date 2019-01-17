@@ -6,7 +6,7 @@ $color2: #669999;
 $color3: #cccc99;
 $color4: #069393;
 
-@keyframes focusShow{
+@keyframes focusShow{  //晃动聚焦动画
   0% { transform: translateX(0);}
   12% {transform: translateX(-10px);}
   24% { transform: translateX(10px);}
@@ -43,18 +43,40 @@ $color4: #069393;
       &:hover,&:active{ color:red;}
     }
   }
+  &.extMenu .dialogFrame{ width:90%;}
 }
 
-//检验任务详细
-#checkMission{
-  .dialogFrame{ width:92%;}
-  .dialog-title .opBtn{
-    font-size:28px;
-    &:hover,&:active{ color:red;}
+//操作弹框
+.doing{
+  .dialog-title{
+    background:$color2 linear-gradient(rgba(255,255,255,.05) 0, transparent 15px);
+    h4{ font-size:16px; color:rgba(255,255,255,.9);}
+    h4 .fa{ font-size:22px; vertical-align:middle; margin-right:5px;}
   }
+  .dialog-content{ padding:15px; }
+  .row{ padding:5px; padding-left:20%; text-align:left;}
+  label{ color:#999; display:inline-block; width:120px; text-align:right; margin-right:10px;}
+  label+span{
+    display:inline-block;
+    b{ color:red; font-size:1.4em;}
+  }
+  .rexInput{ font-size:1.4em; width:120px;}
+  .dialog-buttonBar{
+    background:#8ed2d2 repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 12px, transparent 0, transparent 24px);
+    .rexButton{ width:100px;}
+  }
+  .doingShow span{ margin:10px auto 0 auto; display:inline-block; padding:8px 5px; border:1px solid #ccc; text-align:center; min-width:60%;}
+  .doingShow .ok{ border-color:#66cc66; color:#009900; background:#f2fff2;}
+  .doingShow .warning{ border-color:#ff9900; color:#ff9900; background:#fff8e9;}
+  .doingShow .error{ border-color:#f02a2a; color:#f02a2a; background:#fff4f4;}
+  .doingShow .loading{ border-color:transparent; color:#666; background:transparent;}
 }
-//加载页面
+
+//加载弹框
 #loading .dialog-content{ padding:15px;}
+
+//信息提示弹框
+#information .dialog-content{ padding:15px;}
 
 .missionDetails {
   h3 { font-size: 16px; color: $color4; line-height: 30px;}
@@ -76,6 +98,7 @@ $color4: #069393;
   }
 }
 .rightPart{ width:auto; margin-left:190px; height:100%; padding:0 10px 0 10px;}
+.inPart{ padding:10px; width:100%; height:100%;}
 
 //裁剪端分类
 .status{
@@ -147,6 +170,21 @@ $color4: #069393;
     span.focus{ animation:focusShow 1s forwards; visibility: visible;}
   }
 }
+
+//当前检验信息
+.checkOperate{
+  border:3px solid $color4; width: 100%; height: 100px; overflow: hidden;
+  &:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
+  .checkOverview{
+    display:inline-block; width:50%; padding:10px; vertical-align:middle;
+    &>span{ display:inline-block; vertical-align:middle; margin-right:10px; white-space:nowrap;}
+    strong{ font-size:20px; color:red; font-weight:normal;}
+  }
+  .operateButton{
+    float:right;
+  }
+}
+
 //裁剪操作按钮
 .operateButton {
   float: left; width: 50%; height: 100%; background: #eee; text-align: center;
@@ -176,26 +214,3 @@ $color4: #069393;
 .elseList{ margin-top:10px; width:100%; overflow:hidden;}
 .flawList{ padding-right:5px; width:50%; float:left;}
 .operateList{ float:left; width:50%; padding-left:5px;}
-
-.checkMission{
-  padding:10px;
-
-  .bottomPart{
-    margin-top:30px;
-    h3{ margin-top:-30px;}
-  }
-  .checkOperate{
-    float:left; padding-top:30px; padding-left:5px; width:50%;
-  }
-  .fitLength{
-    border:3px solid $color4; text-align:center; padding:10px;
-    strong{ font-size:30px; color:red; font-weight:normal;}
-  }
-  .buttonList{
-    margin-top:10px;
-    .rexButton{
-      margin-left:0; margin-right:10px;
-    }
-  }
-
-}

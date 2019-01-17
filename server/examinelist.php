@@ -1,0 +1,6 @@
+<?php
+//sleep(1);
+header("Content-Type:application/json; charset=utf-8");
+
+echo '{"success":true,"data":[{"bolt_id":75,"product_code":"AMX12312","bolt_no":"190117-AMX12312-21","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":76,"product_code":"AMX12312","bolt_no":"190117-AMX12312-22","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":77,"product_code":"AMX12312","bolt_no":"190117-AMX12312-23","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":78,"product_code":"AMX12312","bolt_no":"190117-AMX12312-24","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":79,"product_code":"AMX12312","bolt_no":"190117-AMX12312-25","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":80,"product_code":"HANAU93N","bolt_no":"190117-HANAU93N-30","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":81,"product_code":"HANAU93N","bolt_no":"190117-HANAU93N-31","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"},{"bolt_id":82,"product_code":"HANAU93N","bolt_no":"190117-HANAU93N-32","current_length":80,"position":"","status":"\u5df2\u5165\u5e93","examine":"\u65e0"}],"message":"success"}';
+?>

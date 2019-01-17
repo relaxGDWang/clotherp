@@ -30,12 +30,28 @@
 #opDetails .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }
 #opDetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
 #opDetails .dialog-title .opBtn:hover, #opDetails .dialog-title .opBtn:active { color: red; }
+#opDetails.extMenu .dialogFrame { width: 90%; }
 
-#checkMission .dialogFrame { width: 92%; }
-#checkMission .dialog-title .opBtn { font-size: 28px; }
-#checkMission .dialog-title .opBtn:hover, #checkMission .dialog-title .opBtn:active { color: red; }
+.doing .dialog-title { background: #669999 linear-gradient(rgba(255, 255, 255, 0.05) 0, transparent 15px); }
+.doing .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }
+.doing .dialog-title h4 .fa { font-size: 22px; vertical-align: middle; margin-right: 5px; }
+.doing .dialog-content { padding: 15px; }
+.doing .row { padding: 5px; padding-left: 20%; text-align: left; }
+.doing label { color: #999; display: inline-block; width: 120px; text-align: right; margin-right: 10px; }
+.doing label + span { display: inline-block; }
+.doing label + span b { color: red; font-size: 1.4em; }
+.doing .rexInput { font-size: 1.4em; width: 120px; }
+.doing .dialog-buttonBar { background: #8ed2d2 repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 12px, transparent 0, transparent 24px); }
+.doing .dialog-buttonBar .rexButton { width: 100px; }
+.doing .doingShow span { margin: 10px auto 0 auto; display: inline-block; padding: 8px 5px; border: 1px solid #ccc; text-align: center; min-width: 60%; }
+.doing .doingShow .ok { border-color: #66cc66; color: #009900; background: #f2fff2; }
+.doing .doingShow .warning { border-color: #ff9900; color: #ff9900; background: #fff8e9; }
+.doing .doingShow .error { border-color: #f02a2a; color: #f02a2a; background: #fff4f4; }
+.doing .doingShow .loading { border-color: transparent; color: #666; background: transparent; }
 
 #loading .dialog-content { padding: 15px; }
+
+#information .dialog-content { padding: 15px; }
 
 .missionDetails h3 { font-size: 16px; color: #069393; line-height: 30px; }
 
@@ -52,6 +68,8 @@
 .leftPart .length b { font-size: 14px; color: red; font-weight: normal; margin: 0 2px; }
 
 .rightPart { width: auto; margin-left: 190px; height: 100%; padding: 0 10px 0 10px; }
+
+.inPart { padding: 10px; width: 100%; height: 100%; }
 
 .status { line-height: 1.8em; padding: 0 0.5em; }
 .status:before { color: #fff; }
@@ -101,6 +119,13 @@
 .operate .maskShow span { display: inline-block; vertical-align: middle; color: #fff; padding: 5px 10px; background: rgba(251, 124, 0, 0.7); box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); visibility: hidden; }
 .operate .maskShow span.focus { animation: focusShow 1s forwards; visibility: visible; }
 
+.checkOperate { border: 3px solid #069393; width: 100%; height: 100px; overflow: hidden; }
+.checkOperate:before { content: ''; display: inline-block; height: 100%; vertical-align: middle; }
+.checkOperate .checkOverview { display: inline-block; width: 50%; padding: 10px; vertical-align: middle; }
+.checkOperate .checkOverview > span { display: inline-block; vertical-align: middle; margin-right: 10px; white-space: nowrap; }
+.checkOperate .checkOverview strong { font-size: 20px; color: red; font-weight: normal; }
+.checkOperate .operateButton { float: right; }
+
 .operateButton { float: left; width: 50%; height: 100%; background: #eee; text-align: center; }
 .operateButton:before { content: ''; display: inline-block; height: 100%; width: 0; overflow: hidden; vertical-align: middle; }
 
@@ -116,14 +141,5 @@
 .flawList { padding-right: 5px; width: 50%; float: left; }
 
 .operateList { float: left; width: 50%; padding-left: 5px; }
-
-.checkMission { padding: 10px; }
-.checkMission .bottomPart { margin-top: 30px; }
-.checkMission .bottomPart h3 { margin-top: -30px; }
-.checkMission .checkOperate { float: left; padding-top: 30px; padding-left: 5px; width: 50%; }
-.checkMission .fitLength { border: 3px solid #069393; text-align: center; padding: 10px; }
-.checkMission .fitLength strong { font-size: 30px; color: red; font-weight: normal; }
-.checkMission .buttonList { margin-top: 10px; }
-.checkMission .buttonList .rexButton { margin-left: 0; margin-right: 10px; }
 
 /*# sourceMappingURL=list.css.map */
