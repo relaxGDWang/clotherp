@@ -29,7 +29,7 @@
                 <template slot-scope="scope">{{scope.$index+1}}</template>
             </el-table-column>
             <el-table-column prop="product_code" label="商品编号" width="100"></el-table-column>
-            <el-table-column prop="bolt_no" label="批号" width="165"></el-table-column>
+            <el-table-column prop="bolt_no" label="卷号" width="165"></el-table-column>
             <el-table-column prop="purchaser" label="客户"></el-table-column>
             <el-table-column label="裁剪" width="80">
                 <template slot-scope="scope">
@@ -72,7 +72,7 @@
                 <div class="rightPart">
                     <ul class="baseInfo nohead" v-if="editObject">
                         <li><label>商品编号：</label><span>{{editObject.product}}</span></li>
-                        <li><label>批 号：</label><span>{{editObject.bolt}}</span></li>
+                        <li><label>卷 号：</label><span>{{editObject.bolt}}</span></li>
                         <li><label>仓 位：</label><span>{{editObject.position}}</span></li>
                     </ul>
                     <div class="clothShow" v-if="editObject">

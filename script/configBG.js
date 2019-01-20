@@ -1,6 +1,6 @@
 //后台管理公共配置文件
 var CFG = {
-    DEBUG: false,
+    DEBUG: true,
     JDTYPE: 'form',
     URL: 'http://192.168.3.181:8080/api/v1/',
     //en: 'en_US',

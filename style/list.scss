@@ -150,8 +150,8 @@ $color4: #069393;
 //基础信息展示
 .baseInfo{
   background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size:100% 30px; overflow:hidden; margin-bottom:10px;
-  li{ float:left; width:25%; min-width:220px; line-height:30px;}
-  label{ color:#999; margin-right:5px;}
+  li{ float:left; line-height:30px; padding-right:20px;}
+  label{ color:#999;}
   .showLength{ width:100%; background:#f2f2f2; border-bottom:1px solid #ccc; text-align:center;}
   .showLength>div{ display:inline-block; width:20%;}
 }
@@ -253,8 +253,8 @@ $color4: #069393;
     label{ color:#999; margin-left:10px;}
     b{ font-size:14px; color:$color4; font-weight:normal;}
     &.cutRecord{ text-align:right;}
-    .datetime{ position:absolute; left:0; top:50%; transform:translateY(-50%); width:30%; min-width:80px; text-align:left; color:#666;}
-    .op{ display:inline-block; max-width:65%; text-align:left;}
+    .datetime{ position:absolute; left:0; top:50%; transform:translateY(-50%); width:45%; min-width:80px; text-align:left; color:#666;}
+    .op{ display:inline-block; max-width:55%; text-align:left;}
     .opButton{ position:absolute; right:0; top:7px; font-size:30px; line-height:30px; height:30px; color:red; width:30px; border-radius:6px; text-align: center; cursor:pointer;}
     .opButton:hover, .opButton:active{ background:red; color:#fff;}
     .nodata{ display:block; text-align:center; padding:15px 0; color:#999;}

@@ -40,13 +40,15 @@ var vu=new Vue({
     },
     methods:{
         getList: function(){  //获得任务列表
+            this.mission=[];
+            this.missionKey={};
+            this.editObject='';
+            this.clothDetails={};
             ajax.send({
                 url: PATH.missionCut,
                 data:{status: this.search.listType},
                 success:function(data){
                     dialog.close('loading');
-                    vu.mission=[];
-                    vu.missionKey={};
                     for (var i=0; i<data.length; i++){
                         vu.mission.push(data[i]);
                         vu.missionKey[data[i]['bolt_id']]=i;
@@ -164,20 +166,11 @@ var vu=new Vue({
                 success:function(data){
                     vu.flagReload=true;
                     dialog.close('loading');
-                    //删除任务列表中的对应项
-                    var id=vu.editObject.viewObj.bolt_id;
-                    var index=vu.missionKey[id];
-                    vu.mission.splice(index,1);
-                    //重置索引
-                    vu.missonKey={};
-                    for (var i=0; i<vu.mission.length; i++){
-                        vu.missionKey[vu.mission[i].bolt_id]=i;
+                    var cutLen=0; //判断是否还有裁剪段
+                    for (var i=0; i<data.splits.length; i++){
+                        if (data.splits[i].status_code==='mark') cutLen++;
                     }
-                    var keyStr=data.bolt_no;
-                    var bidStr=data.bolt_id;
-                    if (data.splits.length===0){  //判断是否还有裁剪段
-                        delete vu.clothDetails[keyStr];
-                        vu.editObject='';
+                    if (cutLen===0){  //判断是否还有裁剪段
                         dialog.open('information',{
                             content: '当前布匹上的裁剪任务已经全部处理完毕!',
                             cname:'ok',
@@ -187,18 +180,19 @@ var vu=new Vue({
                                 vu.flagReload=false;
                             }
                         });
-                        return;
+                    }else{
+                        var keyStr=data.bolt_no;
+                        vu._solveCutData(keyStr, data);
+                        vu.editObject=vu.clothDetails[keyStr];
+                        vu.setViewObject(vu.editObject, '');
+                        vu._setColthLen();
+                        dialog.open('resultShow',{content:'当前裁剪操作已成功！'});
+                        //重新绘制概览图
+                        setTimeout(function(){
+                            vu.redrawCloth();
+                            vu.redrawClothBlock();
+                        },100);
                     }
-                    vu._solveCutData(keyStr, data);
-                    vu.editObject=vu.clothDetails[keyStr];
-                    vu.setViewObject(vu.editObject, '');
-                    vu._setColthLen();
-                    dialog.open('resultShow',{content:'当前裁剪操作已成功！'});
-                    //重新绘制概览图
-                    setTimeout(function(){
-                        vu.redrawCloth();
-                        vu.redrawClothBlock();
-                    },100);
                 }
             });
         },
@@ -227,6 +221,24 @@ var vu=new Vue({
                 data:{bolt_id: vu.editObject.father, length: vu.input.len},
                 success: function(data){
                     vu.flagReload=true;
+                    var cutLen=0; //判断是否还有裁剪段
+                    for (var i=0; i<data.splits.length; i++){
+                        if (data.splits[i].status_code==='mark') cutLen++;
+                    }
+                    if (cutLen===0){
+                        vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len+'! 裁剪任务调整，该卷布已无任务裁剪任务。'});
+                        setTimeout(function(){
+                            dialog.close('reLength');
+                            dialog.close('opDetails');
+                            vu.input.len='';
+                            vu.input.flag=false;
+                            vu.input.status='';
+                            vu.input.msg='';
+                            vu.getList();
+                            vu.flagReload=false;
+                        },1500);
+                        return;
+                    }
                     vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
                     //调整布长
                     var keyStr=data.bolt_no;
@@ -308,6 +320,24 @@ var vu=new Vue({
                 data:{bolt_id: vu.editObject.father, defects:[vu.input.start+","+vu.input.end]},
                 success: function(data){
                     vu.flagReload=true;
+                    var cutLen=0; //判断是否还有裁剪段
+                    for (var i=0; i<data.splits.length; i++){
+                        if (data.splits[i].status_code==='mark') cutLen++;
+                    }
+                    if (cutLen===0){
+                        vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功， 裁剪任务调整，该卷布已无裁剪任务。'});
+                        setTimeout(function(){
+                            dialog.close('reLength');
+                            dialog.close('opDetails');
+                            vu.input.len='';
+                            vu.input.flag=false;
+                            vu.input.status='';
+                            vu.input.msg='';
+                            vu.getList();
+                            vu.flagReload=false;
+                        },1500);
+                        return;
+                    }
                     vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功，裁剪任务已经刷新！'});
                     var keyStr=data.bolt_no;
                     vu._solveCutData(keyStr, data);
@@ -334,6 +364,23 @@ var vu=new Vue({
                 data:{bolt_id: bolt_id},
                 success: function(data){
                     vu.flagReload=true;
+                    var cutLen=0; //判断是否还有裁剪段
+                    for (var i=0; i<data.splits.length; i++){
+                        if (data.splits[i].status_code==='mark') cutLen++;
+                    }
+                    if (cutLen===0){
+                        dialog.open('information',{
+                            content:'疵点已经成功删除！裁剪任务调整，该卷布已无裁剪任务。',
+                            btncancel:'',
+                            cname:'ok',
+                            closeCallback: function(){
+                                dialog.close('opDetails');
+                                vu.getList();
+                                vu.flagReload=false;
+                            }
+                        });
+                        return;
+                    }
                     dialog.close('loading');
                     dialog.open('information',{content:'疵点已经成功删除！',btncancel:'',cname:'ok'});
                     var keyStr=data.bolt_no;
@@ -440,9 +487,23 @@ var vu=new Vue({
             return itemList;
         },
         //打印标签
-        printDoing: function(typeStr){
+        printDoing: function(){
+            //判定是疵点还是订单打印
+            var printStr='';
+            var bolt_id=this.editObject.viewObj.bolt_id;
+            for (var i=0; i<this.editObject.defects.length; i++){
+                var temp=this.editObject.defects[i];
+                if (bolt_id===temp.bold_id){
+                    printStr=JSON.stringify(temp.print_data);
+                    break;
+                }
+            }
+            if (printStr===''){
+                var header= this.editObject.viewObj.order? '随手订货单':'随手库存单';
+                printStr='{"width":"40","len":"400","gap":"0","xblank":"100","yblank":"100","lineh":"30","density":"15","speed":"15","info":{"header":"'+ header +'","code":"'+this.editObject.viewObj.bolt_no+'","footer":"--------------------","items":[{"text":"名称：亚光绣花型"},{"text":"库存：'+ this.editObject.viewObj.current_length +'米"},{"text":"入库：'+formatDateTime(new Date(),'date','-',true)+'"},{"text":"仓位：'+this.editObject.position+'"},{"text":"版本：法西兰"},{"text":"批号：'+this.editObject.viewObj.bolt_no+'"}]}}';
+            }
             try{
-                window.register_js.goprint('{"width":"40","len":"400","gap":"0","xblank":"100","yblank":"100","lineh":"30","density":"15","speed":"15","info":{"header":"随手订货库存单","code":"ABC_0123456789","footer":"--------------------","items":[{"text":"名称：亚光绣花型"},{"text":"库存：100米"},{"text":"入库：2018-19-21"},{"text":"仓位：A15-04"},{"text":"版本：法西兰"},{"text":"批号：ABC_0101010101"}]}}');
+                window.register_js.goprint(printStr);
                 dialog.open('information',{content:'打印指令发送成功！',cname:'ok',btncancel:''});
             }catch(e){
                 dialog.open('information',{content:'打印调用出错，请检查打印机连接情况',cname:'warning',btncancel:''});

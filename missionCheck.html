@@ -31,7 +31,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="product_code" label="商品编号" width="120"></el-table-column>
-            <el-table-column prop="bolt_no" label="批号" width="155"></el-table-column>
+            <el-table-column prop="bolt_no" label="卷号" width="155"></el-table-column>
             <el-table-column label="长度">
                 <template slot-scope="scope">
                     {{scope.row.current_length}}<span>米</span>
@@ -59,7 +59,7 @@
                 <div class="inPart">
                     <ul class="baseInfo nohead" v-if="editObject">
                         <li><label>商品编号：</label><span>{{editObject.viewObj.product_code}}</span></li>
-                        <li><label>批 号：</label><span>{{editObject.viewObj.bolt_no}}</span></li>
+                        <li><label>卷 号：</label><span>{{editObject.viewObj.bolt_no}}</span></li>
                         <li><label>流 程：</label><span>{{editObject.viewObj.craft}}</span></li>
                         <li><label>当前仓位：</label><span>{{editObject.viewObj.position}}</span></li>
                     </ul>

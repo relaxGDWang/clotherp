@@ -110,8 +110,8 @@
 .status:normal:before { content: '分裁入库'; }
 
 .baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
-.baseInfo li { float: left; width: 25%; min-width: 220px; line-height: 30px; }
-.baseInfo label { color: #999; margin-right: 5px; }
+.baseInfo li { float: left; line-height: 30px; padding-right: 20px; }
+.baseInfo label { color: #999; }
 .baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
 .baseInfo .showLength > div { display: inline-block; width: 20%; }
 
@@ -176,8 +176,8 @@
 .elseList li label { color: #999; margin-left: 10px; }
 .elseList li b { font-size: 14px; color: #069393; font-weight: normal; }
 .elseList li.cutRecord { text-align: right; }
-.elseList li .datetime { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 30%; min-width: 80px; text-align: left; color: #666; }
-.elseList li .op { display: inline-block; max-width: 65%; text-align: left; }
+.elseList li .datetime { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 45%; min-width: 80px; text-align: left; color: #666; }
+.elseList li .op { display: inline-block; max-width: 55%; text-align: left; }
 .elseList li .opButton { position: absolute; right: 0; top: 7px; font-size: 30px; line-height: 30px; height: 30px; color: red; width: 30px; border-radius: 6px; text-align: center; cursor: pointer; }
 .elseList li .opButton:hover, .elseList li .opButton:active { background: red; color: #fff; }
 .elseList li .nodata { display: block; text-align: center; padding: 15px 0; color: #999; }

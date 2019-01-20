@@ -23,7 +23,6 @@ var vu=new Vue({
         },
         editObject: '',
         mission: [],    //任务细分数组，ajax直接返回
-        missionComplete: '',  //完成的任务列表
         missionKey: {}, //bolt_id与数组index对应关系
         clothDetails: {}  //布匹的裁剪任务，以bolt_no作为索引，结构 defects[疵点列表数组] cutouts[事件记录数组] splits[裁剪分段数组] list[以bolt_id作为索引的对象，值为splits的数组index] first[起始裁剪bolt_id] viewObj[当前查看的分段信息] product[对应的商品编号]
     },
@@ -40,12 +39,15 @@ var vu=new Vue({
     },
     methods:{
         getList: function(){  //获得任务列表
+            this.mission=[];
+            this.missionKey={};
+            this.editObject='';
+            this.clothDetails={};
             ajax.send({
                 url: PATH.missionCheck,
                 data:{status: this.search.listType},
                 success:function(data){
                     dialog.close('loading');
-                    vu.mission = [];
                     for (var i = 0; i < data.length; i++) {
                         vu.mission.push(data[i]);
                         vu.missionKey[data[i]['bolt_id']] = i;
@@ -129,6 +131,7 @@ var vu=new Vue({
                         vu.missionKey[vu.mission[i].bolt_id]=i;
                     }
                     vu.editObject='';
+                    vu.UI.len=0;
                     delete vu.clothDetails[keyStr];
                 }
             });
@@ -331,7 +334,7 @@ var vu=new Vue({
                     splitString='vvvvvvvvvvvvvvvvvvvv';
                 }
                 try{
-                    window.register_js.goprint('{"width":"40","len":"400","gap":"0","xblank":"100","yblank":"100","lineh":"30","density":"15","speed":"15","info":{"header":"随手订货库存单","code":"ABC_0123456789","footer":"'+ splitString +'","items":[{"text":"名称：亚光绣花型"},{"text":"库存：100米"},{"text":"入库：2018-19-21"},{"text":"仓位：A15-04"},{"text":"版本：法西兰"},{"text":"批号：ABC_0101010101"}]}}');
+                    window.register_js.goprint('{"width":"40","len":"400","gap":"0","xblank":"100","yblank":"100","lineh":"30","density":"15","speed":"15","info":{"header":"随手布匹标记","code":"'+this.editObject.viewObj.bolt_no+'","footer":"'+ splitString +'","items":[{"text":"名称：亚光绣花型"},{"text":"库存：'+ this.editObject.viewObj.current_length +'米"},{"text":"入库：'+ formatDateTime(new Date(),'date','-',true)+'"},{"text":"仓位：'+ this.editObject.viewObj.position +'"},{"text":"版本：法西兰"},{"text":"卷号：'+ this.editObject.viewObj.bolt_no+'"}]}}');
                     dialog.open('information',{content:'打印指令发送成功！',cname:'ok',btncancel:''});
                 }catch(e){
                     dialog.open('information',{content:'打印调用出错，请检查打印机连接情况',cname:'warning',btncancel:''});
