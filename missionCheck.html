@@ -5,10 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>检验任务</title>
-    <link rel="stylesheet" href="/library/style/font-awesome.css"/>
-    <link rel="stylesheet" href="/library/style/elementui2.4.11.css"/>
-    <link rel="stylesheet" href="/library/style/cssreset3.css"/>
-    <link rel="stylesheet" href="/style/list.css"/>
+    <!-- build:css library/style/webcommon.css -->
+    <link rel="stylesheet" href="library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="library/style/cssreset3.css"/>
+    <!-- endbuild -->
+    <!-- build:css style/list.css -->
+    <link rel="stylesheet" href="style/list.css"/>
+    <!-- endbuild -->
+    <script src="script/configBG.js"></script>
 </head>
 <body>
 <div class="outFrame" id="app">
@@ -16,11 +21,17 @@
         <div class="searchBar">
             <span class="rexBlockCheck" color="warning"><input type="radio" v-model="search.listType" value="doing" name="listType"/><label>待处理</label></span>
             <span class="rexBlockCheck" color="warning"><input type="radio" v-model="search.listType" value="finished" name="listType"/><label>已完成</label></span>
+            <button class="rexButton" @click="getList()"><span class="fa fa-refresh"></span></button>
             <div class="equipment">登录：<strong>{{username}}</strong></div>
         </div>
         <el-table :data="mission" :height="UI.listHeight" border stripe>
-            <el-table-column prop="product_code" label="商品编号" width="180"></el-table-column>
-            <el-table-column prop="bolt_no" label="批号" width="180"></el-table-column>
+            <el-table-column label="#" width="40">
+                <template slot-scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="product_code" label="商品编号" width="120"></el-table-column>
+            <el-table-column prop="bolt_no" label="批号" width="155"></el-table-column>
             <el-table-column label="长度">
                 <template slot-scope="scope">
                     {{scope.row.current_length}}<span>米</span>
@@ -29,15 +40,16 @@
             <el-table-column prop="craft" label="流程"></el-table-column>
             <el-table-column prop="position" label="存放"></el-table-column>
             <el-table-column prop="status" label="状态"></el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="50">
                 <template slot-scope="scope">
-                    <el-button @click="openDetails(scope.row.bolt_id)">详情</el-button>
+                    <span class="opButton fa fa-instagram" @click="openDetails(scope.row.bolt_id)" v-if="search.listType==='doing'"></span>
+                    <span class="opButton fa fa-folder-open-o" @click="openDetails(scope.row.bolt_id)" v-if="search.listType!=='doing'"></span>
                 </template>
             </el-table-column>
         </el-table>
     </div>
 
-    <div class="extMenu right missionDetails" id="opDetails" noclick="noclick">
+    <div class="extPage missionDetails" id="opDetails" noclick="noclick">
         <div class="dialogFrame">
             <div class="dialog-title">
                 <span class="right opBtn btn-close">&times;</span>
@@ -45,78 +57,66 @@
             </div>
             <div class="dialog-content">
                 <div class="inPart">
-                    <h3>布匹基本资料</h3>
                     <ul class="baseInfo nohead" v-if="editObject">
                         <li><label>商品编号：</label><span>{{editObject.viewObj.product_code}}</span></li>
-                        <li><label>批&emsp;&emsp;号：</label><span>{{editObject.viewObj.bolt_no}}</span></li>
-                        <li><label>流&emsp;&emsp;程：</label><span>{{editObject.viewObj.craft}}</span></li>
+                        <li><label>批 号：</label><span>{{editObject.viewObj.bolt_no}}</span></li>
+                        <li><label>流 程：</label><span>{{editObject.viewObj.craft}}</span></li>
                         <li><label>当前仓位：</label><span>{{editObject.viewObj.position}}</span></li>
                     </ul>
-                    <h3>疵点概览</h3>
                     <div class="clothShow" v-if="editObject">
-                        <div class="cloth" id="cloth">
-                            <span class="flaw" v-for="(item,index) in editObject.defects" :index="index+1" :start="item.start" :end="item.end"></span>
+                        <div class="cloth" ref="cloth">
+                            <span class="flaw" v-for="(item,index) in editObject.defects" :index="index+1" :start="item.start" :end="item.end" :len="item.length" :type="item.defect_type"></span>
                         </div>
-                        <div class="ruler" id="ruler">
+                        <div class="ruler" ref="ruler">
                             <span v-for="item in getMark" :pos="item"></span>
                         </div>
                     </div>
-                    <h3>检验操作</h3>
                     <div class="checkOperate" v-if="editObject">
                         <div class="checkOverview">
-                            <span>当前布匹标记长度 <strong>{{editObject.viewObj.current_length}}</strong>米</span>
-                            <span>已标记疵点个数 <strong>{{editObject.defects.length}}</strong>个</span>
+                            <div class="inshow">
+                                <span>当前布匹标记长度 <strong>{{editObject.viewObj.current_length}}</strong>米</span>
+                                <span>已标记疵点个数 <strong>{{editObject.defects.length}}</strong>个</span>
+                            </div>
                         </div>
                         <div class="operateButton">
                             <div class="buttonList">
-                                <button class="rexButton" color="info">
+                                <button class="rexButton" color="info" @click="printDoing()">
                                     <span class="fa fa-barcode"></span><span>打印标签</span>
-                                </button><button class="rexButton" color="info" @click="operateFlaw()">
+                                </button><button class="rexButton" color="info" @click="operateFlaw()" v-if="search.listType==='doing'">
                                     <span class="fa fa-tag"></span><span>新增疵点</span>
-                                </button><button class="rexButton" color="info" @click="resetLength()">
+                                </button><button class="rexButton" color="info" @click="resetLength()" v-if="search.listType==='doing'">
                                     <span class="fa fa-edit"></span><span>重标布长</span>
-                                </button><button class="rexButton" color="warning">
+                                </button><button class="rexButton" color="warning" @click="askFinish()" v-if="search.listType==='doing'">
                                     <span class="fa fa-check-square-o"></span><span>完成检验</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="elseList" v-if="editObject">
+                    <div class="elseList" v-if="editObject" :style="{height:UI.bottomHeight+'px'}">
                         <div class="flawList">
                             <h3>疵点列表</h3>
-                            <el-table :data="editObject.defects" :height="UI.bottomListHeight">
-                                <el-table-column label="#" width="40">
-                                    <template slot-scope="scope">{{scope.$index+1}}</template>
-                                </el-table-column>
-                                <el-table-column label="位置">
-                                    <template slot-scope="scope">
-                                        <span class="lenShow">{{scope.row.start}}</span> ~ <span class="lenShow">{{scope.row.end}}米</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="长度">
-                                    <template slot-scope="scope">
-                                        {{scope.row.length}}米</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="type" label="类型"></el-table-column>
-                                <el-table-column label="操作">
-                                    <template slot-scope="scope">
-                                        <el-button>删除</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+                            <ul class="nohead">
+                                <li v-for="(item, index) in editObject.defects">
+                                    <span class="index" :class="{'point':(item.defect_type==='dot'),'block':(item.defect_type!=='dot')}">{{index+1}}</span>
+                                    <span class="showtext"><label>位置：</label><b>{{item.position}}</b> 米<label>长度：</label><b>{{item.length || '--'}}</b> 米</span>
+                                    <span class="opButton" @click="operateFlaw(item.bolt_id)" v-if="search.listType==='doing'">&times;</span>
+                                </li>
+                                <li v-if="!editObject.defects || editObject.defects.length===0">
+                                    <span class="nodata">没有任何疵点信息</span>
+                                </li>
+                            </ul>
                         </div>
                         <div class="operateList">
                             <h3>检验记录</h3>
-                            <el-table :data="editObject.cutouts" :height="UI.bottomListHeight">
-                                <el-table-column prop="date" label="日期"></el-table-column>
-                                <el-table-column prop="name" label="姓名"></el-table-column>
-                                <el-table-column label="处理">
-                                    <template slot-scope="scope">
-                                        裁剪 {{scope.row.length}} 米，生成 {{scope.row.bolt_no}}
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+                            <ul class="nohead">
+                                <li v-for="(item, index) in editObject.cutouts" class="cutRecord">
+                                    <span class="datetime">{{item.date}}</span>
+                                    <span class="op"><span class="name">{{item.name}}</span> 裁剪布段 <b>{{item.length}}</b> 米</span>
+                                </li>
+                                <li v-if="!editObject.cutouts || editObject.cutouts.length===0">
+                                    <span class="nodata">没有任何检验记录</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,9 @@
     <!-- ajax出错信息提示 -->
     <div class="extDialog" id="information" noclick="noclick">
         <div class="dialogFrame">
-            <div class="dialog-title"><h4>系统信息提示</h4></div>
+            <div class="dialog-title">
+                <h4><span class="fa fa-info-circle"></span> 系统信息提示</h4>
+            </div>
             <div class="dialog-buttonBar">
                 <button class="rexButton opBtn btn-cancel">取消</button>
                 <button class="rexButton opBtn btn-sure">确定</button>
@@ -173,7 +175,7 @@
                     <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.len" :disabled="input.flag"/> 米</span>
                 </div>
                 <div class="doingShow" v-if="input.msg">
-                    <span :class="input.status"><div class="loadingBlock" v-if="input.flag"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
+                    <span :class="input.status"><div class="loadingBlock" v-if="input.flag && input.status==='loading'"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
                 </div>
             </div>
         </div>
@@ -189,7 +191,7 @@
                 <button class="rexButton opBtn btn-close" :disabled="input.flag">取消</button>
                 <button class="rexButton" :disabled="input.flag" v-if="input.step===2" @click="goStep('prev')">上一步</button>
                 <button class="rexButton" v-if="input.step===1" @click="goStep('next')">下一步</button>
-                <button class="rexButton" color="info" @click="doOperateFlaw()" v-if="input.step===2" :disabled="input.flag">提交</button>
+                <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">提交</button>
             </div>
             <div class="dialog-content">
                 <div class="row">
@@ -201,19 +203,36 @@
                     <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.end" :disabled="input.flag"/> 米</span>
                 </div>
                 <div class="doingShow" v-if="input.msg">
-                    <span :class="input.status"><div class="loadingBlock" v-if="input.flag"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
+                    <span :class="input.status"><div class="loadingBlock" v-if="input.flag && input.status==='loading'"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 打印头尾标 -->
+    <div class="extDialog" id="printBox">
+        <div class="dialogFrame">
+            <div class="dialog-title">
+                <span class="right opBtn btn-close">&times;</span>
+                <h4><span class="fa fa-barcode"></span> 打印起止标签</h4>
+            </div>
+            <div class="dialog-content">
+                <button class="rexButton" @click="printDoing('start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
+                <button class="rexButton" @click="printDoing('end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+            </div>
+        </div>
+    </div>
 </div>
-<script src="/library/js/jquery.min.js"></script>
-<script src="/library/js/vue.min.js"></script>
-<script src="/library/js/rexfunction.js"></script>
-<script src="/library/js/rexajax2.js"></script>
-<script src="/library/js/rexdialog.js"></script>
-<script src="/library/js/elementui2.4.11.js"></script>
-<script src="/script/configBG.js"></script>
-<script src="/script/missioncheck.js"></script>
+<!-- build:js library/js/webcommon.js -->
+<script src="library/js/jquery.min.js"></script>
+<script src="library/js/vue.min.js"></script>
+<script src="library/js/rexfunction.js"></script>
+<script src="library/js/rexajax2.js"></script>
+<script src="library/js/rexdialog.js"></script>
+<script src="library/js/elementui2.4.11.js"></script>
+<!-- endbuild -->
+<!-- build:js script/missioncheck.js -->
+<script src="script/missioncheck.js"></script>
+<!-- endbuild -->
 </body>
 </html>

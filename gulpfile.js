@@ -20,59 +20,29 @@ const gulpif=require('gulp-if');
 const loadJsonFile = require('load-json-file');
 const gutil=require('gulp-util');
 
-var business='spread/';
+var business='';
 //var business='protocol/';
 //var business='background/';
-var docIn='h5source/';
-var docOut='h5/';
+var docIn='';
+var docOut='dht-vue/';
 var inPath=docIn+business;
 var outPath=docOut+business;
 var manifest=docOut+'verlink/';
 
-gulp.task('do404', function(){  //转移404页面
-	gulp.src(['h5source/404.html'])
-		.pipe(htmlmin({collapseWhitespace:true}))
-		.pipe(gulp.dest('h5/'));
-});
-
-gulp.task('outBackground', function(){  //转移background的静态资源
-	gulp.src(docIn+'background/style/fonts/*.+(eot|svg|ttf|woff|eot)')
-		.pipe(gulp.dest(docOut+'background/style/fonts/'));
+gulp.task('moveStatic', function(){  //转移静态资源,包括图片，字体文件，音频媒体
+	gulp.src(docIn+'library/style/fonts/*/*.+(eot|svg|ttf|woff|eot)')  //字体转移
+		.pipe(gulp.dest(docOut+'library/style/fonts/'));
 	
-	gulp.src(docIn+'background/style/images/*.+(png|jpg|gif)')
+	gulp.src(docIn+'library/style/images/*.+(png|jpg|gif)')   //图片转移
 		.pipe(imagemin())
-		.pipe(gulp.dest(docOut+'background/style/images/'));
-});
-
-gulp.task('outstcimg', function(){  //转移公共图片
-	//转移及压缩图片
-  gulp.src(docIn+'library/images/*.+(png|jpg|gif)')
-    .pipe(imagemin())
-    .pipe(gulp.dest(docOut+'library/images/'));
-});
-
-gulp.task('outimg', function(){  //转移业务层图片
-	gulp.src(inPath+'style/images/*.+(png|jpg|gif)')
-    .pipe(imagemin())
-    .pipe(gulp.dest(outPath+'style/images/'));
-});
-
-gulp.task('outstcfont', function(){  //转移公共字体
-	//转移字体文件
-	gulp.src(docIn+'library/font/**/*.+(eot|svg|ttf|woff|eot)')
-    .pipe(gulp.dest(docOut+'library/font/'));
-});
-
-gulp.task('outstclang', function(){  //转移语言包
-  //发布语言文件包
-  gulp.src(docIn+'language/**/*.json')
-    .pipe(gulp.dest(docOut+'language/'));
+		.pipe(gulp.dest(docOut+'library/style/images/'));
 });
 
 //-----------------------------------------------------
 
 gulp.task('output', function() {
-	gulp.src(inPath+'*.html')
+	gulp.src(inPath+'+(404|login|main|missionCheck|missionCut).html')
+	//gulp.src(inPath+'login.html')
 		.pipe(useref())
 		.pipe(gulpif('*.js', uglify()))
 		.on('error', function (err) {

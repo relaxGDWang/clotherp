@@ -28,7 +28,15 @@ $color4: #069393;
 .equipment { float: right; margin-top: 15px;}
 
 /* 表格样式 */
-.el-table th { background: $color2; color: #fff;}
+.el-table th { background: $color2; color: #fff; padding:6px 0; text-align:center;}
+.el-table td{ padding:6px 0; color:#333;}
+.el-table .cell{ padding-left:3px; padding-right:3px;}
+.el-table td .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+.el-table td .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+.el-table td .opButton:before{ display:inline-block;}
+.el-table td .opButton.fa-cut:before{ transform:rotate(-90deg);}
+.el-table td:last-child{ text-align:center;}
+
 .el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9;}
 .el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9;}
 .el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff;}
@@ -37,7 +45,10 @@ $color4: #069393;
 #opDetails{
   .dialog-title{
     background:$color4 linear-gradient(rgba(255,255,255,.3) 0, transparent 15px);
-    h4{ font-size:16px; color:rgba(255,255,255,.9);}
+    h4{
+      font-size:16px; color:rgba(255,255,255,.9);
+      .fa:before{ font-size:22px;}
+    }
     .opBtn{
       font-size:28px; color:$color3;
       &:hover,&:active{ color:red;}
@@ -76,28 +87,46 @@ $color4: #069393;
 #loading .dialog-content{ padding:15px;}
 
 //信息提示弹框
-#information .dialog-content{ padding:15px;}
+#information{
+  .dialog-content{ padding:15px;}
+  .dialog-buttonBar{
+    background:#ccc repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 12px, transparent 0, transparent 24px);
+    .rexButton{ width:100px;}
+  }
+  .dialog-title{ font-size:16px;}
+  .dialog-title .fa{ font-size:22px;}
+  .dialog-title .fa:before{ vertical-align:middle;}
+  &.sure .dialog-title{ background:#216cc9; color:#fff;}
+  &.warning .dialog-title{ background:#f79e03; color:#fff;}
+  &.error .dialog-title{ background:#f70303; color:#fff;}
+  &.ok .dialog-title{ background:#02a018; color:#fff;}
+}
 
 .missionDetails {
-  h3 { font-size: 16px; color: $color4; line-height: 30px;}
+  h3 { font-size: 14px; color: $color4; line-height: 28px; position:relative; padding-left:16px;}
+  h3:before{ content:''; width:10px; height:10px; position:absolute; top:8px; left:0; background:$color4;}
 }
 
 .leftPart{
-  width:190px; float:left; height:100%; padding:0 5px 0 5px; background:#f0f0f0;
-  .viewList{ overflow:auto;}
-  li{ border:1px solid #ccc; margin-bottom:5px; padding:5px 5px 0 5px; overflow:hidden; font-size:12px; cursor:pointer; background:#fff; border-radius:4px; transition-property: background-color, border-color; transition-duration: .3s;}
-  li:hover, li:active{ background:#cefbfb; border-color:$color1;}
+  width:190px; float:left; height:100%; padding:0 5px 0 5px;
+  .viewList{ overflow:auto; height:100%; overflow:auto; padding:5px 0;}
+  li{ border:1px solid #ccc; margin-bottom:5px; padding:5px 5px 0 5px; overflow:hidden; font-size:12px; cursor:pointer; background-color:#fff; border-radius:4px; transition-property: background-color, border-color; transition-duration: .3s;}
+  li:hover, li:active{ background-color:#cefbfb; border-color:$color1;}
   li:hover strong, li:active strong{ border-color:$color1;}
-  li.sel{ background:#ffedce; border-color:#f90;}
+  li.fin{ background-color:#ccc; border-color:#999; background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.1) 0, rgba(255,255,255,.1) 10px, transparent 0, transparent 20px);}
+  li.fin strong{ border-color:#999;}
+  li.sel{ background-color:#ffedce; border-color:#f90;}
+  li.sel.fin{ background-image:repeating-linear-gradient(45deg, rgba(255,153,0,.1) 0, rgba(255,153,0,.1) 10px, transparent 0, transparent 20px);}
   li.sel strong{ border-color:#f90;}
   strong{ line-height:30px; display:block; border-top:1px solid #eee; font-weight:normal; text-align:center; margin-top:5px; transition-property: border-color; transition-duration: .3s;}
   .status{ display:inline-block;}
+  .fin .status{ opacity:.7;}
   .length{
     float:right; color:#999;
     b{ font-size:14px; color:red; font-weight:normal; margin:0 2px;}
   }
 }
-.rightPart{ width:auto; margin-left:190px; height:100%; padding:0 10px 0 10px;}
+.rightPart{ width:auto; margin-left:190px; height:100%; padding:0 10px 0 10px; box-shadow:0 0 40px rgba(0,0,0,.2);}
 .inPart{ padding:10px; width:100%; height:100%;}
 
 //裁剪端分类
@@ -110,7 +139,7 @@ $color4: #069393;
   }
   &.flaw{
     background:#666;
-    &:before{ content:'疵点切割';}
+    &:before{ content:'疵点分裁';}
   }
   &:normal{
     background:blue;
@@ -121,7 +150,7 @@ $color4: #069393;
 //基础信息展示
 .baseInfo{
   background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size:100% 30px; overflow:hidden; margin-bottom:10px;
-  li{ float:left; width:25%; min-width:240px; line-height:30px;}
+  li{ float:left; width:25%; min-width:220px; line-height:30px;}
   label{ color:#999; margin-right:5px;}
   .showLength{ width:100%; background:#f2f2f2; border-bottom:1px solid #ccc; text-align:center;}
   .showLength>div{ display:inline-block; width:20%;}
@@ -130,10 +159,10 @@ $color4: #069393;
 //布匹概览
 .clothShow{ margin:24px 0 32px 0;}
 .cloth{
-  box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:50px; position:relative;
+  box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:30px; position:relative;
   .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property: left,right; transition-duration: 1s;}
   .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
-  .flaw:hover{ background:#f90; }
+  .flaw:hover{ background:#f90; z-index:2;}
   .flaw:hover:after{ background:#f90;}
   .nowBlock{ background:rgba(8,142,144,.6); color:#fff; border:2px dashed $color4; position:absolute; right:10%; width:100px; top:0; bottom:0; z-index:1; transition-property: left,right; transition-duration: 1s;}
   .nowBlock.disabled{ background:rgba(155,155,155, .6); border-color:#ccc; }
@@ -158,13 +187,12 @@ $color4: #069393;
   }
   .elseInfo {
     border-top: 1px solid #ccc; overflow:hidden; text-align:left; padding-top:5px;
-    li{ width:50%; float:left; padding:5px 0;}
-    li:last-child{ width:100%;}
+    li{ width:100%; padding:5px 0;}
     li.center{ text-align:center; padding-top:15px; color:$color1;}
     label {color: #999;}
   }
   .maskShow{
-    position:absolute; top:0; bottom:0; left:0; right:0; background:rgba(255,255,255,.6); text-align:center;
+    position:absolute; top:0; bottom:0; left:0; right:0; background:rgba(0,0,0,.2) repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0, rgba(255,255,255,.15) 10px, transparent 0, transparent 20px); text-align:center;
     &:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
     span{ display:inline-block; vertical-align:middle; color:#fff; padding:5px 10px; background:rgba(251,124,0,.7); box-shadow:0 0 5px rgba(0,0,0,.4); visibility: hidden;}
     span.focus{ animation:focusShow 1s forwards; visibility: visible;}
@@ -173,10 +201,11 @@ $color4: #069393;
 
 //当前检验信息
 .checkOperate{
-  border:3px solid $color4; width: 100%; height: 100px; overflow: hidden;
-  &:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
-  .checkOverview{
-    display:inline-block; width:50%; padding:10px; vertical-align:middle;
+  width: 100%; height: 100px; overflow: hidden;
+  .checkOverview{ border:3px solid $color4; height:100%; width:50%; float:left;}
+  .checkOverview:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
+  .inshow{
+    display:inline-block; padding:10px; vertical-align:middle;
     &>span{ display:inline-block; vertical-align:middle; margin-right:10px; white-space:nowrap;}
     strong{ font-size:20px; color:red; font-weight:normal;}
   }
@@ -211,6 +240,48 @@ $color4: #069393;
   }
 }
 
-.elseList{ margin-top:10px; width:100%; overflow:hidden;}
-.flawList{ padding-right:5px; width:50%; float:left;}
-.operateList{ float:left; width:50%; padding-left:5px;}
+.elseList{
+  margin-top:10px; width:100%; overflow:hidden;
+  h3{ border-bottom:1px solid $color4;}
+  ul{ width:100%; overflow:auto; height:calc(100% - 30px);}
+  li{
+    border-bottom:1px dashed #ccc; position:relative; padding:12px 0; overflow:hidden;
+    .index{ float:left; background-image:linear-gradient(rgba(255,255,255,.2) 0, transparent 16px); line-height:20px; color:#fff; padding:0 10px;}
+    .block{ background-color:#3050c6;}
+    .point{ background-color:#cc1f1f; border-radius:10px;}
+    .showtext{ display:inline-block; font-size:12px;}
+    label{ color:#999; margin-left:10px;}
+    b{ font-size:14px; color:$color4; font-weight:normal;}
+    &.cutRecord{ text-align:right;}
+    .datetime{ position:absolute; left:0; top:50%; transform:translateY(-50%); width:30%; min-width:80px; text-align:left; color:#666;}
+    .op{ display:inline-block; max-width:65%; text-align:left;}
+    .opButton{ position:absolute; right:0; top:7px; font-size:30px; line-height:30px; height:30px; color:red; width:30px; border-radius:6px; text-align: center; cursor:pointer;}
+    .opButton:hover, .opButton:active{ background:red; color:#fff;}
+    .nodata{ display:block; text-align:center; padding:15px 0; color:#999;}
+  }
+}
+.flawList{ padding-right:5px; width:50%; float:left; height:100%;}
+.operateList{ padding-left:5px; width:50%; float:left; height:100%;}
+
+//标签打印
+#printBox{
+  .dialog-title{
+    background:$color1 linear-gradient(rgba(255,255,255,.3) 0, transparent 15px);
+    h4{
+      font-size:16px; color:#fff;
+      .fa:before{ font-size:22px; vertical-align:middle;}
+    }
+    .opBtn{
+      font-size:28px; color:$color3;
+      &:hover,&:active{ color:red;}
+    }
+  }
+  .dialog-content{
+    padding:15px;
+    .rexButton{
+      width:140px; height:60px; margin:10px;
+      .fa{ font-size:20px;}
+    }
+    b{ color:red; font-weight:normal;}
+  }
+}

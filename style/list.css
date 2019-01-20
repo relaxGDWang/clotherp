@@ -18,7 +18,21 @@
 .equipment { float: right; margin-top: 15px; }
 
 /* 表格样式 */
-.el-table th { background: #669999; color: #fff; }
+.el-table th { background: #669999; color: #fff; padding: 6px 0; text-align: center; }
+
+.el-table td { padding: 6px 0; color: #333; }
+
+.el-table .cell { padding-left: 3px; padding-right: 3px; }
+
+.el-table td .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
+
+.el-table td .opButton:hover, .el-table td .opButton:active { background: #069393; color: #fff; }
+
+.el-table td .opButton:before { display: inline-block; }
+
+.el-table td .opButton.fa-cut:before { transform: rotate(-90deg); }
+
+.el-table td:last-child { text-align: center; }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
 
@@ -28,6 +42,7 @@
 
 #opDetails .dialog-title { background: #069393 linear-gradient(rgba(255, 255, 255, 0.3) 0, transparent 15px); }
 #opDetails .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }
+#opDetails .dialog-title h4 .fa:before { font-size: 22px; }
 #opDetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
 #opDetails .dialog-title .opBtn:hover, #opDetails .dialog-title .opBtn:active { color: red; }
 #opDetails.extMenu .dialogFrame { width: 90%; }
@@ -52,22 +67,36 @@
 #loading .dialog-content { padding: 15px; }
 
 #information .dialog-content { padding: 15px; }
+#information .dialog-buttonBar { background: #ccc repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 12px, transparent 0, transparent 24px); }
+#information .dialog-buttonBar .rexButton { width: 100px; }
+#information .dialog-title { font-size: 16px; }
+#information .dialog-title .fa { font-size: 22px; }
+#information .dialog-title .fa:before { vertical-align: middle; }
+#information.sure .dialog-title { background: #216cc9; color: #fff; }
+#information.warning .dialog-title { background: #f79e03; color: #fff; }
+#information.error .dialog-title { background: #f70303; color: #fff; }
+#information.ok .dialog-title { background: #02a018; color: #fff; }
 
-.missionDetails h3 { font-size: 16px; color: #069393; line-height: 30px; }
+.missionDetails h3 { font-size: 14px; color: #069393; line-height: 28px; position: relative; padding-left: 16px; }
+.missionDetails h3:before { content: ''; width: 10px; height: 10px; position: absolute; top: 8px; left: 0; background: #069393; }
 
-.leftPart { width: 190px; float: left; height: 100%; padding: 0 5px 0 5px; background: #f0f0f0; }
-.leftPart .viewList { overflow: auto; }
-.leftPart li { border: 1px solid #ccc; margin-bottom: 5px; padding: 5px 5px 0 5px; overflow: hidden; font-size: 12px; cursor: pointer; background: #fff; border-radius: 4px; transition-property: background-color, border-color; transition-duration: .3s; }
-.leftPart li:hover, .leftPart li:active { background: #cefbfb; border-color: #336666; }
+.leftPart { width: 190px; float: left; height: 100%; padding: 0 5px 0 5px; }
+.leftPart .viewList { overflow: auto; height: 100%; overflow: auto; padding: 5px 0; }
+.leftPart li { border: 1px solid #ccc; margin-bottom: 5px; padding: 5px 5px 0 5px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #fff; border-radius: 4px; transition-property: background-color, border-color; transition-duration: .3s; }
+.leftPart li:hover, .leftPart li:active { background-color: #cefbfb; border-color: #336666; }
 .leftPart li:hover strong, .leftPart li:active strong { border-color: #336666; }
-.leftPart li.sel { background: #ffedce; border-color: #f90; }
+.leftPart li.fin { background-color: #ccc; border-color: #999; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0, rgba(255, 255, 255, 0.1) 10px, transparent 0, transparent 20px); }
+.leftPart li.fin strong { border-color: #999; }
+.leftPart li.sel { background-color: #ffedce; border-color: #f90; }
+.leftPart li.sel.fin { background-image: repeating-linear-gradient(45deg, rgba(255, 153, 0, 0.1) 0, rgba(255, 153, 0, 0.1) 10px, transparent 0, transparent 20px); }
 .leftPart li.sel strong { border-color: #f90; }
 .leftPart strong { line-height: 30px; display: block; border-top: 1px solid #eee; font-weight: normal; text-align: center; margin-top: 5px; transition-property: border-color; transition-duration: .3s; }
 .leftPart .status { display: inline-block; }
+.leftPart .fin .status { opacity: .7; }
 .leftPart .length { float: right; color: #999; }
 .leftPart .length b { font-size: 14px; color: red; font-weight: normal; margin: 0 2px; }
 
-.rightPart { width: auto; margin-left: 190px; height: 100%; padding: 0 10px 0 10px; }
+.rightPart { width: auto; margin-left: 190px; height: 100%; padding: 0 10px 0 10px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.2); }
 
 .inPart { padding: 10px; width: 100%; height: 100%; }
 
@@ -76,22 +105,22 @@
 .status.customer { background: #069393; }
 .status.customer:before { content: '客户订单'; }
 .status.flaw { background: #666; }
-.status.flaw:before { content: '疵点切割'; }
+.status.flaw:before { content: '疵点分裁'; }
 .status:normal { background: blue; }
 .status:normal:before { content: '分裁入库'; }
 
 .baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
-.baseInfo li { float: left; width: 25%; min-width: 240px; line-height: 30px; }
+.baseInfo li { float: left; width: 25%; min-width: 220px; line-height: 30px; }
 .baseInfo label { color: #999; margin-right: 5px; }
 .baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
 .baseInfo .showLength > div { display: inline-block; width: 20%; }
 
 .clothShow { margin: 24px 0 32px 0; }
 
-.cloth { box-shadow: 0 0 0 1px #ccc inset; background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); width: 100%; height: 50px; position: relative; }
+.cloth { box-shadow: 0 0 0 1px #ccc inset; background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); width: 100%; height: 30px; position: relative; }
 .cloth .flaw { position: absolute; background: #000; top: 0; bottom: 0; transition-property: left,right; transition-duration: 1s; }
 .cloth .flaw:after { content: attr(index); position: absolute; height: 20px; line-height: 20px; padding: 0 3px; background: #000; color: #fff; top: -21px; left: 50%; transform: translateX(-50%); font-size: 12px; border-radius: 2px; cursor: pointer; }
-.cloth .flaw:hover { background: #f90; }
+.cloth .flaw:hover { background: #f90; z-index: 2; }
 .cloth .flaw:hover:after { background: #f90; }
 .cloth .nowBlock { background: rgba(8, 142, 144, 0.6); color: #fff; border: 2px dashed #069393; position: absolute; right: 10%; width: 100px; top: 0; bottom: 0; z-index: 1; transition-property: left,right; transition-duration: 1s; }
 .cloth .nowBlock.disabled { background: rgba(155, 155, 155, 0.6); border-color: #ccc; }
@@ -110,20 +139,20 @@
 .operate .title { font-size: 16px; display: inline-block; padding-bottom: 10px; }
 .operate .title b { position: relative; top: 10px; font-size: 50px; color: red; vertical-align: text-bottom; font-weight: normal; }
 .operate .elseInfo { border-top: 1px solid #ccc; overflow: hidden; text-align: left; padding-top: 5px; }
-.operate .elseInfo li { width: 50%; float: left; padding: 5px 0; }
-.operate .elseInfo li:last-child { width: 100%; }
+.operate .elseInfo li { width: 100%; padding: 5px 0; }
 .operate .elseInfo li.center { text-align: center; padding-top: 15px; color: #336666; }
 .operate .elseInfo label { color: #999; }
-.operate .maskShow { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.6); text-align: center; }
+.operate .maskShow { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.2) repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0, rgba(255, 255, 255, 0.15) 10px, transparent 0, transparent 20px); text-align: center; }
 .operate .maskShow:before { content: ''; display: inline-block; height: 100%; vertical-align: middle; }
 .operate .maskShow span { display: inline-block; vertical-align: middle; color: #fff; padding: 5px 10px; background: rgba(251, 124, 0, 0.7); box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); visibility: hidden; }
 .operate .maskShow span.focus { animation: focusShow 1s forwards; visibility: visible; }
 
-.checkOperate { border: 3px solid #069393; width: 100%; height: 100px; overflow: hidden; }
-.checkOperate:before { content: ''; display: inline-block; height: 100%; vertical-align: middle; }
-.checkOperate .checkOverview { display: inline-block; width: 50%; padding: 10px; vertical-align: middle; }
-.checkOperate .checkOverview > span { display: inline-block; vertical-align: middle; margin-right: 10px; white-space: nowrap; }
-.checkOperate .checkOverview strong { font-size: 20px; color: red; font-weight: normal; }
+.checkOperate { width: 100%; height: 100px; overflow: hidden; }
+.checkOperate .checkOverview { border: 3px solid #069393; height: 100%; width: 50%; float: left; }
+.checkOperate .checkOverview:before { content: ''; display: inline-block; height: 100%; vertical-align: middle; }
+.checkOperate .inshow { display: inline-block; padding: 10px; vertical-align: middle; }
+.checkOperate .inshow > span { display: inline-block; vertical-align: middle; margin-right: 10px; white-space: nowrap; }
+.checkOperate .inshow strong { font-size: 20px; color: red; font-weight: normal; }
 .checkOperate .operateButton { float: right; }
 
 .operateButton { float: left; width: 50%; height: 100%; background: #eee; text-align: center; }
@@ -137,9 +166,34 @@
 .buttonList .rexButton .fa:before { position: static; }
 
 .elseList { margin-top: 10px; width: 100%; overflow: hidden; }
+.elseList h3 { border-bottom: 1px solid #069393; }
+.elseList ul { width: 100%; overflow: auto; height: calc(100% - 30px); }
+.elseList li { border-bottom: 1px dashed #ccc; position: relative; padding: 12px 0; overflow: hidden; }
+.elseList li .index { float: left; background-image: linear-gradient(rgba(255, 255, 255, 0.2) 0, transparent 16px); line-height: 20px; color: #fff; padding: 0 10px; }
+.elseList li .block { background-color: #3050c6; }
+.elseList li .point { background-color: #cc1f1f; border-radius: 10px; }
+.elseList li .showtext { display: inline-block; font-size: 12px; }
+.elseList li label { color: #999; margin-left: 10px; }
+.elseList li b { font-size: 14px; color: #069393; font-weight: normal; }
+.elseList li.cutRecord { text-align: right; }
+.elseList li .datetime { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 30%; min-width: 80px; text-align: left; color: #666; }
+.elseList li .op { display: inline-block; max-width: 65%; text-align: left; }
+.elseList li .opButton { position: absolute; right: 0; top: 7px; font-size: 30px; line-height: 30px; height: 30px; color: red; width: 30px; border-radius: 6px; text-align: center; cursor: pointer; }
+.elseList li .opButton:hover, .elseList li .opButton:active { background: red; color: #fff; }
+.elseList li .nodata { display: block; text-align: center; padding: 15px 0; color: #999; }
 
-.flawList { padding-right: 5px; width: 50%; float: left; }
+.flawList { padding-right: 5px; width: 50%; float: left; height: 100%; }
 
-.operateList { float: left; width: 50%; padding-left: 5px; }
+.operateList { padding-left: 5px; width: 50%; float: left; height: 100%; }
+
+#printBox .dialog-title { background: #336666 linear-gradient(rgba(255, 255, 255, 0.3) 0, transparent 15px); }
+#printBox .dialog-title h4 { font-size: 16px; color: #fff; }
+#printBox .dialog-title h4 .fa:before { font-size: 22px; vertical-align: middle; }
+#printBox .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
+#printBox .dialog-title .opBtn:hover, #printBox .dialog-title .opBtn:active { color: red; }
+#printBox .dialog-content { padding: 15px; }
+#printBox .dialog-content .rexButton { width: 140px; height: 60px; margin: 10px; }
+#printBox .dialog-content .rexButton .fa { font-size: 20px; }
+#printBox .dialog-content b { color: red; font-weight: normal; }
 
 /*# sourceMappingURL=list.css.map */

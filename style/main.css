@@ -21,11 +21,31 @@
 .partLeft h1:before { display: inline-block; background: #fff; border-radius: 50%; padding: 6px; font-size: 50px; transform: rotate(-90deg); color: #069393; padding-bottom: 10px; }
 .partLeft h1 span { display: block; color: #cccc99; font-weight: normal; margin-top: 5px; }
 
+.partContent { position: relative; }
+.partContent .changeButton { width: 60px; line-height: 40px; height: 40px; text-align: center; background: rgba(255, 255, 255, 0.3); color: #fff; position: absolute; left: -60px; bottom: 5%; font-size: 24px; cursor: pointer; cursor: pointer; border-radius: 6px 0 0 6px; z-index: 10; }
+.partContent .changeButton:hover, .partContent .changeButton:active { background: #336666; color: #fff; }
+.partContent .changeButton:before { display: inline-block; transform: none; transition: transform .5s; }
+
+.hiddenLeft .partLeft { width: 0; overflow: hidden; }
+
+.hiddenLeft .partContent { border-left-width: 0; }
+.hiddenLeft .partContent .changeButton { left: 0; border-radius: 0 6px 6px 0; background: #666; color: #fff; opacity: .2; }
+.hiddenLeft .partContent .changeButton:hover, .hiddenLeft .partContent .changeButton:active { background: #336666; color: #fff; opacity: 1; }
+.hiddenLeft .partContent .changeButton:before { transform: rotate(180deg); }
+
 .systemMenu li { height: 100px; color: #fff; padding-top: 20px; border-top: 1px solid #666; border-bottom: 1px solid #000; }
 .systemMenu li:first-child { border-top: 0; }
 .systemMenu li:hover { background: #666; }
 .systemMenu a { display: block; height: 100%; text-align: center; }
 .systemMenu a:before { display: inline-block; width: 100%; font-size: 40px; margin-bottom: 5px; }
 .systemMenu li.sel { background: #fff; color: #069393; }
+
+#sysInfo .dialog-content { padding: 15px; }
+#sysInfo .dialog-buttonBar { background: #ccc repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 12px, transparent 0, transparent 24px); }
+#sysInfo .dialog-buttonBar .rexButton { width: 100px; }
+#sysInfo .dialog-title { font-size: 16px; }
+#sysInfo .dialog-title .fa { font-size: 22px; }
+#sysInfo .dialog-title .fa:before { vertical-align: middle; }
+#sysInfo.sure .dialog-title { background: #216cc9; color: #fff; }
 
 /*# sourceMappingURL=main.css.map */

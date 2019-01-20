@@ -10,7 +10,7 @@ var CFG = {
     token: 'token',  //token信息对象{code:token的编号,live:生存到期unix时间}
     admin: 'admin',  //当前登录的管理员对象 {username:用户名,name:姓名}
     tokenLive: 30*60, //生存期，单位秒
-    noLogin: 900,    //未登录或登录超时验证
+    noLogin: 999,    //未登录或登录超时验证
     ajaxFormater: function (data) {  //ajax的传递参数加工(前道处理)
         var token=localStorage.getItem(CFG.admin);
         if (token){
@@ -29,7 +29,7 @@ var CFG = {
         if (data.success!==true) {
             result.code = 420;
             result.msg = data.message;
-            if (data.success+''===CFG.noLogin+''){   //判定登录超时的情况
+            if (data.code+''===CFG.noLogin+''){   //判定登录超时的情况
                 //alert('AJAX获得未登录标记，即将退出');
                 //localStorage.removeItem(CFG.token);
                 localStorage.removeItem(CFG.admin);
@@ -51,6 +51,9 @@ var CFG = {
         return result;
     }
 };
+var REG={   //正则字典
+    flaw: /^\d{1,3}(\.\d{1,2})?$/,
+};
 var PATH = {
     login: CFG.URL+'user/login',    //登录接口
     missionCheck: CFG.URL+'examine',       //检验任务列表
@@ -59,12 +62,15 @@ var PATH = {
     missionCutDetails: CFG.URL+'cutout/{bolt_id}',  //裁剪任务详细
     missionCutFinished: CFG.URL+'cutout/{bolt_id}/cut',  //完成裁剪
     resetLength: CFG.URL+'bolts/{bolt_id}/length',   //重置布长
-    addFlaw: CFG.URL+'examine/{bolt_id}/defect'      //新增疵点
+    addFlaw: CFG.URL+'examine/{bolt_id}/defect',     //新增疵点
+    delFlaw: CFG.URL+'bolts/{bolt_id}',              //删除疵点
+    missionCheckFinished: CFG.URL+'examine/{bolt_id}/complete'  //完成检验任务
 };
 if (CFG.DEBUG){
     CFG.URL='/server/';
     PATH.login=CFG.URL+'login.php';
-    PATH.missionCheck=CFG.URL+'examinelist.php'
+    PATH.missionCheck=CFG.URL+'examinelist.php';
+    PATH.missionCheckDetails=CFG.URL+'examinedetails.php';
     PATH.missionCut=CFG.URL+'cutlist.php';
     PATH.missionCutDetails=CFG.URL+'cutdetails.php';
     PATH.missionCutFinished=CFG.URL+'cutfinish.php';
@@ -96,18 +102,7 @@ if (CFG.DEBUG){
 //格式化ajax数据通用
 var DFG=(function(){
     var data={};
-    var excute={
-        cutlist:{
-            length:{
-                type: 'string',
-                format:'$value$米'
-            },
-            current_length:{
-                type: 'string',
-                format:'$value$米'
-            }
-        }
-    };
+    var excute={};
 
     //处理数据核心方法
     function solveData(excuteName, doData){

@@ -3,7 +3,7 @@
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
 /* FONT PATH -------------------------- */
-@font-face { font-family: 'FontAwesome'; src: url("fonts/awesome/fontawesome-webfontba72.eot?v=4.0.3"); src: url("fonts/awesome/fontawesome-webfontd41d.eot?#iefix&v=4.0.3") format("embedded-opentype"), url("fonts/awesome/fontawesome-webfontba72.woff?v=4.0.3") format("woff"), url("fonts/awesome/fontawesome-webfontba72.ttf?v=4.0.3") format("truetype"), url("fonts/awesome/fontawesome-webfontba72.svg?v=4.0.3#fontawesomeregular") format("svg"); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'FontAwesome'; src: url("/library/style/fonts/awesome/fontawesome-webfontba72.eot?v=4.0.3"); src: url("/library/style/fonts/awesome/fontawesome-webfontd41d.eot?#iefix&v=4.0.3") format("embedded-opentype"), url("/library/style/fonts/awesome/fontawesome-webfontba72.woff?v=4.0.3") format("woff"), url("/library/style/fonts/awesome/fontawesome-webfontba72.ttf?v=4.0.3") format("truetype"), url("/library/style/fonts/awesome/fontawesome-webfontba72.svg?v=4.0.3#fontawesomeregular") format("svg"); font-weight: normal; font-style: normal; }
 .fa { display: inline-block; }
 
 /* modify by relax 2017/12/27 */

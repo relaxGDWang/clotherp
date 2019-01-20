@@ -1,46 +1,56 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>操作员登录</title>
-    <link rel="stylesheet" href="/library/style/font-awesome.css"/>
-    <link rel="stylesheet" href="/library/style/cssreset3.css"/>
-    <link rel="stylesheet" href="/style/login.css"/>
+    <!-- build:css /library/style/webcommon.css -->
+    <link rel="stylesheet" href="library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="library/style/cssreset3.css"/>
+    <!-- endbuild -->
+    <!-- build:css /style/login.css -->
+    <link rel="stylesheet" href="style/login.css"/>
+    <!-- endbuild -->
+    <script src="script/configBG.js"></script>
 </head>
 <body>
-    <div class="outFrame" :class="{'focus':flagFocus}" id="app" @click="focusLost($event)">
-        <div class="loginFrame">
-            <div class="loginContent">
-                <h1><span class="fa fa-hand-o-right">随手订货宝</span></h1>
-                <ul class="loginForm">
-                    <li>
-                        <input-icon type="tel" v-model="input.telnumber" icon-left="fa-user" placeholder="手机号码" ext="del" @focus="focusShow" maxlength="11"></input-icon>
-                    </li>
-                    <li>
-                        <input-icon type="password" v-model="input.password" icon-left="fa-lock" placeholder="登录密码" ext="appear" @focus="focusShow" maxlength="32"></input-icon>
-                    </li>
-                    <li class="tipMessage">
-                        <span v-if="msg.text" class="fa" :class="msg.type">
-                            <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div>
-                            {{msg.text}}
-                        </span>
-                    </li>
-                    <li>
-                        <button class="rexButton" color="green" @click="doLogin()">登录系统</button>
-                    </li>
-                </ul>
-            </div>
+<div class="outFrame" :class="{'focus':flagFocus}" id="app" @click="focusLost($event)">
+    <div class="loginFrame">
+        <div class="loginContent">
+            <h1><span class="fa fa-hand-o-right">随手订货宝</span></h1>
+            <ul class="loginForm">
+                <li>
+                    <input-icon type="tel" v-model="input.telnumber" icon-left="fa-user" placeholder="手机号码" ext="del" @focus="focusShow" maxlength="11"></input-icon>
+                </li>
+                <li>
+                    <input-icon type="password" v-model="input.password" icon-left="fa-lock" placeholder="登录密码" ext="appear" @focus="focusShow" maxlength="32"></input-icon>
+                </li>
+                <li class="tipMessage">
+                    <span v-if="msg.text" class="fa" :class="msg.type">
+                        <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div>
+                        {{msg.text}}
+                    </span>
+                </li>
+                <li>
+                    <button class="rexButton" color="green" @click="doLogin()">登录系统</button>
+                </li>
+            </ul>
         </div>
     </div>
-    <script src="/library/js/jquery.min.js"></script>
-    <script src="/library/js/vue.min.js"></script>
-    <script src="/library/js/rexfunction.js"></script>
-    <script src="/library/js/rexajax2.js"></script>
-    <script src="/library/js/rexdialog.js"></script>
-    <script src="/script/configBG.js"></script>
-    <script src="/library/js/vueplug/simplyControls.js"></script>
-    <script src="/script/login.js"></script>
+</div>
+<!-- build:js library/js/webcommon.js -->
+<script src="library/js/jquery.min.js"></script>
+<script src="library/js/vue.min.js"></script>
+<script src="library/js/rexfunction.js"></script>
+<script src="library/js/rexajax2.js"></script>
+<script src="library/js/rexdialog.js"></script>
+<script src="library/js/elementui2.4.11.js"></script>
+<!-- endbuild -->
+<!-- build:js script/login.js -->
+<script src="library/js/vueplug/simplyControls.js"></script>
+<script src="script/login.js"></script>
+<!-- endbuild -->
 </body>
 </html>

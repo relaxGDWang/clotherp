@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import 'config2.scss';
+@import '../library/style/config2.scss';
 $disTop:0px;
 $disLeft:100px;
 $disRight:0px;
@@ -59,6 +59,23 @@ $color4: #069393;
     span{ display:block; color:$color3; font-weight:normal; margin-top:5px;}
   }
 }
+
+.partContent{
+  position:relative;
+  .changeButton{ width:60px; line-height:40px; height:40px; text-align:center; background:rgba(255,255,255,.3); color:#fff; position:absolute; left:-60px; bottom:5%; font-size:24px; cursor:pointer; cursor:pointer; border-radius:6px 0 0 6px; z-index: 10;}
+  .changeButton:hover, .changeButton:active{ background:$color1; color:#fff;}
+  .changeButton:before{ display:inline-block; transform:none; transition:transform .5s;}
+}
+
+
+.hiddenLeft .partLeft{ width:0; overflow:hidden; }
+.hiddenLeft .partContent{
+  border-left-width:0;
+  .changeButton{ left:0; border-radius:0 6px 6px 0; background:#666; color:#fff; opacity:.2;}
+  .changeButton:hover, .changeButton:active{ background:$color1; color:#fff; opacity:1;}
+  .changeButton:before{ transform:rotate(180deg);}
+}
+
 .systemMenu{
   li{ height:100px; color:#fff; padding-top:20px; border-top:1px solid #666; border-bottom:1px solid #000;}
   li:first-child{ border-top:0;}
@@ -66,4 +83,17 @@ $color4: #069393;
   a{ display:block; height:100%; text-align:center;}
   a:before{ display:inline-block; width:100%; font-size:40px; margin-bottom:5px;}
   li.sel{ background:#fff; color:$color4;}
+}
+
+//信息提示弹框
+#sysInfo{
+  .dialog-content{ padding:15px;}
+  .dialog-buttonBar{
+    background:#ccc repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 12px, transparent 0, transparent 24px);
+    .rexButton{ width:100px;}
+  }
+  .dialog-title{ font-size:16px;}
+  .dialog-title .fa{ font-size:22px;}
+  .dialog-title .fa:before{ vertical-align:middle;}
+  &.sure .dialog-title{ background:#216cc9; color:#fff;}
 }
