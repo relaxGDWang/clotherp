@@ -22,6 +22,7 @@
             <span class="rexBlockCheck" color="warning"><input type="radio" v-model="search.listType" value="doing" name="listType"/><label>待处理</label></span>
             <span class="rexBlockCheck" color="warning"><input type="radio" v-model="search.listType" value="cut" name="listType"/><label>已完成</label></span>
             <button class="rexButton" @click="getList()"><span class="fa fa-refresh"></span></button>
+            <span>{{currentPosition}}</span>
             <div class="equipment">登录：<strong>{{username}}</strong></div>
         </div>
         <el-table :data="mission" :height="UI.listHeight" border stripe>

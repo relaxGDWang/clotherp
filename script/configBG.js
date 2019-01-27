@@ -1,8 +1,9 @@
 //后台管理公共配置文件
 var CFG = {
-    DEBUG: true,
+    DEBUG: false,
     JDTYPE: 'form',
-    URL: 'http://192.168.3.181:8080/api/v1/',
+    //URL: 'http://192.168.3.181:8080/api/v1/',
+    URL: 'http://gadmin-dev.suishou.cc/api/v1/',
     //en: 'en_US',
     //cn: 'zh_Cn',
     loginPage: 'login.html',

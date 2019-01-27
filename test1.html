@@ -11,55 +11,65 @@
         .frameShow{ width:100%; padding:10px; margin:auto;}
         .clothShow{ margin:40px 0;}
         .cloth{ box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:60px; position:relative;}
-        .cloth .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property: left,right; transition-duration: 1s;}
+        .cloth .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property: left,right; transition-duration: 1s; min-width:1px;}
         .cloth .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
         .cloth .flaw:hover{ background:#f90; }
         .cloth .flaw:hover:after{ background:#f90;}
+        .cloth .clip{ width:1px; position:absolute; top:-5px; bottom:-5px; left:0; background:red; z-index: 10;}
+        .cloth .clip:before, .cloth .clip:after{ content:''; position:absolute; border:9px solid transparent; width:0; height:0; overflow:hidden; left:50%; transform:translateX(-50%); opacity:.8;}
+        .cloth .clip:before{ border-top-color:red; top:-5px;}
+        .cloth .clip:after{ border-bottom-color:red; bottom:-5px;}
         .ruler{ height:2px; background:#ccc; position:relative;}
         .ruler span{ position:absolute; top:2px; height:6px; width:1px; text-align:center; background:#ccc; font-size:12px; color:#666;}
-        .ruler span:before{ content:attr(pos); position:absolute; top:10px; left:50%; transform:translateX(-50%);}
+        .ruler span:before{ content:attr(pos); position:absolute; top:12px; left:50%; transform:translateX(-50%);}
     </style>
 </head>
 <body>
     <div class="frameShow" id="app">
-        <div class="clothShow">
-            <div class="cloth" id="cloth">
-                <span class="nowBlock"></span>
-                <span class="clip"><span class="fa fa-cut"></span></span>
-                <span class="flaw" v-for="(item,index) in flaw" :index="index+1" :start="item.start" :end="item.end"></span>
-            </div>
-            <div class="ruler" id="ruler">
-                <span v-for="item in getMark" :pos="item"></span>
-            </div>
+        <rex-cloth :len="len" :direction="direction" :flaws="flaws" :pos="pos"></rex-cloth>
+        <div>
+            <button @click="changeDirection()">{{direction==='left'? '当前向左': '当前向右'}}</button>
+            <input type="range" max="100" min="0" v-model="pos"/>
+        </div>
+        <div>
+            <h5>疵点列表</h5>
+            <div><label>start</label><input type="text" v-model="flawInput.start"/></div>
+            <div><label>end</label><input type="text" v-model="flawInput.end"/></div>
+            <div><button @click="addFlaws()">添加</button></div>
+            <ul>
+                <li v-for="(item,index) in flaws">{{index+1}} <button @click="delFlaws(index)">&times;</button></li>
+            </ul>
+        </div>
+        <div>
+            <h5>裁剪列表</h5>
+            <div><label>start</label><input type="text" v-model="flawInput.start"/></div>
+            <div><label>end</label><input type="text" v-model="flawInput.end"/></div>
+            <div><button @click="addFlaws()">添加</button></div>
+            <ul>
+                <li v-for="(item,index) in flaws">{{index+1}} <button @click="delFlaws(index)">&times;</button></li>
+            </ul>
         </div>
     </div>
     <script src="/library/js/jquery.min.js"></script>
     <script src="/library/js/vue.min.js"></script>
     <script>
-        var vu=new Vue({
-            el: '#app',
-            data: {
-                len: 100,
-                perLen: 10,
-                direction: 'right',
-                flaw:[{
-                    start: 4.6,
-                    end: 4.6,
-                    width: 0
-                },{
-                    start: 13.4,
-                    end: 13.6,
-                    width: 0.2
-                },{
-                    start: 45.4,
-                    end: 45.8,
-                    width: 0.4
-                },{
-                    start: 79.1,
-                    end: 79.9,
-                    width: 0.8
-                }]
+        Vue.component('rex-cloth', {
+            template: '<div class="clothShow">\n' +
+                '            <div class="cloth" ref="cloth">\n' +
+                '                <span class="nowBlock"></span>\n' +
+                '                <span class="clip"></span>\n' +
+                '                <span class="flaw" v-for="(item,index) in flaws" :index="index+1" :start="item.start" :end="item.end" :len="item.width" :type="item.type"></span>\n' +
+                '            </div>\n' +
+                '            <div class="ruler" ref="ruler">\n' +
+                '                <span v-for="item in getMark" :pos="item"></span>\n' +
+                '            </div>\n' +
+                '        </div>',
+            data: function(){
+                return {
+                    perLen: 10
+                }
             },
+            props: ['len','direction','flaws','cuts','pos'],
             computed:{
                 getMark: function(){
                     var loopCount=Math.ceil(this.len/this.perLen);
@@ -72,39 +82,104 @@
                 }
             },
             methods:{
-                redrawCloth: function(){  //绘制布匹概览
-                    var len=$('#cloth').width()-1;
-                    var pm=len/this.len;
-                    var tempArray=$('#ruler span');
-                    var direction=this.direction;
-                    var i,pos1,pos2,widthNum;
-                    for (i=0; i<tempArray.length; i++){
+                init: function(){
+                    this.drawRulers();
+                    this.drawFlaws();
+                    this.drawNowPosition();
+                },
+                drawRulers: function(){
+                    var tempArray=$(this.$refs.ruler).children('span');
+                    var reverse=this.direction=='left'? 'right':'left';
+                    var i,pos1,pos2;
+                    for (i=0; i<tempArray.length-1; i++){
                         pos1=$(tempArray[i]).attr('pos');
-                        $(tempArray[i]).css(direction, pm*pos1);
+                        pos2=pos1/this.len * 100 + '%';
+                        $(tempArray[i]).css(this.direction, pos2).css(reverse, 'auto');
                     }
-                    tempArray=$('#cloth .flaw');
+                    i=tempArray.length-1;
+                    pos1=$(tempArray[i]).attr('pos');
+                    pos2=pos1/this.len * 100 + '%';
+                    $(tempArray[i]).css(this.direction, 'calc('+ pos2 + ' - 1px)').css(reverse, 'auto');
+                },
+                drawFlaws: function(){
+                    var tempArray=$(this.$refs.cloth).children('.flaw');
+                    var reverse=this.direction=='left'? 'right':'left';
+                    var i,pos1,widthNum;
                     for (i=0; i<tempArray.length; i++){
-                        pos1=$(tempArray[i]).attr('start');
-                        pos2=$(tempArray[i]).attr('end');
-                        widthNum=(pos2-pos1)*pm || 1;
-                        $(tempArray[i]).css(direction, pm*pos1).css('width', widthNum);
+                        var temp=$(tempArray[i]);
+                        pos1=temp.attr('end')/this.len*100+'%';
+                        if (temp.attr('type')==='dot'){
+                            widthNum=1+'px';
+                        }else{
+                            widthNum=temp.attr('len')/this.len*100+'%';
+                        }
+                        temp.css(this.direction, pos1).css('width', widthNum).css(reverse, 'auto');
                     }
+                },
+                drawCut: function(){
+
+                },
+                drawNowPosition: function(){
+                    var tempObject=$(this.$refs.cloth).children('.clip').eq(0);
+                    var reverse=this.direction=='left'? 'right':'left';
+                    tempObject.css(this.direction, this.pos/this.len*100+'%').css(reverse, 'auto');
                 }
             },
-            mounted:function(){
-                this.redrawCloth();
+            mounted: function(){
+                this.init();
+            },
+            watch:{
+                'direction': function(newVal){
+                    this.init();
+                },
+                'flaws': function(newVal){
+                    var th=this;
+                    setTimeout(function(){
+                        th.drawFlaws();
+                    },100);
+                },
+                'pos': function(){
+                    this.drawNowPosition()
+                }
             }
         });
 
-        $(function(){
-            var dom=$('#cloth');
-            var timeID;
-            $(window).resize(function(){
-                timeID=setTimeout(function(){
-                    vu.redrawCloth();
-                },100);
-            })
-        })
+        var vu=new Vue({
+            el: '#app',
+            data: {
+                len: 100,
+                direction: 'right',
+                pos:10,
+                flaws:[],
+                cuts:[],
+                flawInput:{
+                    start:'',
+                    end:''
+                },
+                cutInput:{
+
+                }
+            },
+            methods:{
+                changeDirection: function(){
+                    var valueStr='leftright';
+                    this.direction=valueStr.replace(this.direction,'');
+                },
+                addFlaws: function(){
+                    this.flawInput.start-=0;
+                    this.flawInput.end-=0;
+                    var result={};
+                    result.start=this.flawInput.start;
+                    result.end=this.flawInput.end;
+                    result.width=this.flawInput.end-this.flawInput.start;
+                    result.type=result.width===0? 'dot':'block';
+                    this.flaws.push(result);
+                },
+                delFlaws: function(index){
+                    this.flaws.splice(index,1);
+                }
+            }
+        });
     </script>
 </body>
 </html>

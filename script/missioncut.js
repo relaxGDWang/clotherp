@@ -6,6 +6,7 @@ var vu=new Vue({
         },
         flagReload: false,     //用于标记窗口关闭是否要刷新列表
         username: '',
+        currentPosition: '',
         UI:{
             listHeight: 100,
             bottomHeight: 100,
@@ -536,6 +537,9 @@ var vu=new Vue({
         },
         'search.listType': function(){
             this.getList();
+        },
+        'currentLength': function(){
+            console.log('this len changed!');
         }
     }
 });
@@ -587,3 +591,14 @@ $(function(){
         }
     }
 });
+
+//改变布长
+function changePosition(len){
+    vu.currentPosition=len;
+}
+
+function setZeroPosition(){
+    if (window.parent && window.parent.resetPosition){
+        window.parent.resetPosition();
+    }
+}

@@ -5,6 +5,7 @@ var vu=new Vue({
             listType: 'doing'   //doing,finished
         },
         username: '',
+        currentPosition: '',
         UI:{
             listHeight: 100,
             bottomListHeight: 100,
@@ -417,3 +418,14 @@ $(function(){
         }
     }
 });
+
+//改变布长
+function changePosition(len){
+    vu.currentPosition=len;
+}
+
+function setZeroPosition(){
+    if (window.parent && window.parent.resetPosition){
+        window.parent.resetPosition();
+    }
+}

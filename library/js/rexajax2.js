@@ -159,6 +159,7 @@ function relaxAJAX(config) {
             url: urlStr,
             data: tempData,
             timeout: CON.timeout,
+            crossDomain:true,
             cache: CON.cache,
             async: CON.async,
             headers: headerData,

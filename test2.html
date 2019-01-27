@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>接口测试</title>
+</head>
+<body>
+    <input id="username" type="text" value=""/>
+    <input id="password" type="password" value=""/>
+    <button id="submit">提交</button>
+<script src="library/js/jquery.min.js"></script>
+<script src="library/js/rexajax2.js"></script>
+<script>
+$(function(){
+    var ajax=relaxAJAX({
+        url: 'http://gadmin-dev.suishou.cc/api/v1/user/login',
+        contentType: 'form',
+        success: doSuccess
+    });
+    $("#submit").click(function(){
+        var username=$('#username').val();
+        var password=$('#password').val();
+
+        ajax.send({
+            data:{mobile:username, password:password}
+        })
+    });
+
+    function doSuccess(data){
+        alert(data.message);
+    }
+});
+</script>
+</body>
+</html>
