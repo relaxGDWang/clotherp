@@ -9,10 +9,7 @@ var vu=new Vue({
         currentPosition: '',
         UI:{
             listHeight: 100,
-            bottomHeight: 100,
-            len: 0,
-            perLen: 10,
-            direction: 'right'
+            bottomHeight: 100
         },
         input:{
             flag: false,  //标记修改操作的ajax是否在提交
@@ -27,17 +24,6 @@ var vu=new Vue({
         mission: [], //任务细分数组，ajax直接返回
         missionKey: {}, //bolt_id与数组index对应关系
         clothDetails: {}  //布匹的裁剪任务，以bolt_no作为索引，结构 defects[疵点列表数组] cutouts[事件记录数组] splits[裁剪分段数组] list[以bolt_id作为索引的对象，值为splits的数组index] first[起始裁剪bolt_id] viewObj[当前查看的分段信息] product[对应的商品编号]
-    },
-    computed:{
-        getMark: function(){
-            var loopCount=Math.ceil(this.UI.len/this.UI.perLen);
-            var result=[];
-            for (var i=0; i<loopCount; i++){
-                result.push(i*this.UI.perLen);
-            }
-            result.push(this.UI.len);
-            return result;
-        }
     },
     methods:{
         getList: function(){  //获得任务列表
@@ -63,7 +49,6 @@ var vu=new Vue({
             var dialogConfig={
                 closeCallback: function(){
                     vu.editObject='';
-                    vu.UI.len=0;
                     if (vu.flagReload){
                         vu.getList();
                     }
@@ -578,17 +563,13 @@ $(function(){
         },100);
     });
 
-    fitUI('first');
+    fitUI();
     vu.getList();
 
-    function fitUI(flag){
+    function fitUI(){
         var H=body.height();
         vu.UI.listHeight=H-70;
         vu.UI.bottomHeight=H-325;
-        if (flag===undefined){
-            vu.redrawCloth();
-            vu.redrawClothBlock();
-        }
     }
 });
 

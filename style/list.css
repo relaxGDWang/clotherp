@@ -118,15 +118,16 @@
 .clothShow { margin: 24px 0 32px 0; }
 
 .cloth { box-shadow: 0 0 0 1px #ccc inset; background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); width: 100%; height: 30px; position: relative; }
-.cloth .flaw { position: absolute; background: #000; top: 0; bottom: 0; transition-property: left,right; transition-duration: 1s; }
+.cloth .flaw { position: absolute; background: #000; top: 0; bottom: 0; transition-property: left,right; transition-duration: 1s; min-width: 1px; }
 .cloth .flaw:after { content: attr(index); position: absolute; height: 20px; line-height: 20px; padding: 0 3px; background: #000; color: #fff; top: -21px; left: 50%; transform: translateX(-50%); font-size: 12px; border-radius: 2px; cursor: pointer; }
 .cloth .flaw:hover { background: #f90; z-index: 2; }
 .cloth .flaw:hover:after { background: #f90; }
 .cloth .nowBlock { background: rgba(8, 142, 144, 0.6); color: #fff; border: 2px dashed #069393; position: absolute; right: 10%; width: 100px; top: 0; bottom: 0; z-index: 1; transition-property: left,right; transition-duration: 1s; }
 .cloth .nowBlock.disabled { background: rgba(155, 155, 155, 0.6); border-color: #ccc; }
-.cloth .clip { width: 1px; background: red; color: red; position: absolute; top: -3px; bottom: -10px; right: 20%; z-index: 2; transition-property: left,right; transition-duration: 1s; }
-.cloth .clip:before { position: absolute; bottom: -20px; transform: rotate(-90deg) translateY(-50%); font-size: 20px; left: 50%; }
-.cloth .clip.hidden { visibility: hidden; }
+.cloth .clip { width: 1px; position: absolute; top: -5px; bottom: -5px; background: red; z-index: 10; transition-property: left,right; transition-duration: 1s; }
+.cloth .clip:before, .cloth .clip:after { content: ''; position: absolute; border: 9px solid transparent; width: 0; height: 0; overflow: hidden; left: 50%; transform: translateX(-50%); opacity: .8; }
+.cloth .clip:before { border-top-color: red; top: -5px; }
+.cloth .clip:after { border-bottom-color: red; bottom: -5px; }
 
 .ruler { height: 2px; background: #ccc; position: relative; }
 .ruler span { position: absolute; top: 2px; height: 6px; width: 1px; text-align: center; background: #ccc; font-size: 12px; color: #666; }

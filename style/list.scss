@@ -160,15 +160,16 @@ $color4: #069393;
 .clothShow{ margin:24px 0 32px 0;}
 .cloth{
   box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:30px; position:relative;
-  .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property: left,right; transition-duration: 1s;}
+  .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property:left,right; transition-duration:1s; min-width:1px;}
   .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
   .flaw:hover{ background:#f90; z-index:2;}
   .flaw:hover:after{ background:#f90;}
   .nowBlock{ background:rgba(8,142,144,.6); color:#fff; border:2px dashed $color4; position:absolute; right:10%; width:100px; top:0; bottom:0; z-index:1; transition-property: left,right; transition-duration: 1s;}
   .nowBlock.disabled{ background:rgba(155,155,155, .6); border-color:#ccc; }
-  .clip{ width:1px; background:red; color:red; position:absolute; top:-3px; bottom:-10px; right:20%; z-index: 2; transition-property: left,right; transition-duration: 1s;}
-  .clip:before{ position:absolute; bottom:-20px; transform:rotate(-90deg) translateY(-50%); font-size:20px; left:50%;}
-  .clip.hidden{ visibility: hidden;}
+  .clip{ width:1px; position:absolute; top:-5px; bottom:-5px; background:red; z-index:10; transition-property: left,right; transition-duration: 1s;}
+  .clip:before, .clip:after{ content:''; position:absolute; border:9px solid transparent; width:0; height:0; overflow:hidden; left:50%; transform:translateX(-50%); opacity:.8;}
+  .clip:before{ border-top-color:red; top:-5px;}
+  .clip:after{ border-bottom-color:red; bottom:-5px;}
 }
 .ruler{
   height:2px; background:#ccc; position:relative;

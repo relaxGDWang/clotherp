@@ -76,16 +76,7 @@
                         <li><label>卷 号：</label><span>{{editObject.bolt}}</span></li>
                         <li><label>仓 位：</label><span>{{editObject.position}}</span></li>
                     </ul>
-                    <div class="clothShow" v-if="editObject">
-                        <div class="cloth" ref="cloth">
-                            <span class="nowBlock" :class="{disabled:editObject.viewObj.bolt_id!==editObject.first}"></span>
-                            <span class="clip fa fa-cut" :class="{'hidden':editObject.viewObj.bolt_id!==editObject.first}"></span>
-                            <span class="flaw" v-for="(item,index) in editObject.defects" :index="index+1" :start="item.start" :end="item.end" :len="item.length" :type="item.defect_type"></span>
-                        </div>
-                        <div class="ruler" ref="ruler">
-                            <span v-for="item in getMark" :pos="item"></span>
-                        </div>
-                    </div>
+                    <rex-cloth :len="len" :direction="direction" :flaws="flaws" :pos="pos" v-if="editObject"></rex-cloth>
                     <div class="operateShow" v-if="editObject">
                         <div class="operate">
                             <span class="status" :class="getTypeString(editObject.viewObj)"></span>
@@ -239,6 +230,7 @@
 <script src="library/js/elementui2.4.11.js"></script>
 <!-- endbuild -->
 <!-- build:js script/missioncut.js -->
+<script src="library/js/vueplug/clothShow.js"></script>
 <script src="script/missioncut.js"></script>
 <!-- endbuild -->
 </body>
