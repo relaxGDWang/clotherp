@@ -63,7 +63,7 @@
             <div class="dialog-content">
                 <div class="leftPart">
                     <ul class="viewList nohead" v-if="editObject">
-                        <li v-for="item in editObject.splits" :class="{'sel':(item.bolt_id===editObject.viewObj.bolt_id),'fin':(item.status_code!=='mark')}" @click="setViewObject(editObject, item.bolt_id); redrawClothBlock();">
+                        <li v-for="item in editObject.splits" :class="{'sel':(item.bolt_id===editObject.viewObj.bolt_id),'fin':(item.status_code!=='mark')}" @click="setViewObject(editObject, item.bolt_id)">
                             <span class="status" :class="getTypeString(item)"></span>
                             <span class="length">裁剪<b>{{item.cut_length}}</b>米</span>
                             <strong>{{item.bolt_no}}</strong>
@@ -76,11 +76,11 @@
                         <li><label>卷 号：</label><span>{{editObject.bolt}}</span></li>
                         <li><label>仓 位：</label><span>{{editObject.position}}</span></li>
                     </ul>
-                    <rex-cloth :len="len" :direction="direction" :flaws="flaws" :pos="pos" v-if="editObject"></rex-cloth>
+                    <rex-cloth :len="UI.len" :flaws="editObject.defects" :pos="currentPosition" :cuts="editObject.splits" :select="editObject.viewObj" :first="editObject.first" v-if="editObject"></rex-cloth>
                     <div class="operateShow" v-if="editObject">
                         <div class="operate">
                             <span class="status" :class="getTypeString(editObject.viewObj)"></span>
-                            <span class="title">当前裁剪 <b>{{editObject.viewObj.cut_length}}</b> <span>米</span></span>
+                            <span class="title">计米器读数 <b>{{currentPosition===''? '--': currentPosition}}</b> <span>/{{editObject.viewObj.cut_length}}米</span></span>
                             <ul class="elseInfo nohead" v-if="getTypeString(editObject.viewObj)==='customer'">
                                 <li><label>客户信息：</label><span>{{editObject.viewObj.purchaser}}</span></li>
                                 <li><label>订货长度：</label><span>{{editObject.viewObj.order_length}}米</span></li>
@@ -184,7 +184,7 @@
                 </div>
                 <div class="row">
                     <label>重标布长</label>
-                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.len" :disabled="input.flag"/> 米</span>
+                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.len" :disabled="input.flag" readonly/> 米</span>
                 </div>
                 <div class="doingShow" v-if="input.msg">
                     <span :class="input.status"><div class="loadingBlock" v-if="input.flag && input.status==='loading'"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
@@ -208,11 +208,11 @@
             <div class="dialog-content">
                 <div class="row">
                     <label>疵点开始位置</label>
-                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.start" :disabled="input.flag || input.step===2"/> 米</span>
+                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.start" :disabled="input.flag || input.step===2" readonly/> 米</span>
                 </div>
                 <div class="row" v-if="input.step===2">
                     <label>疵点结束位置</label>
-                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.end" :disabled="input.flag"/> 米</span>
+                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.end" :disabled="input.flag" readonly/> 米</span>
                 </div>
                 <div class="doingShow" v-if="input.msg">
                     <span :class="input.status"><div class="loadingBlock" v-if="input.flag && input.status==='loading'"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>

@@ -7,11 +7,13 @@
 //flaws 疵点的数组列，推荐结构为 {start:起始位置,end:结束位置,width:宽度，如果为点则为0; type疵点类型，dot或者非dot}
 //cuts 裁剪的布段数组列，推荐结构为
 //pos  当前记米器的位置坐标
+//select 标记该布匹的当前选择段
+//first  标记当前第一个布段
 Vue.component('rex-cloth', {
     template: ''+
         '<div class="clothShow">'+
             '<div class="cloth" ref="cloth">' +
-                '<span class="nowBlock"></span>' +
+                '<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code===\'mark\'" :class="checkSelect(item)"></span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
             '</div>' +
@@ -27,7 +29,7 @@ Vue.component('rex-cloth', {
             default: 10
         },
         direction:{
-            required: true
+            default: 'right'
         },
         flaws:{
             required: true
@@ -37,6 +39,12 @@ Vue.component('rex-cloth', {
         },
         pos:{
             required: true
+        },
+        select:{
+            default: ''
+        },
+        first:{
+            default: ''
         }
     },
     computed:{
@@ -51,21 +59,7 @@ Vue.component('rex-cloth', {
         }
     },
     methods:{
-        drawRulers: function(){
-            var tempArray=$(this.$refs.ruler).children('span');
-            var reverse=this.direction=='left'? 'right':'left';
-            var i,pos1,pos2;
-            for (i=0; i<tempArray.length-1; i++){
-                pos1=$(tempArray[i]).attr('pos');
-                pos2=pos1/this.len * 100 + '%';
-                $(tempArray[i]).css(this.direction, pos2).css(reverse, 'auto');
-            }
-            i=tempArray.length-1;
-            pos1=$(tempArray[i]).attr('pos');
-            pos2=pos1/this.len * 100 + '%';
-            $(tempArray[i]).css(this.direction, 'calc('+ pos2 + ' - 1px)').css(reverse, 'auto');
-        },
-        getRulerStyle: function(item){
+        getRulerStyle: function(item){  //计算刻度线坐标
             var result={};
             if (item===this.len){
                 result[this.direction]='calc(100% - 1px)';
@@ -74,20 +68,21 @@ Vue.component('rex-cloth', {
             }
             return result;
         },
-        getFlawStyle: function(item){
+        getFlawStyle: function(item){  //计算疵点坐标和宽度
             var pos,width;
-            pos=item.end/this.len*100+'%';
-            if (item.type==='dot'){
+            if (item.defect_type==='dot'){
+                pos=item.end/this.len*100+'%';
                 width='1px';
             }else{
-                width=item.width/this.len*100+'%';
+                pos=item.start/this.len*100+'%';
+                width=item.length/this.len*100+'%';
             }
             var result={};
             result[this.direction]=pos;
             result.width=width;
             return result;
         },
-        getPositionStyle: function(){
+        getPositionStyle: function(){  //计算当前计米器的坐标
             var result={};
             if (this.pos==='' || this.pos-0>this.len-0){
                 result['display']='none';
@@ -96,8 +91,29 @@ Vue.component('rex-cloth', {
             }
             return result;
         },
-        getCusStyle: function(){
-
+        getCutStyle: function(item,index){  //计算裁剪块的坐标
+            var result={};
+            var summation=0;
+            for (var i=0; i<index; i++){
+                if (this.cuts[i].status_code!=='mark') continue;
+                summation+=this.cuts[i].cut_length;
+            }
+            result[this.direction]=summation/this.len*100+'%';
+            result['width']=item.cut_length/this.len*100+'%';
+            return result;
+        },
+        checkSelect: function(item){   //用于标记是否选择，标记是否可截取
+            var result={
+                sel: false,
+                first: false
+            };
+            if (this.select){
+                if (item.bolt_id===this.select.bolt_id){
+                    result.sel=true;
+                    if (item.bolt_id===this.first) result.first=true;
+                }
+            }
+            return result;
         }
     }
 });

@@ -1,3 +1,4 @@
+var PCOUNT=0;
 var vu=new Vue({
     el: '#app',
     data:{
@@ -6,12 +7,13 @@ var vu=new Vue({
         },
         username: '',
         currentPosition: '',
+        positionTime:'',  //计米器读数时间函数
+        positionPer: 1000, //读取频率
+        positionCallBack: '',  //长度变更时的回调函数
         UI:{
             listHeight: 100,
             bottomListHeight: 100,
-            len: 0,
-            perLen: 10,
-            direction: 'right'
+            len: 0
         },
         input:{
             flag: false,  //标记修改操作的ajax是否在提交
@@ -27,18 +29,25 @@ var vu=new Vue({
         missionKey: {}, //bolt_id与数组index对应关系
         clothDetails: {}  //布匹的裁剪任务，以bolt_no作为索引，结构 defects[疵点列表数组] cutouts[事件记录数组] splits[裁剪分段数组] list[以bolt_id作为索引的对象，值为splits的数组index] first[起始裁剪bolt_id] viewObj[当前查看的分段信息] product[对应的商品编号]
     },
-    computed:{
-        getMark: function(){
-            var loopCount=Math.ceil(this.UI.len/this.UI.perLen);
-            var result=[];
-            for (var i=0; i<loopCount; i++){
-                result.push(i*this.UI.perLen);
-            }
-            result.push(this.UI.len);
-            return result;
-        }
-    },
     methods:{
+        getEQPosition: function(){  //获取计米器读数
+            //PCOUNT+=(Math.random()*2).toFixed(2)-0;
+            //this.currentPosition=PCOUNT.toFixed(2)-0;
+            try{
+                PCOUNT=window.register_js.updatenumbox();
+                PCOUNT=(PCOUNT-0)/100;
+                if (!isNaN(PCOUNT)) vu.currentPosition=PCOUNT;
+            }catch(e){
+                PCOUNT='';
+            }
+        },
+        startEQPosition: function(){  //开始计米器读数
+            this.positionTime=setInterval(vu.getEQPosition,vu.positionPer);
+        },
+        stopEQPosition: function(){  //关闭计米器读数
+            clearInterval(vu.positionTime);
+            this.positionTime='';
+        },
         getList: function(){  //获得任务列表
             this.mission=[];
             this.missionKey={};
@@ -62,12 +71,14 @@ var vu=new Vue({
             var dialogConfig={
                 closeCallback: function(){
                     vu.editObject='';
-                    vu.UI.len=0;
+                    vu.UI.len='';
+                    vu.stopEQPosition();
                 }
             };
             if (this.clothDetails[keyStr]!==undefined){
                 this.editObject=this.clothDetails[keyStr];
                 this._setColthLen();
+                this.startEQPosition();
                 dialog.open('opDetails',dialogConfig);
             }else{
                 ajax.send({
@@ -80,6 +91,7 @@ var vu=new Vue({
                         vu._solveCutData(keyStr, data);
                         vu.editObject=vu.clothDetails[keyStr];
                         vu._setColthLen();
+                        vu.startEQPosition();
                         dialog.open('opDetails',dialogConfig);
                     }
                 });
@@ -91,12 +103,14 @@ var vu=new Vue({
             temp.defects=this._formatFlawInfor(data.defects);
             temp.cutouts=data.cutouts;
             temp.viewObj=this.mission[this.missionKey[data.bolt_id]];
+            temp.print_head=data.print_head;
+            temp.print_tail=data.print_tail;
         },
         _setColthLen: function(){   //设置用于显示的当前布长
             if (this.editObject){
                 this.UI.len=this.editObject.viewObj.current_length;
             }else{
-                this.UI.len=0;
+                this.UI.len='';
             }
         },
         askFinish: function(){
@@ -117,6 +131,8 @@ var vu=new Vue({
                 success:function(data){
                     dialog.close('loading');
                     dialog.close('opDetails');
+                    vu.stopEQPosition();
+                    setZeroPosition();
                     dialog.open('information', {
                         content: '布匹检验已完成！',
                         btncancel: '',
@@ -140,12 +156,17 @@ var vu=new Vue({
         resetLength: function(){  //重写布匹长度操作
             dialog.open('reLength',{
                 closeCallback: function(){
+                    vu.positionCallBack='';
                     vu.input.len='';
                     vu.input.flag=false;
                     vu.input.status='';
                     vu.input.msg='';
                 }
             });
+            this.input.len=this.currentPosition;
+            this.positionCallBack=function(newVal){
+                this.input.len=newVal;
+            };
         },
         doResetLength: function(){ //重写布匹长度ajax
             if (REG.flaw.test(this.input.len)===false){
@@ -165,14 +186,13 @@ var vu=new Vue({
                     Vue.set(vu.editObject.viewObj,'current_length',vu.input.len);
                     vu.UI.len=vu.input.len;
                     vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
+                    vu.positionCallBack='';
                     setTimeout(function(){
                         dialog.close('reLength');
                         vu.input.len='';
                         vu.input.flag=false;
                         vu.input.status='';
                         vu.input.msg='';
-                        //重绘概览
-                        vu.redrawCloth();
                     },1500);
                 }
             });
@@ -181,6 +201,7 @@ var vu=new Vue({
             if (bolt_id===undefined){ //添加疵点操作
                 dialog.open('addFlaw',{
                     closeCallback: function(){
+                        vu.positionCallBack='';
                         vu.input.start='';
                         vu.input.end='';
                         vu.input.step=1;
@@ -189,6 +210,10 @@ var vu=new Vue({
                         vu.input.msg=''
                     }
                 });
+                this.input.start=this.currentPosition;
+                this.positionCallBack=function(newVal){
+                    this.input.start=newVal;
+                };
             }else{   //删除疵点操作
                 dialog.open('information',{
                     content:'是否确定删除当前疵点？',
@@ -214,9 +239,15 @@ var vu=new Vue({
                     }
                     this.input.step=2;
                     this.input.end=this.input.start;
-                    break
+                    this.positionCallBack=function(newVal){
+                        this.input.end=newVal;
+                    };
+                    break;
                 case 'prev':
                     this.input.step=1;
+                    this.positionCallBack=function(newVal){
+                        this.input.start=newVal;
+                    };
                     break;
             }
         },
@@ -240,6 +271,7 @@ var vu=new Vue({
                 success: function(data){
                     vu.editObject.defects=vu._formatFlawInfor(data.defects);  //刷新疵点列表
                     vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功！'});
+                    vu.positionCallBack='';
                     setTimeout(function(){
                         dialog.close('addFlaw');
                         vu.input.start='';
@@ -248,7 +280,6 @@ var vu=new Vue({
                         vu.input.flag=false;
                         vu.input.status='';
                         vu.input.msg='';
-                        vu.redrawCloth();
                     },2000);
                 }
             });
@@ -262,44 +293,8 @@ var vu=new Vue({
                     dialog.close('loading');
                     dialog.open('information',{content:'疵点已经成功删除！',btncancel:'',cname:'ok'});
                     vu.editObject.defects=vu._formatFlawInfor(data.defects);
-                    setTimeout(function(){
-                        vu.redrawCloth();
-                    },100);
                 }
             });
-        },
-        redrawCloth: function(){  //绘制布匹概览
-            var cloth=$(this.$refs.cloth);
-            var ruler=$(this.$refs.ruler);
-            var len=cloth.width()-1;
-            var pm=len/this.UI.len;
-            var direction=this.UI.direction;
-            drawRulers();
-            drawFlaws();
-
-            function drawRulers(){   //绘制刻度
-                var tempArray=ruler.children('span');
-                var i,pos1;
-                for (i=0; i<tempArray.length; i++){
-                    pos1=$(tempArray[i]).attr('pos');
-                    $(tempArray[i]).css(direction, pm*pos1);
-                }
-            }
-            function drawFlaws(){  //绘制疵点
-                var tempArray=cloth.children('.flaw');
-                var i,pos1,widthNum;
-                for (i=0; i<tempArray.length; i++){
-                    var temp=$(tempArray[i]);
-                    if (temp.attr('type')==='dot'){
-                        pos1=temp.attr('end')*pm;
-                        widthNum=1;
-                    }else{
-                        pos1=temp.attr('start')*pm;
-                        widthNum=temp.attr('len')*pm || 1;
-                    }
-                    temp.css(direction, pos1).css('width', widthNum);
-                }
-            }
         },
         _setMessage: function(config){
             this.input.flag=config.flag || false;
@@ -328,16 +323,17 @@ var vu=new Vue({
             if (!typeStr){
                 dialog.open('printBox');
             }else{
-                var splitString='';
+                var printStr='';
                 if (typeStr==='start'){
-                    splitString='--------------------';
+                    printStr=JSON.stringify(this.editObject.print_head);
                 }else{
-                    splitString='vvvvvvvvvvvvvvvvvvvv';
+                    printStr=JSON.stringify(this.editObject.print_tail);
                 }
                 try{
-                    window.register_js.goprint('{"width":"40","len":"400","gap":"0","xblank":"100","yblank":"100","lineh":"30","density":"15","speed":"15","info":{"header":"随手布匹标记","code":"'+this.editObject.viewObj.bolt_no+'","footer":"'+ splitString +'","items":[{"text":"名称：亚光绣花型"},{"text":"库存：'+ this.editObject.viewObj.current_length +'米"},{"text":"入库：'+ formatDateTime(new Date(),'date','-',true)+'"},{"text":"仓位：'+ this.editObject.viewObj.position +'"},{"text":"版本：法西兰"},{"text":"卷号：'+ this.editObject.viewObj.bolt_no+'"}]}}');
+                    window.register_js.goprint(printStr);
                     dialog.open('information',{content:'打印指令发送成功！',cname:'ok',btncancel:''});
                 }catch(e){
+                    console.log(printStr);
                     dialog.open('information',{content:'打印调用出错，请检查打印机连接情况',cname:'warning',btncancel:''});
                 }
             }
@@ -360,14 +356,13 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
-        'UI.len': function(newVal){
-            if (newVal===0) return;
-            setTimeout(function(){
-                vu.redrawCloth();
-            },100)
-        },
         'search.listType': function(){
             this.getList();
+        },
+        'currentPosition': function(newVal){
+            if (this.positionCallBack){
+                this.positionCallBack(newVal);
+            }
         }
     }
 });
@@ -406,16 +401,13 @@ $(function(){
         },100);
     });
 
-    fitUI('first');
+    fitUI();
     vu.getList();
 
-    function fitUI(flag){
+    function fitUI(){
         var H=body.height();
         vu.UI.listHeight=H-70;
         vu.UI.bottomHeight=H-285;
-        if (flag===undefined){
-            vu.redrawCloth();
-        }
     }
 });
 
@@ -425,7 +417,15 @@ function changePosition(len){
 }
 
 function setZeroPosition(){
+    /*
     if (window.parent && window.parent.resetPosition){
         window.parent.resetPosition();
+    }
+    */
+    try{
+        window.register_js.gozero();
+        vu.currentPosition=0;
+    }catch(e){
+        dialog.open('resultShow',{content:'发送清零指令有问题'});
     }
 }

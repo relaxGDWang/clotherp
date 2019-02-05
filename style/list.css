@@ -122,12 +122,13 @@
 .cloth .flaw:after { content: attr(index); position: absolute; height: 20px; line-height: 20px; padding: 0 3px; background: #000; color: #fff; top: -21px; left: 50%; transform: translateX(-50%); font-size: 12px; border-radius: 2px; cursor: pointer; }
 .cloth .flaw:hover { background: #f90; z-index: 2; }
 .cloth .flaw:hover:after { background: #f90; }
-.cloth .nowBlock { background: rgba(8, 142, 144, 0.6); color: #fff; border: 2px dashed #069393; position: absolute; right: 10%; width: 100px; top: 0; bottom: 0; z-index: 1; transition-property: left,right; transition-duration: 1s; }
-.cloth .nowBlock.disabled { background: rgba(155, 155, 155, 0.6); border-color: #ccc; }
 .cloth .clip { width: 1px; position: absolute; top: -5px; bottom: -5px; background: red; z-index: 10; transition-property: left,right; transition-duration: 1s; }
 .cloth .clip:before, .cloth .clip:after { content: ''; position: absolute; border: 9px solid transparent; width: 0; height: 0; overflow: hidden; left: 50%; transform: translateX(-50%); opacity: .8; }
 .cloth .clip:before { border-top-color: red; top: -5px; }
 .cloth .clip:after { border-bottom-color: red; bottom: -5px; }
+.cloth .cutBlock { position: absolute; top: 1px; bottom: 1px; outline: 1px dashed rgba(0, 0, 0, 0.3); outline-offset: -1px; }
+.cloth .cutBlock.sel { outline-color: #f90; background: rgba(255, 153, 0, 0.2); }
+.cloth .cutBlock.first { outline-color: #069393; background: #fff repeating-linear-gradient(-45deg, rgba(6, 147, 147, 0.3) 0, rgba(6, 147, 147, 0.3) 10px, transparent 0, transparent 20px); }
 
 .ruler { height: 2px; background: #ccc; position: relative; }
 .ruler span { position: absolute; top: 2px; height: 6px; width: 1px; text-align: center; background: #ccc; font-size: 12px; color: #666; }
@@ -136,7 +137,7 @@
 .operateShow { width: 100%; height: 150px; overflow: hidden; }
 
 .operate { width: 50%; height: 100%; border: 3px solid #069393; padding: 0 10px 10px 10px; float: left; text-align: center; position: relative; }
-.operate .status { float: left; font-size: 14px; margin-top: 10px; }
+.operate .status { position: absolute; font-size: 14px; left: 5px; top: 5px; }
 .operate .title { font-size: 16px; display: inline-block; padding-bottom: 10px; }
 .operate .title b { position: relative; top: 10px; font-size: 50px; color: red; vertical-align: text-bottom; font-weight: normal; }
 .operate .elseInfo { border-top: 1px solid #ccc; overflow: hidden; text-align: left; padding-top: 5px; }

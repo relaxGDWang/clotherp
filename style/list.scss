@@ -164,12 +164,13 @@ $color4: #069393;
   .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
   .flaw:hover{ background:#f90; z-index:2;}
   .flaw:hover:after{ background:#f90;}
-  .nowBlock{ background:rgba(8,142,144,.6); color:#fff; border:2px dashed $color4; position:absolute; right:10%; width:100px; top:0; bottom:0; z-index:1; transition-property: left,right; transition-duration: 1s;}
-  .nowBlock.disabled{ background:rgba(155,155,155, .6); border-color:#ccc; }
   .clip{ width:1px; position:absolute; top:-5px; bottom:-5px; background:red; z-index:10; transition-property: left,right; transition-duration: 1s;}
   .clip:before, .clip:after{ content:''; position:absolute; border:9px solid transparent; width:0; height:0; overflow:hidden; left:50%; transform:translateX(-50%); opacity:.8;}
   .clip:before{ border-top-color:red; top:-5px;}
   .clip:after{ border-bottom-color:red; bottom:-5px;}
+  .cutBlock{ position:absolute; top:1px; bottom:1px; outline:1px dashed rgba(0,0,0,.3); outline-offset:-1px;}
+  .cutBlock.sel{ outline-color:#f90; background:rgba(255,153,0,.2);}
+  .cutBlock.first{ outline-color:$color4; background:#fff repeating-linear-gradient(-45deg, rgba(6,147,147,.3) 0, rgba(6,147,147,.3) 10px, transparent 0, transparent 20px);}
 }
 .ruler{
   height:2px; background:#ccc; position:relative;
@@ -181,7 +182,7 @@ $color4: #069393;
 //当前裁剪信息
 .operate {
   width: 50%; height: 100%; border: 3px solid $color4; padding:0 10px 10px 10px; float: left; text-align:center; position:relative;
-  .status{ float:left; font-size:14px; margin-top:10px;}
+  .status{ position:absolute; font-size:14px; left:5px; top:5px;}
   .title {
     font-size:16px; display:inline-block; padding-bottom:10px;
     b{ position:relative; top:10px; font-size:50px; color:red; vertical-align: text-bottom; font-weight:normal; }

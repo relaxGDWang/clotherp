@@ -64,19 +64,12 @@
                         <li><label>流 程：</label><span>{{editObject.viewObj.craft}}</span></li>
                         <li><label>当前仓位：</label><span>{{editObject.viewObj.position}}</span></li>
                     </ul>
-                    <div class="clothShow" v-if="editObject">
-                        <div class="cloth" ref="cloth">
-                            <span class="flaw" v-for="(item,index) in editObject.defects" :index="index+1" :start="item.start" :end="item.end" :len="item.length" :type="item.defect_type"></span>
-                        </div>
-                        <div class="ruler" ref="ruler">
-                            <span v-for="item in getMark" :pos="item"></span>
-                        </div>
-                    </div>
+                    <rex-cloth :len="UI.len" :flaws="editObject.defects" :pos="currentPosition" v-if="editObject"></rex-cloth>
                     <div class="checkOperate" v-if="editObject">
                         <div class="checkOverview">
                             <div class="inshow">
-                                <span>当前布匹标记长度 <strong>{{editObject.viewObj.current_length}}</strong>米</span>
-                                <span>已标记疵点个数 <strong>{{editObject.defects.length}}</strong>个</span>
+                                <span>计米器读数 <strong>{{currentPosition===''? '--': currentPosition}}</strong></span>
+                                <span>/ <strong>{{editObject.viewObj.current_length}}</strong>米</span>
                             </div>
                         </div>
                         <div class="operateButton">
@@ -173,7 +166,7 @@
                 </div>
                 <div class="row">
                     <label>重标布长</label>
-                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.len" :disabled="input.flag"/> 米</span>
+                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.len" :disabled="input.flag" readonly/> 米</span>
                 </div>
                 <div class="doingShow" v-if="input.msg">
                     <span :class="input.status"><div class="loadingBlock" v-if="input.flag && input.status==='loading'"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
@@ -197,11 +190,11 @@
             <div class="dialog-content">
                 <div class="row">
                     <label>疵点开始位置</label>
-                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.start" :disabled="input.flag || input.step===2"/> 米</span>
+                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.start" :disabled="input.flag || input.step===2" readonly/> 米</span>
                 </div>
                 <div class="row" v-if="input.step===2">
                     <label>疵点结束位置</label>
-                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.end" :disabled="input.flag"/> 米</span>
+                    <span><input type="tel" class="rexInput" maxlength="6" v-model.trim="input.end" :disabled="input.flag" readonly/> 米</span>
                 </div>
                 <div class="doingShow" v-if="input.msg">
                     <span :class="input.status"><div class="loadingBlock" v-if="input.flag && input.status==='loading'"><div></div><div></div><div></div><div></div><div></div></div> {{input.msg}}</span>
@@ -233,6 +226,7 @@
 <script src="library/js/elementui2.4.11.js"></script>
 <!-- endbuild -->
 <!-- build:js script/missioncheck.js -->
+<script src="library/js/vueplug/clothShow.js"></script>
 <script src="script/missioncheck.js"></script>
 <!-- endbuild -->
 </body>
