@@ -32,6 +32,8 @@ var vu=new Vue({
             step:2,        //步骤
             readonly: true   //是否自定义输入，否则按计米器数值输入
         },
+        getPrintList:[],  //取货打印信息
+        printTemplate:'',  //打印模板信息
         editObject: {},
         mission: [],    //任务细分数组，ajax直接返回
         missionKey: {}  //bolt_id与数组index对应关系
@@ -65,6 +67,12 @@ var vu=new Vue({
                         data[i].position=data[i].position.split(REG.position);  //加工所在仓位
                         vu.mission.push(data[i]);
                         vu.missionKey[data[i]['bolt_id']] = vu.mission[i];
+                    }
+                    if (vu.printTemplate==='' && data.length!==0){
+                        vu.printTemplate=vu.mission[0].print_data;
+                        vu.printTemplate.info.code=undefined;
+                        vu.printTemplate.info.footer=undefined;
+                        vu.printTemplate.info.header='随手订货 取货单';
                     }
                 }
             });
@@ -148,6 +156,31 @@ var vu=new Vue({
                     dialog.open('information', {content: '布匹检验已完成！',btncancel: '',cname:'ok'});
                     //把当前对象标记为已完成
                     vu.editObject.finished=true;
+                }
+            });
+        },
+        askCut: function(){
+            dialog.open('information',{
+                content: '是否裁剪该布段？',
+                cname: 'sure',
+                closeCallback: function(id, dialogType, buttonType){
+                    if (buttonType==='sure') vu.doCut();
+                }
+            });
+        },
+        doCut: function(){
+            ajax.send({
+                url: PATH.missionCutFinished,
+                method: 'post',
+                data:{bolt_id: vu.editObject.viewObj.bolt_id, cutLength: vu.currentPosition},
+                success:function(data){
+                    dialog.close('loading');
+                    vu.flagReload=true;
+                    EQUIPMENT.resetCounter(true);
+                    vu._setDetailsData(data,'');
+                    //自动打印标签
+                    vu.printDoing('end');
+                    dialog.open('resultShow',{content:'当前段的裁剪操作已成功！'});
                 }
             });
         },
@@ -321,7 +354,7 @@ var vu=new Vue({
                     }
                 }
                 printStr=JSON.stringify(printStr);
-                //console.log(printStr);
+                console.log(printStr);
                 EQUIPMENT.print(printStr);
             }
         },
@@ -350,6 +383,43 @@ var vu=new Vue({
                     }
                 }
             });
+        },
+        //选择取货信息
+        selectGetCloth: function(e){
+            this.getPrintList=[];
+            var temp;
+            for (var i=0; i<e.length; i++){
+                this.getPrintList.push(e[i]);
+            }
+        },
+        //取货打印
+        printGetCloth: function(){
+            var maxCount=5;
+            if (this.getPrintList.length===0){
+                dialog.open('resultShow',{content:'没有选择需要打印的布卷信息！'});
+                return;
+            }
+            var template=vu.printTemplate;
+            var result=[];
+            var temp1,temp2;
+            for (var i=0; i<this.getPrintList.length; i++){
+                temp1='◆ $kind$ $store$';
+                temp2='   $id$';
+                temp1=temp1.replace('$kind$',this.getPrintList[i].product_code);
+                temp2=temp2.replace('$id$',this.getPrintList[i].bolt_no);
+                temp1=temp1.replace('$store$',this.getPrintList[i].position.join(','));
+                result.push({text:temp1});
+                result.push({text:temp2});
+                result.push({text:''});
+                if (i>=maxCount) break;
+            }
+            template.info.items=result;
+            var printStr=JSON.stringify(template);
+            if (this.getPrintList.length>maxCount){
+                dialog.open('resultShow',{content:'取货打印一次最多为'+ maxCount +'条！'});
+            }
+            console.log(printStr);
+            EQUIPMENT.print(printStr);
         }
     },
     beforeMount: function () {

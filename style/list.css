@@ -66,13 +66,9 @@
 
 .el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
 
-.cutMissionList thead .el-table_1_column_2 { text-align: center; }
-
-.cutMissionList .el-table_1_column_9 { text-align: center; }
+.el-table thead .el-table_1_column_2 { text-align: center; }
 
 .isCenter tr th:first-child, .isCenter tr td:first-child { text-align: center; }
-
-.checkMissionList .el-table_1_column_8 { text-align: center; }
 
 .el-table tr th:last-child, .el-table tr td:last-child { text-align: center; }
 
@@ -184,11 +180,13 @@
 .checkOperate .inshow strong { font-size: 20px; color: red; font-weight: normal; }
 .checkOperate .operateButton { float: right; }
 
-.buttonList { display: inline-block; vertical-align: middle; width: 50%; height: 100%; padding: 5px 0; }
+.buttonList { display: inline-block; vertical-align: middle; width: 50%; height: 100%; padding: 5px 0; text-align: right; }
 .buttonList .rexButton { height: 100%; width: 20%; padding: 0; text-align: center; border-radius: 0; border-left: 1px solid rgba(0, 0, 0, 0.3); border-right: 1px solid rgba(255, 255, 255, 0.3); }
 .buttonList .rexButton span { display: block; font-size: 14px; width: 100%; }
 .buttonList .rexButton .fa { font-size: 30px; margin-bottom: 10px; }
 .buttonList .rexButton .fa:before { position: static; }
+
+.buttonList.type2 .rexButton { width: 16.5%; }
 
 .elseList { margin-top: 10px; width: 100%; overflow: hidden; }
 .elseList h3 { border-bottom: 1px solid #ddd; font-size: 14px; color: #069393; line-height: 24px; }

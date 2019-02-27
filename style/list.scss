@@ -76,11 +76,9 @@
 //选择按钮
 .el-table .el-checkbox__inner{ width:18px; height:18px;}
 .el-table .el-checkbox__inner::after{ left:6px; top:3px;}
-//裁剪列表#列的列头居中对齐
-.cutMissionList thead .el-table_1_column_2{ text-align:center;}
-.cutMissionList .el-table_1_column_9{ text-align:center;}
+//#列的列头居中对齐
+.el-table thead .el-table_1_column_2{ text-align:center;}
 .isCenter tr th:first-child, .isCenter tr td:first-child{ text-align:center;}
-.checkMissionList .el-table_1_column_8{ text-align:center;}
 .el-table tr th:last-child, .el-table tr td:last-child{ text-align:center;}
 
   //仓库位置
@@ -248,7 +246,7 @@
 
 //裁剪操作按钮
 .buttonList{
-  display:inline-block; vertical-align: middle; width:50%; height:100%; padding:5px 0;
+  display:inline-block; vertical-align: middle; width:50%; height:100%; padding:5px 0; text-align: right;
   .rexButton {
     height: 100%; width: 20%; padding:0; text-align: center; border-radius:0; border-left:1px solid rgba(0,0,0,.3); border-right:1px solid rgba(255,255,255,.3);
     span {
@@ -262,6 +260,7 @@
     }
   }
 }
+.buttonList.type2 .rexButton{ width:16.5%;}
 
 .elseList{
   margin-top:10px; width:100%; overflow:hidden;

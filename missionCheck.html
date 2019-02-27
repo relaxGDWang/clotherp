@@ -19,12 +19,13 @@
 <body>
 <div class="outFrame" id="app">
     <div class="main">
-        <rex-title title="检验任务" icon="fa-instagram" :username="username" :equipment="equipment" :search="search" searchvalue="finished" @refresh="getList" @setsearch="changeSearch"></rex-title>
-        <div class="listContent checkMissionList">
-            <el-table :data="mission" :height="UI.listHeight" stripe>
-                <el-table-column label="#" width="40">
+        <rex-title title="检验任务" icon="fa-instagram" :username="username" :equipment="equipment" :search="search" searchvalue="finished" @refresh="getList" @setsearch="changeSearch" @printget="printGetCloth"></rex-title>
+        <div class="listContent checkMissionList" :class="{'isCenter':!search.listType}">
+            <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
+                <el-table-column type="selection" width="50" v-if="!search.listType"></el-table-column>
+                <el-table-column label="#" width="50">
                     <template slot-scope="scope">
-                        <span class="urgent fa" :class="{'fa-star':scope.row.urgent}">{{scope.$index+1}}</span>
+                        <span class="urgent fa" :class="{'fa-flag':scope.row.urgent}">{{scope.$index+1}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="product_code" label="商品编号" width="120"></el-table-column>
@@ -73,7 +74,7 @@
                                 <span class="nowCut">{{editObject.viewObj.current_length}}</span>
                                 {{currentPosition===''? '---.--': currentPosition}}
                             </div>
-                        </div><div class="buttonList">
+                        </div><div class="buttonList type2">
                             <button class="rexButton" color="info" @click="resetCounter()" :disabled="isDisabled">
                                 <span class="fa fa-rotate-left"></span><span>计米清零</span>
                             </button><button class="rexButton" color="info" @click="operateFlaw()" :disabled="isDisabled">
@@ -82,6 +83,8 @@
                                 <span class="fa fa-edit"></span><span>重标布长</span>
                             </button><button class="rexButton" color="info" @click="printDoing()">
                                 <span class="fa fa-barcode"></span><span>打印标签</span>
+                            </button><button id="doFinish" class="rexButton" color="warning" :disabled="isDisabled" @click="askCut()">
+                                <span class="fa fa-cut"></span><span>完成裁剪</span>
                             </button><button id="doFinish" class="rexButton" color="warning" :disabled="isDisabled" @click="askFinish()">
                                 <span class="fa fa-check-square-o"></span><span>完成检验</span>
                             </button>

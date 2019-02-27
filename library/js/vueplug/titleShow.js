@@ -14,7 +14,7 @@ Vue.component('rex-title', {
     template: ''+
         '<div class="titleBar">' +
             '<h1 class="itemButton fa" :class="icon">{{title}}</h1>' +
-            '<div class="itemButton dropItemShow fa fa-bars"><ul class="nohead"><li class="fa fa-home" @click="backHome()">返回首页</li><li class="fa fa-refresh" @click="refresh()">刷新列表</li><li class="fa fa-print" @click="printget" v-if="icon===\'fa-cut\'">取货打印</li></ul></div>' +
+            '<div class="itemButton dropItemShow fa fa-bars"><ul class="nohead"><li class="fa fa-home" @click="backHome()">返回首页</li><li class="fa fa-refresh" @click="refresh()">刷新列表</li><li class="fa fa-print" @click="printget">取货打印</li></ul></div>' +
             '<div class="itemButton fa fa-pencil-square" :class="{\'sel\':!search.listType}" @click="setsearch()">待处理</div>' +
             '<div class="itemButton fa fa-check-square" :class="{\'sel\':search.listType}" @click="setsearch(1)">已完成</div>' +
             '<span class="rexIconInput" size="S"><span class="fa fa-search"></span><input type="text"/></span>' +

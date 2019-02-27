@@ -418,7 +418,7 @@ var vu=new Vue({
                 }
                 printStr=JSON.stringify(printStr);
             }
-            //console.log(printStr);
+            console.log(printStr);
             EQUIPMENT.print(printStr);
         },
         //重置AB面

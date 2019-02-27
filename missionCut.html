@@ -80,7 +80,7 @@
                     <ul class="baseInfo nohead" v-if="editObject.bolt_id">
                         <li><label>客户信息：</label><span>{{editObject.viewObj.sel.purchaser || '--'}}</span></li>
                         <li><label>订货长度：</label><span>{{editObject.viewObj.sel.order_length || '--'}}米</span></li>
-                        <li><label>备注：</label><span></span></li>
+                        <li><label>备注：</label><span>{{editObject.viewObj.sel.comment || '--'}}</span></li>
                     </ul>
                     <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :cuts="editObject.viewObj.splits" :select="editObject.viewObj.sel" :fromwhere="editObject.viewObj.start" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
                     <div class="operateShow" v-if="editObject.bolt_id">
@@ -100,7 +100,7 @@
                             </button><button class="rexButton" color="info" @click="printDoing('show')" :disabled="editObject.viewObj.examine===1 && editObject.viewObj.splits.length>0">
                                 <span class="fa fa-barcode"></span><span>打印标签</span>
                             </button><button id="doFinish" class="rexButton" color="warning" :disabled="!editObject.viewObj.sel || editObject.viewObj.sel.bolt_id!==editObject.viewObj.splits[0].bolt_id" @click="askFinish()">
-                                <span class="fa fa-check-square-o"></span><span>完成裁剪</span>
+                                <span class="fa fa-cut"></span><span>完成裁剪</span>
                             </button>
                         </div>
                     </div>
