@@ -1,99 +1,77 @@
 @charset "UTF-8";
 @import '../library/style/config2.scss';
-$disTop:0px;
-$disLeft:100px;
-$disRight:0px;
-$disBottom:0px;
+strong{ font-weight:normal;}
+.outFrame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: $color1;
+}
 
-$color1: #336666;
-$color2: #669999;
-$color3: #cccc99;
-$color4: #069393;
+.allPart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  overflow: hidden;
+  min-width:764px;
+}
 
-/* 后台框架样式 */
-.rexSysFrame{
-  width:100%; height:100%; overflow:hidden; position:relative;
-  .partTop,.partRight,.partBottom,.partLeft{ position:absolute;}
-  .partContent{
-    width:100%; height:100%; border-width:$disTop $disRight $disBottom $disLeft; border-style:solid; border-color:transparent;
+h1{
+  width:100%; color:rgba(255,255,255,.8); font-size:18px; font-weight:normal; padding:10px 0; margin:3px;
+  .userInfo{ float:right; font-size:14px; margin:5px 15px 0 0; color:#fff;}
+  .userInfo:before{ margin-right:5px; font-size:16px; vertical-align:middle; color:#f90;}
+}
+
+h2{
+  float: left;
+  height: 246px;
+  width: 246px;
+  margin: 3px;
+  background: #fff;
+  text-align: center;
+  position: relative;
+  .fa:before {
+    font-size: 140px;
+    color: $color4;
+    line-height: 246px;
   }
-  .partTop{ height:$disTop; top:0; left:0; right:0;
-    @if $disTop == 0{
-      display:none;
-    }
-  }
-  .partRight{ width:$disRight; right:0; top:0; bottom:0;
-    @if $disRight == 0{
-      display:none;
-    }
-  }
-  .partBottom{ height:$disBottom; bottom:0; left:0; right:0;
-    @if $disBottom == 0{
-      display:none;
-    }
-  }
-  .partLeft{ width:$disLeft; left:0; top:0; bottom:0;
-    @if $disLeft == 0{
-      display:none;
-    }
-  }
-  .partTop, .partBottom{
-    &.offset-1{ left:$disLeft;}
-    &.md-1{ left:$disLeft; right:$disRight;}
-    &.md-2{ right:$disRight;}
-    &.offset-1.md-2{ right:0;}
-  }
-  .partLeft,.partRight{
-    &.offset-1{ top:$disTop;}
-    &.md-1{ top:$disTop; bottom:$disBottom;}
-    &.md-2{ bottom:$disBottom;}
-    &.offset-1.md-2{ bottom:0;}
+  strong {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 16px;
+    color: $color4;
   }
 }
 
-.partLeft{
-  background:#333;
-  h1{
-    width:100%; height:120px; background: $color1; font-size:14px; text-align:center; padding-top:15px;
-    &:before{ display:inline-block; background: #fff; border-radius:50%; padding:6px; font-size:50px;  transform:rotate(-90deg); color:$color4; padding-bottom:10px;}
-    span{ display:block; color:$color3; font-weight:normal; margin-top:5px;}
+.iconPart {
+  overflow: hidden;
+  width: auto;
+  .clearLeft {
+    clear: left;
   }
-}
-
-.partContent{
-  position:relative;
-  .changeButton{ width:60px; line-height:40px; height:40px; text-align:center; background:rgba(255,255,255,.3); color:#fff; position:absolute; left:-60px; bottom:5%; font-size:24px; cursor:pointer; cursor:pointer; border-radius:6px 0 0 6px; z-index: 10;}
-  .changeButton:hover, .changeButton:active{ background:$color1; color:#fff;}
-  .changeButton:before{ display:inline-block; transform:none; transition:transform .5s;}
-}
-
-
-.hiddenLeft .partLeft{ width:0; overflow:hidden; }
-.hiddenLeft .partContent{
-  border-left-width:0;
-  .changeButton{ left:0; border-radius:0 6px 6px 0; background:#666; color:#fff; opacity:.2;}
-  .changeButton:hover, .changeButton:active{ background:$color1; color:#fff; opacity:1;}
-  .changeButton:before{ transform:rotate(180deg);}
-}
-
-.systemMenu{
-  li{ height:100px; color:#fff; padding-top:20px; border-top:1px solid #666; border-bottom:1px solid #000;}
-  li:first-child{ border-top:0;}
-  li:hover{ background: #666;}
-  a{ display:block; height:100%; text-align:center;}
-  a:before{ display:inline-block; width:100%; font-size:40px; margin-bottom:5px;}
-  li.sel{ background:#fff; color:$color4;}
-}
-
-//信息提示弹框
-#sysInfo{
-  .dialog-content{ padding:15px;}
-  .dialog-buttonBar{
-    background:#ccc repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 12px, transparent 0, transparent 24px);
-    .rexButton{ width:100px;}
+  a{
+    width: 120px;
+    height: 120px;
+    background: $color4;
+    margin: 3px;
+    float: left;
+    border: 2px solid transparent;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    &:hover{ border-color:#fff; background:#19bbbb;}
+    &:before{ font-size:60px; display:block; color:rgba(0,0,0,.5); line-height:100px;}
+    &:hover:before{ color:rgba(0,0,0,.3);}
+    strong{ position:absolute; color:#fff; bottom:5px; left:5px;}
   }
-  .dialog-title{ font-size:16px;}
-  .dialog-title .fa{ font-size:22px;}
-  .dialog-title .fa:before{ vertical-align:middle;}
-  &.sure .dialog-title{ background:#216cc9; color:#fff;}
+  .statusIcon{
+    background:$color3;
+    &:hover{ background:$color3; border-color:transparent;}
+    strong{ color:rgba(0,0,0,.6);}
+    b{ position:absolute; height:14px; width:14px; border-radius:50%; right:5px; bottom:7px; border:1px solid #f0f0f0; background: #aaa;}
+    b.off{ background:red;}
+    b.on{ background:#37e501;}
+  }
 }

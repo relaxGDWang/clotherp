@@ -16,96 +16,129 @@ var vu = new Vue({
     data: {
         flagFocus: false,
         input: {
-            telnumber: '13811111111',
+            telnumber: '',
             password: ''
         },
-        msg:{
-            type:'',   //提示类型
-            text:'',   //信息文本
-            occur:''   //出错对象，主要用于warning
-        }
+        msg: {
+            type: '',   //提示类型
+            text: '',   //信息文本
+            occur: ''   //出错对象，主要用于warning
+        },
+        restaurants: [] //供选择的手机号码
     },
     methods: {
-        doLogin: function(){
-            if (ajax.status.code===100) return;
+        doLogin: function () {
+            if (ajax.status.code === 100) return;
             //验证输入
-            var checkList=['telnumber','password'];
-            var msg='',occur='',keyStr,tval;
-            for (var i=0; i<checkList.length; i++){
-                keyStr=checkList[i];
-                this.input[keyStr]=this.input[keyStr].Trim();
-                tval=this.input[keyStr];
-                if (tval===''){
-                    msg=REG[keyStr].empty;
-                    occur=keyStr;
+            var checkList = ['telnumber', 'password'];
+            var msg = '', occur = '', keyStr, tval;
+            for (var i = 0; i < checkList.length; i++) {
+                keyStr = checkList[i];
+                this.input[keyStr] = this.input[keyStr].Trim();
+                tval = this.input[keyStr];
+                if (tval === '') {
+                    msg = REG[keyStr].empty;
+                    occur = keyStr;
                     break;
                 }
-                if (REG[keyStr].exp.test(tval)===false){
-                    msg=REG[keyStr].error;
-                    occur=keyStr;
+                if (REG[keyStr].exp.test(tval) === false) {
+                    msg = REG[keyStr].error;
+                    occur = keyStr;
                     break;
                 }
             }
-            if (msg){
-                this.setMsg({type:'warning',text:msg,occur:occur});
+            if (msg) {
+                this.setMsg({type: 'warning', text: msg, occur: occur});
                 return;
             }
             ajax.send({
-                data:{
+                data: {
                     mobile: this.input.telnumber,
                     password: this.input.password
                 }
             });
         },
-        ajaxBefore: function(){
-            this.setMsg({type:'loading',text:'正在发送登录信息...'});
+        ajaxBefore: function () {
+            this.setMsg({type: 'loading', text: '正在发送登录信息...'});
         },
-        ajaxError: function(code,text){
-            this.setMsg({type:'error',text:text,occur:'all'});
+        ajaxError: function (code, text) {
+            this.setMsg({type: 'error', text: text, occur: 'all'});
         },
-        ajaxSuccess: function(data){
-            this.setMsg({type:'ok', text:'管理员登录成功，页面即将跳转...'});
+        ajaxSuccess: function (data) {
+            this.setMsg({type: 'ok', text: '管理员登录成功，页面即将跳转...'});
             //存储登录信息
             //localStorage.setItem(CFG.token,JSON.stringify({code:data.adminToken,live:getUnixTime()+CFG.tokenLive*1000}));
-            localStorage.setItem(CFG.admin,JSON.stringify({token:data.api_token, mobile:data.mobile, name:data.name}));
-            setTimeout(function(){
-                top.location.href=CFG.defaultPage;
-            },100);
-        },
-        setMsg: function(config){
-            if (config){
-                this.msg.type=config.type;
-                this.msg.text=config.text;
-                if (config.occur){
-                    this.msg.occur=config.occur;
-                }else{
-                    this.msg.occur='';
+            localStorage.setItem(CFG.admin, JSON.stringify({
+                token: data.api_token,
+                mobile: data.mobile,
+                name: data.name
+            }));
+            //写入当前登录的手机号码
+            var flagHave = false;
+            for (var i = 0; i < this.restaurants.length; i++) {
+                if (this.restaurants[i].value === this.input.telnumber) {
+                    flagHave = true;
+                    break;
                 }
+            }
+            if (flagHave === false) {
+                this.restaurants.push({value: this.input.telnumber});
+                localStorage.setItem('telnumber', JSON.stringify(this.restaurants));
+            }
+            setTimeout(function () {
+                top.location.href = CFG.defaultPage+'?v='+Math.random();
+            }, 100);
+        },
+        setMsg: function (config) {
+            if (config) {
+                this.msg.type = config.type;
+                this.msg.text = config.text;
+                if (config.occur) {
+                    this.msg.occur = config.occur;
+                } else {
+                    this.msg.occur = '';
+                }
+            } else {
+                for (var x in this.msg) {
+                    this.msg[x] = '';
+                }
+            }
+        },
+        querySearch: function(queryString, cb) {
+            var restaurants = this.restaurants;
+            var results;
+            if (queryString.length === 11) {
+                results = [];
+            } else if(queryString){
+                results=restaurants.filter(this.createFilter);
             }else{
-                for (var x in this.msg){
-                    this.msg[x]='';
-                }
+                results = restaurants;
             }
+            // 调用 callback 返回建议列表的数据
+            cb(results);
         },
-        focusShow: function(){
-            this.flagFocus=true;
-        },
-        focusLost: function(e){
-            if (e.target===$('#app')[0]){
-                this.flagFocus=false;
-            }
+        createFilter: function(queryString) {
+            return queryString.value.indexOf(vu.input.telnumber) === 0;
+        }
+    },
+    mounted: function () {
+        var telString = localStorage.getItem('telnumber');
+        if (!telString) {
+            this.restaurants = [];
+        } else {
+            this.restaurants = JSON.parse(telString);
         }
     },
     watch: {
-        'input.telnumber': function(newVal){
-            if (this.msg.occur==='username' || this.msg.occur==='all') this.setMsg();
+        'input.telnumber': function (newVal) {
+            if (this.msg.occur === 'telnumber' || this.msg.occur === 'all') this.setMsg();
         },
-        'input.password': function(newVal){
-            if (this.msg.occur==='password' || this.msg.occur==='all') this.setMsg();
+        'input.password': function (newVal) {
+            if (this.msg.occur === 'password' || this.msg.occur === 'all') this.setMsg();
         }
     }
 });
-var ajax=relaxAJAX({
+var ajax = relaxAJAX({
     url: PATH.login,
     contentType: CFG.JDTYPE,
     formater: CFG.ajaxFormater,
@@ -114,3 +147,5 @@ var ajax=relaxAJAX({
     error: vu.ajaxError,
     success: vu.ajaxSuccess
 });
+
+var dialog=relaxDialog();

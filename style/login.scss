@@ -1,10 +1,6 @@
 @charset "UTF-8";
 @import '../library/style/config2.scss';
 
-$color1: #336666;
-$color2: #669999;
-$color3: #cccc99;
-$color4: #069393;
 body {
   background: #000;
 }
@@ -80,8 +76,10 @@ h1 {
   .fa:before {
     display: inline-block;
     font-size: 60px;
+    width:80px;
+    height:80px;
+    text-align:center;
     vertical-align: middle;
-    transform: rotate(-90deg);
     background: #fff;
     padding: 10px;
     border-radius: 50%;
@@ -97,11 +95,15 @@ h1 {
     padding: 8px;
     font-size: 16px;
   }
-  button, .rexIconInput {
+  button, .el-input{
     width: 260px;
+    font-size:16px;
   }
-  .rexIconInput .fa:first-child:before {
+  .el-input .el-input__prefix{
     color: $color4;
+    font-size: 20px;
+  }
+  .el-input .el-input__clear{
     font-size: 20px;
   }
 

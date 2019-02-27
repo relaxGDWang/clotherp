@@ -13,19 +13,19 @@
     <!-- build:css /style/login.css -->
     <link rel="stylesheet" href="style/login.css"/>
     <!-- endbuild -->
-    <script src="script/configBG.js?v=1"></script>
+    <script src="script/configBG.js"></script>
 </head>
 <body>
-<div class="outFrame" :class="{'focus':flagFocus}" id="app" @click="focusLost($event)">
+<div class="outFrame" id="app">
     <div class="loginFrame">
         <div class="loginContent">
-            <h1><span class="fa fa-hand-o-right">随手订货宝</span></h1>
+            <h1><span class="fa fa-hand-o-up">随手订货宝</span></h1>
             <ul class="loginForm">
                 <li>
-                    <input-icon type="tel" v-model="input.telnumber" icon-left="fa-user" placeholder="手机号码" ext="del" @focus="focusShow" maxlength="11"></input-icon>
+                    <el-autocomplete type="tel" class="inline-input" prefix-icon="fa fa-user" size="large" v-model="input.telnumber" :fetch-suggestions="querySearch" placeholder="手机号码" maxlength="11" clearable></el-autocomplete>
                 </li>
                 <li>
-                    <input-icon type="password" v-model="input.password" icon-left="fa-lock" placeholder="登录密码" ext="appear" @focus="focusShow" maxlength="32"></input-icon>
+                    <el-input type="password" placeholder="登录密码" prefix-icon="fa fa-lock" size="large" v-model="input.password" maxlength="32" clearable></el-input>
                 </li>
                 <li class="tipMessage">
                     <span v-if="msg.text" class="fa" :class="msg.type">
@@ -39,6 +39,13 @@
             </ul>
         </div>
     </div>
+
+    <!-- 轻量信息提示 -->
+    <div class="miniDialog bottom" id="resultShow">
+        <div class="dialog-content">
+            <span class="diy"></span>
+        </div>
+    </div>
 </div>
 <!-- build:js library/js/webcommon.js -->
 <script src="library/js/jquery.min.js"></script>
@@ -49,7 +56,6 @@
 <script src="library/js/elementui2.4.11.js"></script>
 <!-- endbuild -->
 <!-- build:js script/login.js -->
-<script src="library/js/vueplug/simplyControls.js"></script>
 <script src="script/login.js"></script>
 <!-- endbuild -->
 </body>

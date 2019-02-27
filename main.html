@@ -16,38 +16,54 @@
     <script src="script/configBG.js"></script>
 </head>
 <body>
-<div class="rexSysFrame">
-    <header class="partTop"></header>
-    <div class="partRight"></div>
-    <footer class="partBottom"></footer>
-    <div class="partContent">
-        <iframe src="" name="mainContent" id="abc"></iframe>
-        <div class="changeButton fa fa-chevron-left"></div>
+<div class="outFrame" id="app">
+    <div class="allPart">
+        <h1>
+            <a href="">随手订货</a>
+            <span class="userInfo fa fa-user">{{username}}</span>
+        </h1>
+        <h2><span class="fa fa-hand-o-up"></span><strong>v1.0.4</strong></h2>
+        <div class="iconPart">
+            <a class="fa fa-cut" :href="'missionCut.html?v='+Math.random()"><strong>裁剪任务</strong></a>
+            <a class="fa fa-instagram" :href="'missionCheck.html?v='+Math.random()"><strong>检验任务</strong></a>
+            <a class="fa fa-gears" @click="EQUIPMENT.setting()"><strong>系统设置</strong></a>
+            <a class="fa fa-power-off" @click="loginOut()"><strong>退出登录</strong></a>
+            <a class="fa fa-print clearLeft statusIcon">
+                <strong>标签打印机</strong>
+                <b :class="equipment.printer"></b>
+            </a>
+            <a class="fa fa-legal statusIcon">
+                <strong>计米器</strong>
+                <b :class="equipment.counter"></b>
+            </a>
+            <a class="fa fa-signal statusIcon">
+                <strong>网络链接</strong>
+                <b :class="equipment.neter"></b>
+            </a>
+        </div>
     </div>
-    <nav class="partLeft">
-        <h1 class="fa fa-hand-o-right"><span>随手订货v1.0.4</span></h1>
-        <ul class="systemMenu">
-            <li class="sel"><a class="fa fa-cut" href="missionCut.html" target="mainContent">裁剪任务</a></li>
-            <li><a class="fa fa-instagram" href="missionCheck.html" target="mainContent">检验任务</a></li>
-            <!--<li><a class="fa fa-gear" href="setting.html" target="mainContent">账户设置</a></li>-->
-            <li><a id="loginOut" class="fa fa-power-off">退出登录</a></li>
-        </ul>
-    </nav>
 
-    <div class="extDialog" id="sysInfo">
+    <div class="extDialog" id="information" noclick="noclick">
         <div class="dialogFrame">
-            <div class="dialog-title"><h3>信息提示</h3></div>
+            <div class="dialog-title">
+                <h4><span class="fa fa-info-circle"></span> 系统信息提示</h4>
+            </div>
             <div class="dialog-buttonBar">
-                <button class="rexButton opBtn btn-close">取 消</button>
-                <button class="rexButton opBtn btn-sure">确 定</button>
+                <button class="rexButton opBtn btn-cancel">取消</button>
+                <button class="rexButton opBtn btn-sure">确定</button>
             </div>
             <div class="dialog-content">
-                <div class="diy" style="padding:10px;"></div>
+                <div class="diy"></div>
             </div>
         </div>
     </div>
 
-    <div id="app"></div>
+    <!-- 轻量信息提示 -->
+    <div class="miniDialog bottom" id="resultShow">
+        <div class="dialog-content">
+            <span class="diy"></span>
+        </div>
+    </div>
 </div>
 <!-- build:js library/js/webcommon.js -->
 <script src="library/js/jquery.min.js"></script>

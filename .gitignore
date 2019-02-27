@@ -3,5 +3,4 @@ node_modules/
 Doc/
 package.json
 package-lock.json
-node_modules/
 dht-vue/

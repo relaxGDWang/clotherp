@@ -11,14 +11,33 @@
   100% { transform: translateX(0); } }
 .outFrame { overflow: hidden; width: 100%; height: 100%; }
 
-.main { width: 100%; height: 100%; padding: 10px; }
+.main { width: 100%; height: 100%; }
 
-.searchBar { padding-bottom: 10px; }
+.titleBar { height: 44px; background: #eee; text-align: right; color: #202020; }
+.titleBar h1 { background: #999; color: rgba(255, 255, 255, 0.8); font-size: 14px; font-weight: normal; }
+.titleBar .itemButton { float: left; line-height: 44px; padding: 0 15px; font-size: 14px; text-align: center; color: #666; }
+.titleBar .itemButton.sel { background: #069393; color: #fff; }
+.titleBar .itemButton:before { font-size: 16px; vertical-align: middle; margin: 0 5px; }
+.titleBar h1.itemButton { color: #fff; }
+.titleBar .userInfo, .titleBar .eqStatus { font-size: 12px; line-height: 44px; display: inline-block; }
+.titleBar .userInfo:before, .titleBar .eqStatus:before { font-size: 16px; margin-right: 3px; vertical-align: middle; color: #999; }
+.titleBar .userInfo { margin-right: 15px; }
+.titleBar .eqStatus { margin-right: 7px; position: relative; }
+.titleBar .eqStatus:after { content: ''; position: absolute; top: 10px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: #aaa; }
+.titleBar .eqStatus.on:after { background: #37e501; }
+.titleBar .eqStatus.off:after { background: red; }
+.titleBar .rexIconInput { float: left; margin: 5px 0 0 330px; }
 
-.equipment { float: right; margin-top: 15px; }
+.dropItemShow { position: relative; width: 50px; }
+.dropItemShow ul { position: absolute; top: 44px; right: 0; max-height: 0; z-index: 10; overflow: hidden; width: 162px; transition-property: max-height; transition-duration: .3s; opacity: .9; }
+.dropItemShow li { display: block; line-height: 28px; border-bottom: 1px solid #fff; background: #336666; color: #fff; text-align: center; padding: 5px; }
+.dropItemShow li:before { font-size: 16px; margin-right: 5px; }
+.dropItemShow li:hover, .dropItemShow li:active { background: #cccc99; color: #336666; }
+.dropItemShow:hover, .dropItemShow:active { background: #336666; color: #fff; }
+.dropItemShow:hover ul, .dropItemShow:active ul { max-height: 300px; background: #3a8ee6; }
 
 /* 表格样式 */
-.el-table th { background: #669999; color: #fff; padding: 6px 0; text-align: center; }
+.el-table th { padding: 6px 0; }
 
 .el-table td { padding: 6px 0; color: #333; }
 
@@ -40,12 +59,34 @@
 
 .el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff; }
 
-#opDetails .dialog-title { background: #069393 linear-gradient(rgba(255, 255, 255, 0.3) 0, transparent 15px); }
-#opDetails .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }
-#opDetails .dialog-title h4 .fa:before { font-size: 22px; }
-#opDetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
-#opDetails .dialog-title .opBtn:hover, #opDetails .dialog-title .opBtn:active { color: red; }
-#opDetails.extMenu .dialogFrame { width: 90%; }
+.el-table .urgent { position: relative; padding-left: 15px; }
+.el-table .urgent:before { color: red; font-size: 16px; position: absolute; left: -3px; top: 3px; }
+
+.el-table .el-checkbox__inner { width: 18px; height: 18px; }
+
+.el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
+
+.cutMissionList thead .el-table_1_column_2 { text-align: center; }
+
+.cutMissionList .el-table_1_column_9 { text-align: center; }
+
+.isCenter tr th:first-child, .isCenter tr td:first-child { text-align: center; }
+
+.checkMissionList .el-table_1_column_8 { text-align: center; }
+
+.el-table tr th:last-child, .el-table tr td:last-child { text-align: center; }
+
+.el-table .positionItem { white-space: nowrap; margin: 0 1px; }
+.el-table .positionItem:after { content: ','; }
+.el-table .positionItem:last-child:after { content: ''; }
+
+.mydetails .dialog-title { background: #336666; border-bottom: 0; }
+.mydetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
+.mydetails .dialog-title .opBtn:hover, .mydetails .dialog-title .opBtn:active { color: red; }
+.mydetails .dialog-title ul { padding-left: 5px; }
+.mydetails .dialog-title li { float: left; line-height: 42px; color: rgba(255, 255, 255, 0.6); margin-right: 15px; }
+.mydetails .dialog-title label { color: #fff; }
+.mydetails.extMenu .dialogFrame { height: calc(100% - 44px); }
 
 .doing .dialog-title { background: #669999 linear-gradient(rgba(255, 255, 255, 0.05) 0, transparent 15px); }
 .doing .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }
@@ -53,8 +94,10 @@
 .doing .dialog-content { padding: 15px; }
 .doing .row { padding: 5px; padding-left: 20%; text-align: left; }
 .doing label { color: #999; display: inline-block; width: 120px; text-align: right; margin-right: 10px; }
-.doing label + span { display: inline-block; }
+.doing label + span { display: inline-block; padding-left: 5px; }
 .doing label + span b { color: red; font-size: 1.4em; }
+.doing .inputShow { vertical-align: middle; position: relative; padding-left: 0; }
+.doing .inputShow strong { position: absolute; right: 10px; top: 10px; color: #999; font-weight: normal; }
 .doing .rexInput { font-size: 1.4em; width: 120px; }
 .doing .dialog-buttonBar { background: #8ed2d2 repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 12px, transparent 0, transparent 24px); }
 .doing .dialog-buttonBar .rexButton { width: 100px; }
@@ -66,48 +109,32 @@
 
 #loading .dialog-content { padding: 15px; }
 
-#information .dialog-content { padding: 15px; }
-#information .dialog-buttonBar { background: #ccc repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 12px, transparent 0, transparent 24px); }
-#information .dialog-buttonBar .rexButton { width: 100px; }
-#information .dialog-title { font-size: 16px; }
-#information .dialog-title .fa { font-size: 22px; }
-#information .dialog-title .fa:before { vertical-align: middle; }
-#information.sure .dialog-title { background: #216cc9; color: #fff; }
-#information.warning .dialog-title { background: #f79e03; color: #fff; }
-#information.error .dialog-title { background: #f70303; color: #fff; }
-#information.ok .dialog-title { background: #02a018; color: #fff; }
-
 .missionDetails h3 { font-size: 14px; color: #069393; line-height: 28px; position: relative; padding-left: 16px; }
 .missionDetails h3:before { content: ''; width: 10px; height: 10px; position: absolute; top: 8px; left: 0; background: #069393; }
 
-.leftPart { width: 190px; float: left; height: 100%; padding: 0 5px 0 5px; }
-.leftPart .viewList { overflow: auto; height: 100%; overflow: auto; padding: 5px 0; }
-.leftPart li { border: 1px solid #ccc; margin-bottom: 5px; padding: 5px 5px 0 5px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #fff; border-radius: 4px; transition-property: background-color, border-color; transition-duration: .3s; }
-.leftPart li:hover, .leftPart li:active { background-color: #cefbfb; border-color: #336666; }
-.leftPart li:hover strong, .leftPart li:active strong { border-color: #336666; }
-.leftPart li.fin { background-color: #ccc; border-color: #999; background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0, rgba(255, 255, 255, 0.1) 10px, transparent 0, transparent 20px); }
-.leftPart li.fin strong { border-color: #999; }
-.leftPart li.sel { background-color: #ffedce; border-color: #f90; }
-.leftPart li.sel.fin { background-image: repeating-linear-gradient(45deg, rgba(255, 153, 0, 0.1) 0, rgba(255, 153, 0, 0.1) 10px, transparent 0, transparent 20px); }
-.leftPart li.sel strong { border-color: #f90; }
-.leftPart strong { line-height: 30px; display: block; border-top: 1px solid #eee; font-weight: normal; text-align: center; margin-top: 5px; transition-property: border-color; transition-duration: .3s; }
-.leftPart .status { display: inline-block; }
-.leftPart .fin .status { opacity: .7; }
-.leftPart .length { float: right; color: #999; }
-.leftPart .length b { font-size: 14px; color: red; font-weight: normal; margin: 0 2px; }
+.leftPart { width: 175px; float: left; height: 100%; background: #336666; }
+.leftPart .viewList { overflow: auto; height: 100%; }
+.leftPart li { padding: 3px 3px 8px 3px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #069393; color: #fff; border-bottom: 1px solid #336666; }
+.leftPart li:hover, .leftPart li:active { background-color: #19bbbb; }
+.leftPart strong { line-height: 24px; font-weight: normal; position: relative; padding-left: 10px; }
+.leftPart strong:before { color: red; position: absolute; top: 0; left: 0; font-size: 14px; }
+.leftPart .statusBar span { display: inline-block; color: rgba(255, 255, 255, 0.8); }
+.leftPart .length { background: #f90; }
+.leftPart .length:after { content: '米'; }
+.leftPart .finished { background: green; }
+.leftPart li.sel { background-color: #fff; border-bottom: 0; }
+.leftPart li.sel strong { color: #333; }
 
-.rightPart { width: auto; margin-left: 190px; height: 100%; padding: 0 10px 0 10px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.2); }
-
-.inPart { padding: 10px; width: 100%; height: 100%; }
+.rightPart { width: auto; margin-left: 175px; height: 100%; padding: 0 10px 0 10px; }
 
 .status { line-height: 1.8em; padding: 0 0.5em; }
 .status:before { color: #fff; }
-.status.customer { background: #069393; }
+.status.customer { background: #005be3; }
 .status.customer:before { content: '客户订单'; }
 .status.flaw { background: #666; }
 .status.flaw:before { content: '疵点分裁'; }
-.status:normal { background: blue; }
-.status:normal:before { content: '分裁入库'; }
+.status.normal { background: blue; }
+.status.normal:before { content: '分裁入库'; }
 
 .baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
 .baseInfo li { float: left; line-height: 30px; padding-right: 20px; }
@@ -115,9 +142,11 @@
 .baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
 .baseInfo .showLength > div { display: inline-block; width: 20%; }
 
-.clothShow { margin: 24px 0 32px 0; }
+.clothShow { margin: 24px 0 32px 0; width: calc(100% - 55px); position: relative; padding-left: 10px; }
+.clothShow .changePosition { position: absolute; right: -55px; top: 0; height: 100%; width: 50px; border-radius: 0; }
+.clothShow .changePosition .fa:before { font-size: 30px; }
 
-.cloth { box-shadow: 0 0 0 1px #ccc inset; background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); width: 100%; height: 30px; position: relative; }
+.cloth { box-shadow: 0 0 0 1px #ccc inset; background: #eee; background: #eee repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); width: 100%; height: 50px; position: relative; }
 .cloth .flaw { position: absolute; background: #000; top: 0; bottom: 0; transition-property: left,right; transition-duration: 1s; min-width: 1px; }
 .cloth .flaw:after { content: attr(index); position: absolute; height: 20px; line-height: 20px; padding: 0 3px; background: #000; color: #fff; top: -21px; left: 50%; transform: translateX(-50%); font-size: 12px; border-radius: 2px; cursor: pointer; }
 .cloth .flaw:hover { background: #f90; z-index: 2; }
@@ -129,25 +158,23 @@
 .cloth .cutBlock { position: absolute; top: 1px; bottom: 1px; outline: 1px dashed rgba(0, 0, 0, 0.3); outline-offset: -1px; }
 .cloth .cutBlock.sel { outline-color: #f90; background: rgba(255, 153, 0, 0.2); }
 .cloth .cutBlock.first { outline-color: #069393; background: #fff repeating-linear-gradient(-45deg, rgba(6, 147, 147, 0.3) 0, rgba(6, 147, 147, 0.3) 10px, transparent 0, transparent 20px); }
+.cloth .endShow { position: absolute; z-index: 3; text-shadow: 0 0 2px #fff; top: 50%; transform: translateY(-50%); font-weight: bold; }
+.cloth .leftCloth { left: 0; right: 0; color: #069393; text-align: center; line-height: 48px; background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); }
 
 .ruler { height: 2px; background: #ccc; position: relative; }
 .ruler span { position: absolute; top: 2px; height: 6px; width: 1px; text-align: center; background: #ccc; font-size: 12px; color: #666; }
 .ruler span:before { content: attr(pos); position: absolute; top: 10px; left: 50%; transform: translateX(-50%); }
 
-.operateShow { width: 100%; height: 150px; overflow: hidden; }
+.operateShow { width: 100%; height: 80px; overflow: hidden; }
 
-.operate { width: 50%; height: 100%; border: 3px solid #069393; padding: 0 10px 10px 10px; float: left; text-align: center; position: relative; }
-.operate .status { position: absolute; font-size: 14px; left: 5px; top: 5px; }
-.operate .title { font-size: 16px; display: inline-block; padding-bottom: 10px; }
-.operate .title b { position: relative; top: 10px; font-size: 50px; color: red; vertical-align: text-bottom; font-weight: normal; }
-.operate .elseInfo { border-top: 1px solid #ccc; overflow: hidden; text-align: left; padding-top: 5px; }
-.operate .elseInfo li { width: 100%; padding: 5px 0; }
-.operate .elseInfo li.center { text-align: center; padding-top: 15px; color: #336666; }
-.operate .elseInfo label { color: #999; }
-.operate .maskShow { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.2) repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0, rgba(255, 255, 255, 0.15) 10px, transparent 0, transparent 20px); text-align: center; }
-.operate .maskShow:before { content: ''; display: inline-block; height: 100%; vertical-align: middle; }
-.operate .maskShow span { display: inline-block; vertical-align: middle; color: #fff; padding: 5px 10px; background: rgba(251, 124, 0, 0.7); box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); visibility: hidden; }
-.operate .maskShow span.focus { animation: focusShow 1s forwards; visibility: visible; }
+.operate { display: inline-block; min-width: 260px; width: 50%; padding-left: 20px; vertical-align: middle; text-align: center; }
+.operate .counter { display: inline-block; position: relative; font-family: arial; color: #3273c3; font-size: 60px; }
+.operate .counter:after { content: '米'; position: absolute; top: .6em; left: 100%; font-size: 14px; color: #999; }
+.operate .iconShow { font-size: 20px; color: #999; position: absolute; top: .6em; left: -1em; }
+.operate .nowCut { font-size: 16px; color: #666; position: absolute; bottom: .6em; left: 100%; }
+.operate .nowCut:before { content: '/'; margin-right: 3px; }
+
+.inPart { padding: 5px; }
 
 .checkOperate { width: 100%; height: 100px; overflow: hidden; }
 .checkOperate .checkOverview { border: 3px solid #069393; height: 100%; width: 50%; float: left; }
@@ -157,18 +184,14 @@
 .checkOperate .inshow strong { font-size: 20px; color: red; font-weight: normal; }
 .checkOperate .operateButton { float: right; }
 
-.operateButton { float: left; width: 50%; height: 100%; background: #eee; text-align: center; }
-.operateButton:before { content: ''; display: inline-block; height: 100%; width: 0; overflow: hidden; vertical-align: middle; }
-
-.buttonList { display: inline-block; vertical-align: middle; text-align: left; }
-.buttonList .component { display: inline-block; vertical-align: middle; white-space: nowrap; }
-.buttonList .rexButton { height: 60px; width: 80px; padding: 0; margin: 5px; text-align: center; }
+.buttonList { display: inline-block; vertical-align: middle; width: 50%; height: 100%; padding: 5px 0; }
+.buttonList .rexButton { height: 100%; width: 20%; padding: 0; text-align: center; border-radius: 0; border-left: 1px solid rgba(0, 0, 0, 0.3); border-right: 1px solid rgba(255, 255, 255, 0.3); }
 .buttonList .rexButton span { display: block; font-size: 14px; width: 100%; }
-.buttonList .rexButton .fa { font-size: 30px; }
+.buttonList .rexButton .fa { font-size: 30px; margin-bottom: 10px; }
 .buttonList .rexButton .fa:before { position: static; }
 
 .elseList { margin-top: 10px; width: 100%; overflow: hidden; }
-.elseList h3 { border-bottom: 1px solid #069393; }
+.elseList h3 { border-bottom: 1px solid #ddd; font-size: 14px; color: #069393; line-height: 24px; }
 .elseList ul { width: 100%; overflow: auto; height: calc(100% - 30px); }
 .elseList li { border-bottom: 1px dashed #ccc; position: relative; padding: 12px 0; overflow: hidden; }
 .elseList li .index { float: left; background-image: linear-gradient(rgba(255, 255, 255, 0.2) 0, transparent 16px); line-height: 20px; color: #fff; padding: 0 10px; }
@@ -188,7 +211,7 @@
 
 .operateList { padding-left: 5px; width: 50%; float: left; height: 100%; }
 
-#printBox .dialog-title { background: #336666 linear-gradient(rgba(255, 255, 255, 0.3) 0, transparent 15px); }
+#printBox .dialog-title { background: #336666; }
 #printBox .dialog-title h4 { font-size: 16px; color: #fff; }
 #printBox .dialog-title h4 .fa:before { font-size: 22px; vertical-align: middle; }
 #printBox .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
@@ -196,6 +219,12 @@
 #printBox .dialog-content { padding: 15px; }
 #printBox .dialog-content .rexButton { width: 140px; height: 60px; margin: 10px; }
 #printBox .dialog-content .rexButton .fa { font-size: 20px; }
-#printBox .dialog-content b { color: red; font-weight: normal; }
+#printBox .dialog-content b { color: #f90; font-weight: normal; }
+
+.leftClothInfo { padding-top: 10px; text-align: center; }
+.leftClothInfo > span { color: #666; margin-right: 20px; }
+.leftClothInfo > span strong { color: #069393; font-size: 18px; }
+.leftClothInfo .rexButton strong { color: #f90; font-weight: normal; }
+.leftClothInfo .rexButton .fa:before { font-size: 18px; }
 
 /*# sourceMappingURL=list.css.map */

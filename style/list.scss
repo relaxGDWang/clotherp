@@ -1,11 +1,6 @@
 @charset "UTF-8";
 @import '../library/style/config2.scss';
 
-$color1: #336666;
-$color2: #669999;
-$color3: #cccc99;
-$color4: #069393;
-
 @keyframes focusShow{  //晃动聚焦动画
   0% { transform: translateX(0);}
   12% {transform: translateX(-10px);}
@@ -21,14 +16,45 @@ $color4: #069393;
 
 // ---------- 公用部分 --------------------
 .outFrame { overflow: hidden; width: 100%; height: 100%;}
-.main {  width: 100%; height: 100%; padding: 10px;}
-
-.searchBar { padding-bottom: 10px;}
-
-.equipment { float: right; margin-top: 15px;}
+.main {  width: 100%; height: 100%;}
+//标题栏
+.titleBar{
+  $height: 44px;
+  height:$height; background:#eee; text-align:right; color:#202020;
+  h1{ background:#999; color:rgba(255,255,255,.8); font-size:14px; font-weight:normal;}
+  .itemButton{
+    float:left; line-height:$height; padding:0 15px; font-size:14px; text-align:center; color:#666;
+    &.sel{ background:$color4; color:#fff;}
+    &:before{ font-size:16px; vertical-align:middle; margin:0 5px;}
+  }
+  h1.itemButton{ color:#fff;}
+  .userInfo, .eqStatus{
+    font-size:12px; line-height:$height; display:inline-block;
+    &:before{ font-size:16px; margin-right:3px; vertical-align:middle; color:#999;}
+  }
+  .userInfo{ margin-right:15px;}
+  .eqStatus{
+    margin-right:7px; position:relative;
+    &:after{ content:''; position:absolute; top:10px; right:-1px; width:6px; height:6px; border-radius:50%; background:#aaa;}
+    &.on:after{ background:#37e501;}
+    &.off:after{ background:red;}
+  }
+  .rexIconInput{ float:left; margin:5px 0 0 330px;}
+}
+.dropItemShow{
+  position:relative; width:50px;
+  ul{ position:absolute; top:44px; right:0; max-height:0; z-index:10; overflow:hidden; width:162px; transition-property:max-height; transition-duration: .3s; opacity:.9;}
+  li{
+    display:block; line-height:28px; border-bottom:1px solid #fff; background: $color1; color:#fff; text-align:center; padding:5px;
+    &:before{ font-size:16px; margin-right:5px;}
+    &:hover, &:active{ background:$color3; color:$color1;}
+  }
+  &:hover, &:active{ background:$color1; color:#fff;}
+  &:hover ul, &:active ul{ max-height:300px; background: #3a8ee6;}
+}
 
 /* 表格样式 */
-.el-table th { background: $color2; color: #fff; padding:6px 0; text-align:center;}
+.el-table th { padding:6px 0;}
 .el-table td{ padding:6px 0; color:#333;}
 .el-table .cell{ padding-left:3px; padding-right:3px;}
 .el-table td .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
@@ -40,21 +66,43 @@ $color4: #069393;
 .el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9;}
 .el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9;}
 .el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff;}
+//加急标记
+.el-table .urgent{
+  position:relative; padding-left:15px;
+  &:before{
+    color:red; font-size:16px; position:absolute; left:-3px; top:3px;
+  }
+}
+//选择按钮
+.el-table .el-checkbox__inner{ width:18px; height:18px;}
+.el-table .el-checkbox__inner::after{ left:6px; top:3px;}
+//裁剪列表#列的列头居中对齐
+.cutMissionList thead .el-table_1_column_2{ text-align:center;}
+.cutMissionList .el-table_1_column_9{ text-align:center;}
+.isCenter tr th:first-child, .isCenter tr td:first-child{ text-align:center;}
+.checkMissionList .el-table_1_column_8{ text-align:center;}
+.el-table tr th:last-child, .el-table tr td:last-child{ text-align:center;}
+
+  //仓库位置
+.el-table .positionItem{
+  white-space: nowrap; margin:0 1px;
+  &:after{ content:',';}
+  &:last-child:after{ content:'';}
+}
 
 //详细页面样式
-#opDetails{
+.mydetails{
   .dialog-title{
-    background:$color4 linear-gradient(rgba(255,255,255,.3) 0, transparent 15px);
-    h4{
-      font-size:16px; color:rgba(255,255,255,.9);
-      .fa:before{ font-size:22px;}
-    }
+    background:$color1; border-bottom:0;
     .opBtn{
       font-size:28px; color:$color3;
       &:hover,&:active{ color:red;}
     }
+    ul{ padding-left:5px;}
+    li{ float:left; line-height:42px; color:rgba(255,255,255,.6); margin-right:15px;}
+    label{ color:#fff;}
   }
-  &.extMenu .dialogFrame{ width:90%;}
+  &.extMenu .dialogFrame{ height:calc(100% - 44px);}
 }
 
 //操作弹框
@@ -68,8 +116,12 @@ $color4: #069393;
   .row{ padding:5px; padding-left:20%; text-align:left;}
   label{ color:#999; display:inline-block; width:120px; text-align:right; margin-right:10px;}
   label+span{
-    display:inline-block;
+    display:inline-block; padding-left:5px;
     b{ color:red; font-size:1.4em;}
+  }
+  .inputShow{
+    vertical-align: middle; position:relative; padding-left:0;
+    strong{ position:absolute; right:10px; top:10px; color:#999; font-weight:normal;}
   }
   .rexInput{ font-size:1.4em; width:120px;}
   .dialog-buttonBar{
@@ -86,62 +138,40 @@ $color4: #069393;
 //加载弹框
 #loading .dialog-content{ padding:15px;}
 
-//信息提示弹框
-#information{
-  .dialog-content{ padding:15px;}
-  .dialog-buttonBar{
-    background:#ccc repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 12px, transparent 0, transparent 24px);
-    .rexButton{ width:100px;}
-  }
-  .dialog-title{ font-size:16px;}
-  .dialog-title .fa{ font-size:22px;}
-  .dialog-title .fa:before{ vertical-align:middle;}
-  &.sure .dialog-title{ background:#216cc9; color:#fff;}
-  &.warning .dialog-title{ background:#f79e03; color:#fff;}
-  &.error .dialog-title{ background:#f70303; color:#fff;}
-  &.ok .dialog-title{ background:#02a018; color:#fff;}
-}
-
 .missionDetails {
   h3 { font-size: 14px; color: $color4; line-height: 28px; position:relative; padding-left:16px;}
   h3:before{ content:''; width:10px; height:10px; position:absolute; top:8px; left:0; background:$color4;}
 }
 
 .leftPart{
-  width:190px; float:left; height:100%; padding:0 5px 0 5px;
-  .viewList{ overflow:auto; height:100%; overflow:auto; padding:5px 0;}
-  li{ border:1px solid #ccc; margin-bottom:5px; padding:5px 5px 0 5px; overflow:hidden; font-size:12px; cursor:pointer; background-color:#fff; border-radius:4px; transition-property: background-color, border-color; transition-duration: .3s;}
-  li:hover, li:active{ background-color:#cefbfb; border-color:$color1;}
-  li:hover strong, li:active strong{ border-color:$color1;}
-  li.fin{ background-color:#ccc; border-color:#999; background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.1) 0, rgba(255,255,255,.1) 10px, transparent 0, transparent 20px);}
-  li.fin strong{ border-color:#999;}
-  li.sel{ background-color:#ffedce; border-color:#f90;}
-  li.sel.fin{ background-image:repeating-linear-gradient(45deg, rgba(255,153,0,.1) 0, rgba(255,153,0,.1) 10px, transparent 0, transparent 20px);}
-  li.sel strong{ border-color:#f90;}
-  strong{ line-height:30px; display:block; border-top:1px solid #eee; font-weight:normal; text-align:center; margin-top:5px; transition-property: border-color; transition-duration: .3s;}
-  .status{ display:inline-block;}
-  .fin .status{ opacity:.7;}
-  .length{
-    float:right; color:#999;
-    b{ font-size:14px; color:red; font-weight:normal; margin:0 2px;}
-  }
+  width:175px; float:left; height:100%; background:$color1;
+  .viewList{ overflow:auto; height:100%;}
+  li{ padding:3px 3px 8px 3px; overflow:hidden; font-size:12px; cursor:pointer; background-color:$color4; color:#fff; border-bottom:1px solid $color1;}
+  li:hover, li:active{ background-color:#19bbbb;}
+  strong{ line-height:24px; font-weight:normal; position:relative; padding-left:10px;}
+  strong:before{ color:red; position:absolute; top:0; left:0; font-size:14px;}
+  .statusBar span{ display:inline-block; color:rgba(255,255,255,.8);}
+  .length{ background:#f90;}
+  .length:after{ content:'米';}
+  .finished{ background:green;}
+  li.sel{ background-color:#fff; border-bottom:0;}
+  li.sel strong{ color:#333;}
 }
-.rightPart{ width:auto; margin-left:190px; height:100%; padding:0 10px 0 10px; box-shadow:0 0 40px rgba(0,0,0,.2);}
-.inPart{ padding:10px; width:100%; height:100%;}
+.rightPart{ width:auto; margin-left:175px; height:100%; padding:0 10px 0 10px;}
 
 //裁剪端分类
 .status{
   line-height:1.8em; padding:0 0.5em;
   &:before{ color:#fff;}
   &.customer{
-    background:$color4;
+    background:#005be3;
     &:before{ content:'客户订单';}
   }
   &.flaw{
     background:#666;
     &:before{ content:'疵点分裁';}
   }
-  &:normal{
+  &.normal{
     background:blue;
     &:before{ content:'分裁入库';}
   }
@@ -157,9 +187,15 @@ $color4: #069393;
 }
 
 //布匹概览
-.clothShow{ margin:24px 0 32px 0;}
+.clothShow{
+  margin:24px 0 32px 0; width:calc(100% - 55px); position:relative; padding-left:10px;
+  .changePosition{
+    position:absolute; right:-55px; top:0; height:100%; width:50px; border-radius:0;
+    & .fa:before{ font-size:30px;}
+  }
+}
 .cloth{
-  box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:30px; position:relative;
+  box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:50px; position:relative;
   .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property:left,right; transition-duration:1s; min-width:1px;}
   .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
   .flaw:hover{ background:#f90; z-index:2;}
@@ -171,6 +207,9 @@ $color4: #069393;
   .cutBlock{ position:absolute; top:1px; bottom:1px; outline:1px dashed rgba(0,0,0,.3); outline-offset:-1px;}
   .cutBlock.sel{ outline-color:#f90; background:rgba(255,153,0,.2);}
   .cutBlock.first{ outline-color:$color4; background:#fff repeating-linear-gradient(-45deg, rgba(6,147,147,.3) 0, rgba(6,147,147,.3) 10px, transparent 0, transparent 20px);}
+  .endShow{ position:absolute; z-index:3; text-shadow:0 0 2px #fff; top:50%; transform:translateY(-50%); font-weight:bold;}
+  //剩余布料
+  .leftCloth{ left:0; right:0; color:$color4; text-align:center; line-height:48px; background:repeating-linear-gradient(-45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px);}
 }
 .ruler{
   height:2px; background:#ccc; position:relative;
@@ -178,32 +217,23 @@ $color4: #069393;
   span:before{ content:attr(pos); position:absolute; top:10px; left:50%; transform:translateX(-50%);}
 }
 
-.operateShow { width: 100%; height: 150px; overflow: hidden;}
+.operateShow { width: 100%; height:80px; overflow: hidden;}
 //当前裁剪信息
 .operate {
-  width: 50%; height: 100%; border: 3px solid $color4; padding:0 10px 10px 10px; float: left; text-align:center; position:relative;
-  .status{ position:absolute; font-size:14px; left:5px; top:5px;}
-  .title {
-    font-size:16px; display:inline-block; padding-bottom:10px;
-    b{ position:relative; top:10px; font-size:50px; color:red; vertical-align: text-bottom; font-weight:normal; }
+  display:inline-block; min-width:260px; width:50%; padding-left:20px; vertical-align: middle; text-align: center;
+  .counter{
+    display:inline-block; position:relative; font-family:arial; color:#3273c3; font-size:60px;
+    &:after{ content:'米'; position:absolute; top:.6em; left:100%; font-size:14px; color:#999;}
   }
-  .elseInfo {
-    border-top: 1px solid #ccc; overflow:hidden; text-align:left; padding-top:5px;
-    li{ width:100%; padding:5px 0;}
-    li.center{ text-align:center; padding-top:15px; color:$color1;}
-    label {color: #999;}
-  }
-  .maskShow{
-    position:absolute; top:0; bottom:0; left:0; right:0; background:rgba(0,0,0,.2) repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0, rgba(255,255,255,.15) 10px, transparent 0, transparent 20px); text-align:center;
-    &:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
-    span{ display:inline-block; vertical-align:middle; color:#fff; padding:5px 10px; background:rgba(251,124,0,.7); box-shadow:0 0 5px rgba(0,0,0,.4); visibility: hidden;}
-    span.focus{ animation:focusShow 1s forwards; visibility: visible;}
-  }
+  .iconShow{ font-size:20px; color:#999; position:absolute; top:.6em; left:-1em;}
+  .nowCut{ font-size:16px; color:#666; position:absolute; bottom:.6em; left:100%;}
+  .nowCut:before{ content:'/'; margin-right:3px;}
 }
 
 //当前检验信息
+.inPart{ padding:5px;}
 .checkOperate{
-  width: 100%; height: 100px; overflow: hidden;
+  width:100%; height: 100px; overflow: hidden;
   .checkOverview{ border:3px solid $color4; height:100%; width:50%; float:left;}
   .checkOverview:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
   .inshow{
@@ -217,24 +247,15 @@ $color4: #069393;
 }
 
 //裁剪操作按钮
-.operateButton {
-  float: left; width: 50%; height: 100%; background: #eee; text-align: center;
-  &:before {
-    content: ''; display: inline-block; height: 100%; width: 0; overflow: hidden; vertical-align: middle;
-  }
-}
 .buttonList{
-  display:inline-block; vertical-align: middle; text-align:left;
-  .component {
-    display: inline-block; vertical-align: middle; white-space: nowrap;
-  }
+  display:inline-block; vertical-align: middle; width:50%; height:100%; padding:5px 0;
   .rexButton {
-    height: 60px; width: 80px; padding: 0; margin: 5px; text-align: center;
+    height: 100%; width: 20%; padding:0; text-align: center; border-radius:0; border-left:1px solid rgba(0,0,0,.3); border-right:1px solid rgba(255,255,255,.3);
     span {
       display: block;  font-size: 14px; width: 100%;
     }
     .fa {
-      font-size: 30px;
+      font-size: 30px; margin-bottom:10px;
     }
     .fa:before {
       position: static;
@@ -244,7 +265,7 @@ $color4: #069393;
 
 .elseList{
   margin-top:10px; width:100%; overflow:hidden;
-  h3{ border-bottom:1px solid $color4;}
+  h3{ border-bottom:1px solid #ddd; font-size:14px; color:$color4; line-height:24px;}
   ul{ width:100%; overflow:auto; height:calc(100% - 30px);}
   li{
     border-bottom:1px dashed #ccc; position:relative; padding:12px 0; overflow:hidden;
@@ -268,7 +289,7 @@ $color4: #069393;
 //标签打印
 #printBox{
   .dialog-title{
-    background:$color1 linear-gradient(rgba(255,255,255,.3) 0, transparent 15px);
+    background:$color1;
     h4{
       font-size:16px; color:#fff;
       .fa:before{ font-size:22px; vertical-align:middle;}
@@ -284,6 +305,19 @@ $color4: #069393;
       width:140px; height:60px; margin:10px;
       .fa{ font-size:20px;}
     }
-    b{ color:red; font-weight:normal;}
+    b{ color:#f90; font-weight:normal;}
+  }
+}
+
+//剩余布料操作
+.leftClothInfo{
+  padding-top:10px; text-align:center;
+  &>span{
+    color:#666; margin-right:20px;
+    strong{ color:$color4; font-size:18px;}
+  }
+  .rexButton{
+    strong{ color:#f90; font-weight:normal;}
+    .fa:before{ font-size:18px;}
   }
 }

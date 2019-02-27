@@ -2,8 +2,9 @@
 var CFG = {
     DEBUG: false,
     JDTYPE: 'form',
-    //URL: 'http://192.168.3.181:8080/api/v1/',
-    URL: 'http://gadmin-dev.suishou.cc/api/v1/',
+    //URL: 'http://192.168.3.192:8080/api/v1/',
+    //URL: 'http://gadmin-dev.suishou.cc/api/v1/',
+    URL: 'http://erp.suishou.cc/api/v1/',
     //en: 'en_US',
     //cn: 'zh_Cn',
     loginPage: 'login.html',
@@ -53,7 +54,8 @@ var CFG = {
     }
 };
 var REG={   //正则字典
-    flaw: /^\d{1,3}(\.\d{1,2})?$/,
+    flaw: /^\d{1,3}(\.\d{1,2})?$/,    //计米数值的规范
+    position: new RegExp(',|<br\/>') //仓库位置的中间分割,用于split仓库信息成为数组信息
 };
 var PATH = {
     login: CFG.URL+'user/login',    //登录接口
@@ -68,6 +70,7 @@ var PATH = {
     missionCheckFinished: CFG.URL+'examine/{bolt_id}/complete'  //完成检验任务
 };
 if (CFG.DEBUG){
+    //通信路径处理
     CFG.URL='/server/';
     PATH.login=CFG.URL+'login.php';
     PATH.missionCheck=CFG.URL+'examinelist.php';
@@ -75,7 +78,94 @@ if (CFG.DEBUG){
     PATH.missionCut=CFG.URL+'cutlist.php';
     PATH.missionCutDetails=CFG.URL+'cutdetails.php';
     PATH.missionCutFinished=CFG.URL+'cutfinish.php';
+
+    //设备状态模拟
+    window.register_js = {};
+    window.register_js.get_syncstat = function () {
+        return {printstat:1,countstat:1,netstat:0};
+    };
 }
+//app设备调用方法
+var EQUIPMENT=(function(){
+    function getStatus(){  //获得设备状态
+        try{
+            var result=window.register_js.get_syncstat();
+            result=JSON.parse(result);
+            if (window.vu){
+                vu.equipment.printer=(result.printstat=='1'? 'on':'off');
+                vu.equipment.counter=(result.countstat=='1'? 'on':'off');
+                vu.equipment.neter=(result.netstat=='1'? 'on':'off');
+            }
+            if (window.dialog){
+                //dialog.open('resultShow',{content:result});
+            }
+        }catch(e){
+            if (window.vu) {
+                for (var x in vu.equipment) {
+                    vu.equipment[x] = '';
+                }
+            }
+        }
+    }
+
+    function doPrint(printStr){   //打印标签
+        try{
+            window.register_js.goprint(printStr);
+            showErrorResult('打印指令发送成功！');
+        }catch(e){
+            showErrorResult('打印调用出错，请检查打印机连接情况！');
+        }
+    }
+
+    function getCounter(){   //获得计米器读数
+        var PCOUNT;
+        try{
+            PCOUNT=window.register_js.updatenumbox();
+            PCOUNT=(PCOUNT-0)/100;
+            if (!isNaN(PCOUNT) && vu) vu.currentPosition=PCOUNT;
+        }catch(e){
+            PCOUNT='';
+        }
+    }
+
+    function resetCounter(flag){   //置0计米器读数,参数flag 表示如果异常是否提示信息
+        try{
+            window.register_js.gozero();
+            //if (window.vu) vu.currentPosition=0;
+        }catch(e){
+            if (!flag){
+                showErrorResult('计米器未链接，清零指令发送失败！');
+            }else{
+                console.log('计米器未链接，清零指令发送失败！');
+            }
+        }
+    }
+
+    function openSetting(){
+        try{
+            window.register_js.exitwebview();
+        }catch(e){
+            showErrorResult('请在APP中使用该功能');
+        }
+    }
+
+    function showErrorResult(msg){
+        if (window.dialog){
+            dialog.open('resultShow',{content:msg});
+        }else{
+            console.log(msg);
+        }
+    }
+
+    return {
+        status: getStatus,
+        print: doPrint,
+        getCounter: getCounter,
+        resetCounter: resetCounter,
+        setting: openSetting
+    };
+})();
+
 //登录状态的通用检测
 (function(){
     //var token=localStorage.getItem(CFG.token);
@@ -91,6 +181,7 @@ if (CFG.DEBUG){
                 top.location.replace(CFG.defaultPage);
                 //alert('登录信息存在，自动跳转到默认页面');
             }
+            getEquipmentStatus();
             return;
         }
     }
@@ -98,6 +189,11 @@ if (CFG.DEBUG){
     //localStorage.removeItem(CFG.token);
     localStorage.removeItem(CFG.admin);
     if (!isLogin) top.location.replace(CFG.loginPage);
+
+    function getEquipmentStatus(){
+        //设备状态检测
+        setInterval(EQUIPMENT.status,1000);
+    }
 })();
 
 //格式化ajax数据通用

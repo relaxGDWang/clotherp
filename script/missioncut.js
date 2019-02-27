@@ -1,15 +1,20 @@
-var PCOUNT=0;
 var vu=new Vue({
     el: '#app',
     data:{
         search:{
-            listType: 'doing'   //doing,cut
+            listType: undefined, //默认进行中任务，cut完成的任务
+            urgent: ''            //是否加急，加急1，否则留空
         },
-        flagReload: false,     //用于标记窗口关闭是否要刷新列表
         username: '',
+        equipment:{
+            printer:'',
+            counter:'',
+            neter:''
+        },
+        flagReload: false,     //用于标记详情窗口关闭是否要刷新列表
         currentPosition: '',
-        positionTime:'',  //计米器读数时间函数
-        positionPer: 1000, //读取频率
+        positionTime:'',       //计米器读数时间函数
+        positionPer: 1000,     //读取频率
         positionCallBack: '',  //长度变更时的回调函数
         UI:{
             listHeight: 100,   //列表高
@@ -23,132 +28,134 @@ var vu=new Vue({
             len: '',       //修正布长
             start:'',      //疵点开始
             end:'',        //疵点结束
-            step:1         //步骤
+            step:2,        //步骤
+            readonly: true   //是否自定义输入，否则按计米器数值输入
         },
-        editObject: '',
+        getPrintList:[],  //取货打印信息
+        printTemplate:'',  //打印模板信息
+        editObject: {},  //用于标注当前查看的未完成任务对象
+        showObject: {},  //用于标注当前查看的已完成任务对象
         mission: [], //任务细分数组，ajax直接返回
         missionKey: {}, //bolt_id与数组index对应关系
-        clothDetails: {}  //布匹的裁剪任务，以bolt_no作为索引，结构 defects[疵点列表数组] cutouts[事件记录数组] splits[裁剪分段数组] list[以bolt_id作为索引的对象，值为splits的数组index] first[起始裁剪bolt_id] viewObj[当前查看的分段信息] product[对应的商品编号]
     },
     methods:{
-        getEQPosition: function(){  //获取计米器读数
-            //PCOUNT+=(Math.random()*2).toFixed(2)-0;
-            //this.currentPosition=PCOUNT.toFixed(2)-0;
-            try{
-                PCOUNT=window.register_js.updatenumbox();
-                PCOUNT=(PCOUNT-0)/100;
-                if (!isNaN(PCOUNT)) vu.currentPosition=PCOUNT;
-            }catch(e){
-                PCOUNT='';
-            }
-        },
         startEQPosition: function(){  //开始计米器读数
-            this.positionTime=setInterval(vu.getEQPosition,vu.positionPer);
+            this.positionTime=setInterval(EQUIPMENT.getCounter,vu.positionPer);
         },
         stopEQPosition: function(){  //关闭计米器读数
             clearInterval(vu.positionTime);
             this.positionTime='';
         },
+        changeSearch: function(val){
+            this.search.listType=val;
+        },
         getList: function(){  //获得任务列表
             this.mission=[];
             this.missionKey={};
-            this.editObject='';
-            this.clothDetails={};
+            this.flagReload=false;
             ajax.send({
                 url: PATH.missionCut,
-                data:{status: this.search.listType},
+                data:{status: this.search.listType, urgent: (this.search.urgent || undefined)},
                 success:function(data){
                     dialog.close('loading');
-                    for (var i=0; i<data.length; i++){
-                        vu.mission.push(data[i]);
-                        vu.missionKey[data[i]['bolt_id']]=i;
+                    var count=0;
+                    for (var x in data){
+                        data[x].position=data[x].position.split(REG.position);  //加工所在仓位
+                        data[x].arrayIndex=count;
+                        vu.mission.push(data[x]);
+                        vu.missionKey[data[x]['bolt_id']]=vu.mission[count];
+                        count++;
+                    }
+                    if (vu.printTemplate==='' && count!==0){
+                        vu.printTemplate=vu.mission[0].print_data;
+                        vu.printTemplate.info.code=undefined;
+                        vu.printTemplate.info.footer=undefined;
+                        vu.printTemplate.info.header='随手订货 取货单';
                     }
                 }
             });
         },
         //bid 每个裁剪分段的编号 bno 每个布匹的编号
-        openDetails: function(bid){
-            var keyStr=this.mission[this.missionKey[bid]].bolt_no;
+        openDetails: function(bid, start){
             var dialogConfig={
                 closeCallback: function(){
-                    vu.editObject='';
-                    if (vu.flagReload){
-                        vu.getList();
-                    }
-                    vu.flagReload=false;
-                    vu.input.len='';
+                    vu.editObject={};
+                    vu.showObject={};
+                    if (vu.flagReload) vu.getList();
+                    vu.UI.len='';
                     vu.stopEQPosition();
                 }
             };
-            if (this.clothDetails[keyStr]!==undefined){
-                this.editObject=this.clothDetails[keyStr];
-                this.setViewObject(this.editObject, bid);
-                this._setColthLen();
-                this.startEQPosition();
-                dialog.open('opDetails',dialogConfig);
+            if (this.missionKey[bid].viewObj!==undefined && start===undefined){
+                if (this.search.listType){
+                    this.showObject=this.missionKey[bid];
+                    dialog.open('finishDetails',dialogConfig);
+                }else{
+                    this.editObject=this.missionKey[bid];
+                    this._setColthLen();
+                    this.startEQPosition();
+                    dialog.open('opDetails',dialogConfig);
+                }
             }else{
                 ajax.send({
                     url: PATH.missionCutDetails,
-                    data:{bolt_id: bid},
+                    data:{bolt_id: bid, start: (start || undefined)},
                     success:function(data){
                         dialog.close('loading');
-                        var keyStr=data.bolt_no;
-                        var bidStr=data.bolt_id;
-                        vu._solveCutData(keyStr, data);
-                        vu.editObject=vu.clothDetails[keyStr];
-                        vu.setViewObject(vu.editObject, bidStr);
-                        vu._setColthLen();
-                        vu.startEQPosition();
-                        dialog.open('opDetails',dialogConfig);
+                        vu._setDetailsData(data, data.bolt_id);
+                        if (vu.search.listType){
+                            dialog.open('finishDetails',dialogConfig);
+                        }else{
+                            vu.startEQPosition();
+                            dialog.open('opDetails',dialogConfig);
+                        }
                     }
                 });
             }
         },
-        _solveCutData: function(key, data){  //按详细信息加工成可界面处理数据
-            var temp=this.clothDetails[key], i, flagNew=false;
-            if (!temp){
-                flagNew=true;
-                temp=this.clothDetails[key]={};
-            }
-            temp.defects=this._formatFlawInfor(data.defects);  //瑕疵列表
-            temp.cutouts=data.cutouts;  //裁剪事件列表
-            temp.splits=data.splits;    //裁剪布段列表
-            temp.list={};  //用于记录布段编号和数组索引对应关系对象
-            temp.first=''; //记录当前布匹的最初裁剪段的编号
-            for (i=0; i<temp.splits.length; i++){
-                if (temp.first==='' && temp.splits[i].status_code==='mark') temp.first=temp.splits[i].bolt_id;
-                temp.list[temp.splits[i].bolt_id]=i;
-            }
-            if (flagNew) {
-                var index = this.missionKey[data.bolt_id];
-                temp.product = this.mission[index].product_code;
-                temp.bolt = this.mission[index].bolt_no;
-                temp.father = data.init_bolt_id;
-                temp.position = this.mission[index].position;
-            }
-        },
-        setViewObject: function(nowObject, bid){  //设置当前查看的分段点信息
-            if (bid) {
-                //可能的bid并不存在于splits里，多见于已完成的裁剪单，目前则使用第一个splits的节点
-                if (nowObject.list[bid]!==undefined) {
-                    Vue.set(this.editObject, 'viewObj', nowObject.splits[nowObject.list[bid]]);
-                    return;
+        _setDetailsData: function(data, idStr){
+            if (this.search.listType){
+                data.product=this.missionKey[data.bolt_id].product_code;
+                Vue.set(this.missionKey[data.bolt_id],'viewObj',data);
+                this.showObject=this.missionKey[data.bolt_id];
+            }else{
+                var flag=false;
+                if (!idStr){
+                    idStr=this.editObject.bolt_id;
+                    flag=true;
+                }
+                data.defects=_formatFlawInfor(data.defects);  //瑕疵列表
+                data.list={};
+                data.sel=data.splits.length>0? data.splits[0] : '';
+                for (i=0; i<data.splits.length; i++){
+                    data.list[data.splits[i].bolt_id]=i;
+                }
+                Vue.set(this.missionKey[idStr],'viewObj',data);
+                if (!flag) this.editObject=this.missionKey[idStr];
+                this._setColthLen();
+
+                //格式化瑕疵点列表
+                function _formatFlawInfor(itemList){
+                    for (var i=0; i<itemList.length; i++){
+                        if (itemList[i].defect_type==='dot'){
+                            itemList[i].position=itemList[i].end;
+                            itemList[i].length='';
+                        }else{
+                            itemList[i].position=itemList[i].start+'~'+itemList[i].end;
+                        }
+                    }
+                    return itemList;
                 }
             }
-            if (nowObject.first!=='') {
-                Vue.set(this.editObject, 'viewObj', nowObject.splits[nowObject.list[nowObject.first]]);
-            }else{
-                Vue.set(this.editObject, 'viewObj',nowObject.splits[0]);
-            }
+        },
+        setViewObject: function(bid){
+            if (this.editObject.viewObj.sel.bolt_id===bid) return;
+            this.editObject.viewObj.sel=this.editObject.viewObj.splits[this.editObject.viewObj.list[bid]];
         },
         _setColthLen: function(){   //设置用于显示的当前布长
             if (this.editObject){
-                var first=this.editObject.first;
-                if (first){
-                    var index=this.editObject.list[first];
-                    this.UI.len=this.editObject.splits[index].current_length;
-                    return;
-                }
+                this.UI.len=this.editObject.viewObj.current_length;
+                return;
             }
             this.UI.len='';
         },
@@ -162,10 +169,20 @@ var vu=new Vue({
             }
         },
         askFinish: function(){
-            //检测完整性
+            //检测当前计米和需裁剪的是否匹配
+            var p=0.05,msg,className;
+            var checkValueMax=this.editObject.viewObj.sel.cut_length + p;
+            var checkValueMin=this.editObject.viewObj.sel.cut_length - p;
+            if (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax){
+                msg='是否完成当前裁剪操作？';
+                className='sure';
+            }else{
+                msg='裁剪位置似乎与需要裁剪长度不匹配，是否任然完成当前裁剪？';
+                className='warning';
+            }
             dialog.open('information',{
-                content: '是否完成当前裁剪操作？',
-                cname:'sure',
+                content: msg,
+                cname: className,
                 closeCallback: function(id, dialogType, buttonType){
                     if (buttonType==='sure') vu.doFinish();
                 }
@@ -175,54 +192,47 @@ var vu=new Vue({
             ajax.send({
                 url: PATH.missionCutFinished,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.bolt_id},
+                data:{bolt_id: vu.editObject.viewObj.sel.bolt_id, cutLength: vu.currentPosition? vu.currentPosition : vu.editObject.viewObj.sel.cut_length},
                 success:function(data){
+                    //自动打印标签
+                    vu.printDoing();
                     vu.flagReload=true;
-                    setZeroPosition();
+                    EQUIPMENT.resetCounter(true);
                     dialog.close('loading');
-                    var cutLen=0; //判断是否还有裁剪段
-                    for (var i=0; i<data.splits.length; i++){
-                        if (data.splits[i].status_code==='mark') cutLen++;
-                    }
-                    if (cutLen===0){  //判断是否还有裁剪段
+                    vu._setDetailsData(data,'');
+                    if (data.splits.length===0){  //判断是否还有裁剪段
+                        vu.UI.len=data.current_length;
                         dialog.open('information',{
                             content: '当前布匹上的裁剪任务已经全部处理完毕!',
-                            cname:'ok',
-                            closeCallback: function(){
-                                dialog.close('opDetails');
-                                vu.stopEQPosition();
-                                vu.getList();
-                                vu.flagReload=false;
-                            }
+                            btncancel:'',
+                            cname:'ok'
                         });
                     }else{
-                        var keyStr=data.bolt_no;
-                        vu._solveCutData(keyStr, data);
-                        vu.editObject=vu.clothDetails[keyStr];
-                        vu.setViewObject(vu.editObject, '');
-                        vu._setColthLen();
                         dialog.open('resultShow',{content:'当前裁剪操作已成功！'});
                     }
                 }
             });
         },
+        _resetInputData: function(){  //重置输入数据
+            this.positionCallBack='';
+            this.input.flag=false;
+            this.input.msg='';
+            this.input.status='';
+            this.input.len='';
+            this.input.start='';
+            this.input.end='';
+            this.input.step=2;
+            this.input.readonly=true;
+        },
         resetLength: function(){  //重写布匹长度操作
-            dialog.open('reLength',{
-                closeCallback: function(){
-                    vu.positionCallBack='';
-                    vu.input.len='';
-                    vu.input.flag=false;
-                    vu.input.status='';
-                    vu.input.msg='';
-                }
-            });
-            this.input.len=this.currentPosition;
+            dialog.open('reLength',{closeCallback: vu._resetInputData});
+            this.input.len=this.currentPosition===''? this.UI.len : this.currentPosition;
             this.positionCallBack=function(newVal){
                 this.input.len=newVal;
             };
         },
         doResetLength: function(){ //重写布匹长度ajax
-            if (REG.flaw.test(this.input.len)===false){
+            if (REG.flaw.test(this.input.len)===false || this.input.len===0){
                 this._setMessage({status:'warning',msg:'布长填写错误，请重新输入'});
                 return;
             }
@@ -233,62 +243,32 @@ var vu=new Vue({
             ajaxModify.send({
                 url: PATH.resetLength,
                 method: 'post',
-                data:{bolt_id: vu.editObject.father, length: vu.input.len},
+                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, length: vu.input.len},
                 success: function(data){
-                    vu.flagReload=true;
-                    var cutLen=0; //判断是否还有裁剪段
-                    for (var i=0; i<data.splits.length; i++){
-                        if (data.splits[i].status_code==='mark') cutLen++;
-                    }
-                    if (cutLen===0){
+                    if (data.splits.length===0){
                         vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len+'! 裁剪任务调整，该卷布已无任务裁剪任务。'});
-                        setTimeout(function(){
-                            dialog.close('reLength');
-                            dialog.close('opDetails');
-                            vu.stopEQPosition();
-                            setZeroPosition();
-                            vu.positionCallBack='';
-                            vu.input.len='';
-                            vu.input.flag=false;
-                            vu.input.status='';
-                            vu.input.msg='';
-                            vu.getList();
-                            vu.flagReload=false;
-                        },1500);
-                        return;
+                    }else{
+                        vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
                     }
-                    vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
                     vu.positionCallBack='';
-                    //调整布长
-                    var keyStr=data.bolt_no;
-                    vu._solveCutData(keyStr, data);
-                    vu.setViewObject(vu.editObject, '');
-                    vu._setColthLen();
                     setTimeout(function(){
                         dialog.close('reLength');
-                        vu.input.len='';
-                        vu.input.flag=false;
-                        vu.input.status='';
-                        vu.input.msg='';
+                        vu._resetInputData();
                     },1500);
+                    //调整布长
+                    vu.missionKey[data.bolt_id].current_length=data.current_length;
+                    vu._setDetailsData(data,'');
+                    vu.flagReload=true;
                 }
             });
         },
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
-                dialog.open('addFlaw',{
-                    closeCallback: function(){
-                        vu.input.start='';
-                        vu.input.end='';
-                        vu.input.step=1;
-                        vu.input.flag=false;
-                        vu.input.status='';
-                        vu.input.msg=''
-                    }
-                });
-                this.input.start=this.currentPosition;
+                dialog.open('addFlaw',{closeCallback: vu._resetInputData});
+                this.input.end=this.currentPosition===''? 0: this.currentPosition; //notice
                 this.positionCallBack=function(newVal){
-                    this.input.start=newVal;
+                    //this.input.start=newVal;
+                    this.input.end=newVal;
                 };
             }else{   //删除疵点操作
                 dialog.open('information',{
@@ -328,7 +308,7 @@ var vu=new Vue({
             }
         },
         addOperateFlaw: function(){ //添加疵点ajax
-            if (REG.flaw.test(this.input.end)===false){
+            if (REG.flaw.test(this.input.end)===false || this.input.end===0){
                 this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
                 return;
             }
@@ -343,44 +323,19 @@ var vu=new Vue({
             ajaxModify.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.father, defects:[vu.input.start+","+vu.input.end]},
+                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, defects:[vu.input.end+","+vu.input.end]},  //notice
                 success: function(data){
                     vu.flagReload=true;
-                    var cutLen=0; //判断是否还有裁剪段
-                    for (var i=0; i<data.splits.length; i++){
-                        if (data.splits[i].status_code==='mark') cutLen++;
-                    }
-                    if (cutLen===0){
+                    if (data.splits.length===0){
                         vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功， 裁剪任务调整，该卷布已无裁剪任务。'});
-                        setTimeout(function(){
-                            dialog.close('reLength');
-                            dialog.close('opDetails');
-                            vu.stopEQPosition();
-                            setZeroPosition();
-                            vu.positionCallBack='';
-                            vu.input.len='';
-                            vu.input.flag=false;
-                            vu.input.status='';
-                            vu.input.msg='';
-                            vu.getList();
-                            vu.flagReload=false;
-                        },1500);
-                        return;
+                    }else{
+                        vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功，裁剪任务已经刷新！'});
                     }
-                    vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功，裁剪任务已经刷新！'});
                     vu.positionCallBack='';
-                    var keyStr=data.bolt_no;
-                    vu._solveCutData(keyStr, data);
-                    vu.setViewObject(vu.editObject, '');
-                    vu._setColthLen();
+                    vu._setDetailsData(data,'');
                     setTimeout(function(){
                         dialog.close('addFlaw');
-                        vu.input.start='';
-                        vu.input.end='';
-                        vu.input.step=1;
-                        vu.input.flag=false;
-                        vu.input.status='';
-                        vu.input.msg='';
+                        vu._resetInputData();
                     },2000);
                 }
             });
@@ -392,46 +347,15 @@ var vu=new Vue({
                 data:{bolt_id: bolt_id},
                 success: function(data){
                     vu.flagReload=true;
-                    var cutLen=0; //判断是否还有裁剪段
-                    for (var i=0; i<data.splits.length; i++){
-                        if (data.splits[i].status_code==='mark') cutLen++;
-                    }
-                    if (cutLen===0){
-                        dialog.open('information',{
-                            content:'疵点已经成功删除！裁剪任务调整，该卷布已无裁剪任务。',
-                            btncancel:'',
-                            cname:'ok',
-                            closeCallback: function(){
-                                dialog.close('opDetails');
-                                vu.stopEQPosition();
-                                setZeroPosition();
-                                vu.getList();
-                                vu.flagReload=false;
-                            }
-                        });
-                        return;
-                    }
                     dialog.close('loading');
-                    dialog.open('information',{content:'疵点已经成功删除！',btncancel:'',cname:'ok'});
-                    var keyStr=data.bolt_no;
-                    vu._solveCutData(keyStr, data);
-                    vu.setViewObject(vu.editObject, '');
-                    vu._setColthLen();
+                    if (data.splits.length===0){
+                        dialog.open('information',{content:'疵点已经成功删除！裁剪任务调整，该卷布已无裁剪任务。',btncancel:'',cname:'ok'});
+                    }else{
+                        dialog.open('information',{content:'疵点已经成功删除！',btncancel:'',cname:'ok'});
+                    }
+                    vu._setDetailsData(data,'');
                 }
             });
-        },
-        showFocus: function(e){
-            var dom=$('#doFinish');
-            if (JS_contains(dom[0], e.target)){
-                if (dom.attr('disabled')){
-                    var dom2=$('#focusDom');
-                    if (dom2.hasClass('focus')) return;
-                    dom2.addClass('focus');
-                    setTimeout(function(){
-                        dom2.removeClass('focus');
-                    },2000);
-                }
-            }
         },
         _setMessage: function(config){
             this.input.flag=config.flag || false;
@@ -444,40 +368,120 @@ var vu=new Vue({
         operateError: function(code, msg){
             this._setMessage({status:'error', msg:msg});
         },
-        _formatFlawInfor: function(itemList){   //批处理瑕疵点
-            for (var i=0; i<itemList.length; i++){
-                if (itemList[i].defect_type==='dot'){
-                    itemList[i].position=itemList[i].end;
-                    itemList[i].length='';
-                }else{
-                    itemList[i].position=itemList[i].start+'~'+itemList[i].end;
-                }
-            }
-            return itemList;
-        },
         //打印标签
-        printDoing: function(){
-            //判定是疵点还是订单打印
+        printDoing: function(index){
             var printStr='';
-            var bolt_id=this.editObject.viewObj.bolt_id;
-            for (var i=0; i<this.editObject.splits.length; i++){
-                var temp=this.editObject.splits[i];
-                if (bolt_id===temp.bolt_id){
-                    printStr=JSON.stringify(temp.print_data);
-                    break;
+            if (this.search.listType){   //查看完成订单的打印
+                switch(index){
+                    case 'start':
+                        if (this.showObject.viewObj.start==='start_a'){
+                            printStr=this.showObject.viewObj.print_head;
+                        }else{
+                            printStr=this.showObject.viewObj.print_tail;
+                        }
+                        break;
+                    case 'end':
+                        if (this.showObject.viewObj.start==='start_a'){
+                            printStr=this.showObject.viewObj.print_tail;
+                        }else{
+                            printStr=this.showObject.viewObj.print_head;
+                        }
+                        break;
+                    default:
+                        printStr=this.showObject.viewObj.cutouts[index].print_data;
                 }
+                printStr=JSON.stringify(printStr);
+            }else{
+                if (index==='show'){
+                    dialog.open('printBox');
+                    return;
+                }
+                if (this.editObject.viewObj.sel && !index){
+                    printStr=this.editObject.viewObj.sel.print_data;
+                }else{
+                    switch (index){
+                        case 'start':
+                            if (this.editObject.viewObj.start==='start_a'){
+                                printStr=this.editObject.viewObj.print_head;
+                            }else{
+                                printStr=this.editObject.viewObj.print_tail;
+                            }
+                            break;
+                        case 'end':
+                            if (this.editObject.viewObj.start==='start_a'){
+                                printStr=this.editObject.viewObj.print_tail;
+                            }else{
+                                printStr=this.editObject.viewObj.print_head;
+                            }
+                            break;
+                    }
+                }
+                printStr=JSON.stringify(printStr);
             }
-            if (!printStr){
-                dialog.open('information',{content:'打印内容为空！'+printStr,cname:'warning',btncancel:''});
+            //console.log(printStr);
+            EQUIPMENT.print(printStr);
+        },
+        //重置AB面
+        goChangePosition: function(){
+            var setVal='';
+            if (this.editObject.viewObj.start==='start_a'){
+                setVal='start_b';
+            }else{
+                setVal='start_a';
+            }
+            this.openDetails(this.editObject.bolt_id, setVal);
+        },
+        //清零计米器
+        resetCounter: function(){
+            if (this.equipment.counter!=='on'){
+                dialog.open('resultShow',{content:'计米器未链接，无法进行清零操作！'});
                 return;
             }
-            try{
-                window.register_js.goprint(printStr);
-                dialog.open('information',{content:'打印指令发送成功！',cname:'ok',btncancel:''});
-            }catch(e){
-                //console.log(printStr);
-                dialog.open('information',{content:'打印调用出错，请检查打印机连接情况',cname:'warning',btncancel:''});
+            dialog.open('information',{
+                content:'是否清零当前计米器的计数？',
+                cname:'sure',
+                closeCallback: function(id, dialogType, buttonType){
+                    if (buttonType==='sure'){
+                        EQUIPMENT.resetCounter();
+                    }
+                }
+            });
+        },
+        //选择取货信息
+        selectGetCloth: function(e){
+            this.getPrintList=[];
+            var temp;
+            for (var i=0; i<e.length; i++){
+                this.getPrintList.push(e[i]);
             }
+        },
+        //取货打印
+        printGetCloth: function(){
+            var maxCount=5;
+            if (this.getPrintList.length===0){
+                dialog.open('resultShow',{content:'没有选择需要打印的布卷信息！'});
+                return;
+            }
+            var template=vu.printTemplate;
+            var result=[];
+            var temp1,temp2;
+            for (var i=0; i<this.getPrintList.length; i++){
+                temp1='◆ $kind$ $store$';
+                temp2='   $id$';
+                temp1=temp1.replace('$kind$',this.getPrintList[i].product_code);
+                temp2=temp2.replace('$id$',this.getPrintList[i].bolt_no);
+                temp1=temp1.replace('$store$',this.getPrintList[i].position.join(','));
+                result.push({text:temp1});
+                result.push({text:temp2});
+                result.push({text:''});
+                if (i>=maxCount) break;
+            }
+            template.info.items=result;
+            var printStr=JSON.stringify(template);
+            if (this.getPrintList.length>maxCount){
+                dialog.open('resultShow',{content:'取货打印一次最多为'+ maxCount +'条！'});
+            }
+            EQUIPMENT.print(printStr);
         }
     },
     beforeMount: function () {
@@ -547,26 +551,7 @@ $(function(){
 
     function fitUI(){
         var H=body.height();
-        vu.UI.listHeight=H-70;
+        vu.UI.listHeight=H-44;
         vu.UI.bottomHeight=H-325;
     }
 });
-
-//改变布长
-function changePosition(len){
-    vu.currentPosition=len;
-}
-
-function setZeroPosition(){
-    /*
-    if (window.parent && window.parent.resetPosition){
-        window.parent.resetPosition();
-    }
-    */
-    try{
-        window.register_js.gozero();
-        vu.currentPosition=0;
-    }catch(e){
-        dialog.open('resultShow',{content:'发送清零指令有问题'});
-    }
-}

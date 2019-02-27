@@ -13,13 +13,16 @@ Vue.component('rex-cloth', {
     template: ''+
         '<div class="clothShow">'+
             '<div class="cloth" ref="cloth">' +
-                '<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code===\'mark\'" :class="checkSelect(item)"></span>' +
+                '<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code!==\'cut\'" :class="checkSelect(item)"></span>' +
+                '<span class="cutBlock leftCloth" v-if="select===\'\' && cuts.length===0">剩余布料 <strong>{{len}}</strong>米</span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
+                '<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
             '</div>' +
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
             '</div>' +
+            '<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse || select===\'\'"><span class="fa fa-retweet"></span></button>' +
         '</div>',
     props:{
         len:{
@@ -41,10 +44,13 @@ Vue.component('rex-cloth', {
             required: true
         },
         select:{
-            default: ''
+            default: 0
         },
-        first:{
-            default: ''
+        fromwhere:{
+            required: true
+        },
+        canreverse:{
+            default: true
         }
     },
     computed:{
@@ -54,7 +60,11 @@ Vue.component('rex-cloth', {
             for (var i=0; i<loopCount; i++){
                 result.push(i*this.perLen);
             }
-            result.push(this.len);
+            if (this.len-result[result.length-1]>this.perLen/2){
+                result.push(this.len);
+            }else{
+                result[result.length-1]=this.len;
+            }
             return result;
         }
     },
@@ -95,7 +105,7 @@ Vue.component('rex-cloth', {
             var result={};
             var summation=0;
             for (var i=0; i<index; i++){
-                if (this.cuts[i].status_code!=='mark') continue;
+                if (this.cuts[i].status_code==='cut') continue;
                 summation+=this.cuts[i].cut_length;
             }
             result[this.direction]=summation/this.len*100+'%';
@@ -110,10 +120,26 @@ Vue.component('rex-cloth', {
             if (this.select){
                 if (item.bolt_id===this.select.bolt_id){
                     result.sel=true;
-                    if (item.bolt_id===this.first) result.first=true;
+                    if (item.bolt_id===this.cuts[0].bolt_id) result.first=true;
                 }
             }
             return result;
+        },
+        getFromStyle: function(id){
+            var nowValue=this.fromwhere==='start_a'? 0:1;
+            var pos=this.direction;
+            var posRev=pos==='left'? 'right':'left';
+            var result={};
+            if (nowValue^id===1){
+                result[posRev]='-4px';
+            }else{
+                result[pos]='-4px';
+            }
+            return result;
+        },
+        //切换方向的调用函数
+        eventChangePosition: function(){  //如果父组件绑定事件，点击图标调用该事件
+            this.$emit('changeposition');
         }
     }
 });

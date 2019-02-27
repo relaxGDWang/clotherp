@@ -1,90 +1,41 @@
 var vu=new Vue({
     el: '#app',
     data:{
-        nowPosition: ''  //记录当前布的长度
+        username:'',
+        equipment:{
+            printer:'',
+            counter:'',
+            neter:''
+        }
     },
     methods:{
-
+        openSetting: function(){   //打开app设置界面
+            try{
+                window.register_js.exitwebview();
+            }catch(e){
+                dialog.open('information',{cname:'warning',content:'请在APP中使用该功能。', btncancel:''});
+            }
+        },
+        loginOut: function(){
+            var that=this;
+            dialog.open('information',{
+                content:'是否注销当前登录的用户 '+ that.username +' ？',
+                cname:'sure',
+                closeCallback:function(id,typeStr,btnType){
+                    if (btnType==='sure'){
+                        localStorage.removeItem(CFG.admin);
+                        top.location.href=CFG.loginPage+'?v='+Math.random();
+                    }
+                }
+            });
+        }
     },
     watch: {
-        'nowPosition': function (newVal) {
-            if (iframeObject && iframeObject.contentWindow && iframeObject.contentWindow.changePosition){
-                iframeObject.contentWindow.changePosition(newVal);
-            }
-        }
+    },
+    beforeMount: function () {
+        var temp=JSON.parse(localStorage.getItem(CFG.admin));
+        this.username=temp.name;
     }
 });
 
-var iframeObject='';
-$(function(){
-    var dialog=relaxDialog();
-    var tempArray=$('.systemMenu [href]');
-    tempArray.click(function(e){
-        if ($(this).parent().hasClass('sel')){
-            protectEvent(e);
-            return false;
-        }
-        var path=this.href;
-        this.href=refreshURL(path);
-        $('.systemMenu .sel').removeClass('sel');
-        $(this).parent().addClass('sel');
-    });
-    iframeObject=document.getElementById('abc');
-    iframeObject.onload=function(){
-        if (iframeObject && iframeObject.contentWindow && iframeObject.contentWindow.changePosition){
-            iframeObject.contentWindow.changePosition(vu.nowPosition);
-        }
-    };
-    iframeObject.src=refreshURL(tempArray[0].href);
-
-    $('#loginOut').click(function(){
-        dialog.open('sysInfo',{
-            content:'是否回到登录界面以重新登录？',
-            cname:'sure',
-            closeCallback:function(id,typeStr,btnType){
-                if (btnType==='sure'){
-                    top.location.href='login.html';
-                    localStorage.removeItem(CFG.admin);
-                }
-            }
-        });
-    });
-
-    var originDom=$('.rexSysFrame').eq(0);
-
-    $(".changeButton").click(function(){
-       if (originDom.hasClass('hiddenLeft')){
-           originDom.removeClass('hiddenLeft');
-       }else{
-           originDom.addClass('hiddenLeft');
-       }
-    });
-
-    $('h1').click(function(){
-       top.location.href='main.html?v='+Math.random();
-    });
-
-    function refreshURL(path){
-        if (/^.+\.html$/.test(path)){
-            return path+'?v='+Math.random();
-        }else{
-            return path.replace(/([?&])v=[^&]+/,'$1v='+Math.random());
-        }
-    }
-});
-
-//对外接口，设置滚动位置
-function setPosition(pos){
-    if (vu){
-        vu.nowPosition=pos;
-    }
-}
-
-//对外接口，置零滚动位置
-function resetPosition(){
-    try{
-        window.register_js.gozero();
-    }catch(e){
-        console.log('记米器错误');
-    }
-}
+var dialog=relaxDialog();

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>后台管理</title>
+    <!-- build:css library/style/webcommon.css -->
+    <link rel="stylesheet" href="library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="library/style/cssreset3.css"/>
+    <!-- endbuild -->
+    <!-- build:css style/main.css -->
+    <link rel="stylesheet" href="style/main.css"/>
+    <!-- endbuild -->
+    <script src="script/configBG.js"></script>
+</head>
+<body>
+<div class="rexSysFrame">
+    <header class="partTop"></header>
+    <div class="partRight"></div>
+    <footer class="partBottom"></footer>
+    <div class="partContent">
+        <iframe src="" name="mainContent" id="abc"></iframe>
+        <div class="changeButton fa fa-chevron-left"></div>
+    </div>
+    <nav class="partLeft">
+        <h1 class="fa fa-hand-o-right"><span>随手订货v1.0.4</span></h1>
+        <ul class="systemMenu">
+            <li class="sel"><a class="fa fa-cut" href="missionCut.html" target="mainContent">裁剪任务</a></li>
+            <li><a class="fa fa-instagram" href="missionCheck.html" target="mainContent">检验任务</a></li>
+            <!--<li><a class="fa fa-gear" href="setting.html" target="mainContent">账户设置</a></li>-->
+            <li><a id="loginOut" class="fa fa-power-off">退出登录</a></li>
+        </ul>
+    </nav>
+
+    <div class="extDialog" id="sysInfo">
+        <div class="dialogFrame">
+            <div class="dialog-title"><h3>信息提示</h3></div>
+            <div class="dialog-buttonBar">
+                <button class="rexButton opBtn btn-close">取 消</button>
+                <button class="rexButton opBtn btn-sure">确 定</button>
+            </div>
+            <div class="dialog-content">
+                <div class="diy" style="padding:10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app"></div>
+</div>
+<!-- build:js library/js/webcommon.js -->
+<script src="library/js/jquery.min.js"></script>
+<script src="library/js/vue.min.js"></script>
+<script src="library/js/rexfunction.js"></script>
+<script src="library/js/rexajax2.js"></script>
+<script src="library/js/rexdialog.js"></script>
+<script src="library/js/elementui2.4.11.js"></script>
+<!-- endbuild -->
+<!-- build:js script/main.js -->
+<script src="/script/main.js"></script>
+<!-- endbuild -->
+</body>
+</html>

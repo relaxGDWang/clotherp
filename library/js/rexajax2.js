@@ -29,7 +29,8 @@ function relaxAJAX(config) {
             abort: 'AJAX已被主动取消',
             notfound: 'AJAX请求的资源没有找到',
             timeout: 'AJAX请求已超时',
-            jsonParse: '返回数据非JSON字符串 '
+            jsonParse: '返回数据非JSON字符串 ',
+            unknow: '产生未知错误'
         },
         'en_US': {
             nourl: 'AJAX URL is empty',
@@ -37,7 +38,8 @@ function relaxAJAX(config) {
             abort: 'AJAX to be canceled',
             notfound: 'AJAX url not be found',
             timeout: 'AJAX is timeout',
-            jsonParse: 'data which be sended back is not JSON,'
+            jsonParse: 'data which be sended back is not JSON,',
+            unknow: 'Occurring unknow error'
         }
     };
     var MGST = LANG['zh-Cn'];
@@ -201,7 +203,7 @@ function relaxAJAX(config) {
                                 }
                             }else{
                                 STA.code = XHR.status;
-                                STA.msg = errorThrown;
+                                STA.msg = errorThrown? errorThrown : MGST.unknow;
                             }
                             _chkEventFunction('error', STA);
                         }

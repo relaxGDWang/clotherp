@@ -16,6 +16,11 @@ $colorInfo: #005be3 #3884f4 #d7e7ff #ebf3ff; //提示信息颜色 蓝色系
 $colorDisabled: #a0a0a0 #bfbfbf #939393 #999 #ccc #eee; //禁用时的颜色
 $colorMap: (Normal: $colorNormal, OK: $colorOK, Alert: $colorAlert, Warning: $colorWarning, Info: $colorInfo, disabled: $colorDisabled);
 
+$color1: #336666;
+$color2: #669999;
+$color3: #cccc99;
+$color4: #069393;
+
 @mixin setHzlPadding() {
   padding-left: $hzlPadding;
   padding-right: $hzlPadding;

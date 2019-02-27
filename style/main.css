@@ -1,51 +1,29 @@
-@charset "UTF-8";
-/* 后台框架样式 */
-.rexSysFrame { width: 100%; height: 100%; overflow: hidden; position: relative; }
-.rexSysFrame .partTop, .rexSysFrame .partRight, .rexSysFrame .partBottom, .rexSysFrame .partLeft { position: absolute; }
-.rexSysFrame .partContent { width: 100%; height: 100%; border-width: 0px 0px 0px 100px; border-style: solid; border-color: transparent; }
-.rexSysFrame .partTop { height: 0px; top: 0; left: 0; right: 0; display: none; }
-.rexSysFrame .partRight { width: 0px; right: 0; top: 0; bottom: 0; display: none; }
-.rexSysFrame .partBottom { height: 0px; bottom: 0; left: 0; right: 0; display: none; }
-.rexSysFrame .partLeft { width: 100px; left: 0; top: 0; bottom: 0; }
-.rexSysFrame .partTop.offset-1, .rexSysFrame .partBottom.offset-1 { left: 100px; }
-.rexSysFrame .partTop.md-1, .rexSysFrame .partBottom.md-1 { left: 100px; right: 0px; }
-.rexSysFrame .partTop.md-2, .rexSysFrame .partBottom.md-2 { right: 0px; }
-.rexSysFrame .partTop.offset-1.md-2, .rexSysFrame .partBottom.offset-1.md-2 { right: 0; }
-.rexSysFrame .partLeft.offset-1, .rexSysFrame .partRight.offset-1 { top: 0px; }
-.rexSysFrame .partLeft.md-1, .rexSysFrame .partRight.md-1 { top: 0px; bottom: 0px; }
-.rexSysFrame .partLeft.md-2, .rexSysFrame .partRight.md-2 { bottom: 0px; }
-.rexSysFrame .partLeft.offset-1.md-2, .rexSysFrame .partRight.offset-1.md-2 { bottom: 0; }
+strong { font-weight: normal; }
 
-.partLeft { background: #333; }
-.partLeft h1 { width: 100%; height: 120px; background: #336666; font-size: 14px; text-align: center; padding-top: 15px; }
-.partLeft h1:before { display: inline-block; background: #fff; border-radius: 50%; padding: 6px; font-size: 50px; transform: rotate(-90deg); color: #069393; padding-bottom: 10px; }
-.partLeft h1 span { display: block; color: #cccc99; font-weight: normal; margin-top: 5px; }
+.outFrame { width: 100%; height: 100%; position: relative; background: #336666; }
 
-.partContent { position: relative; }
-.partContent .changeButton { width: 60px; line-height: 40px; height: 40px; text-align: center; background: rgba(255, 255, 255, 0.3); color: #fff; position: absolute; left: -60px; bottom: 5%; font-size: 24px; cursor: pointer; cursor: pointer; border-radius: 6px 0 0 6px; z-index: 10; }
-.partContent .changeButton:hover, .partContent .changeButton:active { background: #336666; color: #fff; }
-.partContent .changeButton:before { display: inline-block; transform: none; transition: transform .5s; }
+.allPart { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -58%); overflow: hidden; min-width: 764px; }
 
-.hiddenLeft .partLeft { width: 0; overflow: hidden; }
+h1 { width: 100%; color: rgba(255, 255, 255, 0.8); font-size: 18px; font-weight: normal; padding: 10px 0; margin: 3px; }
+h1 .userInfo { float: right; font-size: 14px; margin: 5px 15px 0 0; color: #fff; }
+h1 .userInfo:before { margin-right: 5px; font-size: 16px; vertical-align: middle; color: #f90; }
 
-.hiddenLeft .partContent { border-left-width: 0; }
-.hiddenLeft .partContent .changeButton { left: 0; border-radius: 0 6px 6px 0; background: #666; color: #fff; opacity: .2; }
-.hiddenLeft .partContent .changeButton:hover, .hiddenLeft .partContent .changeButton:active { background: #336666; color: #fff; opacity: 1; }
-.hiddenLeft .partContent .changeButton:before { transform: rotate(180deg); }
+h2 { float: left; height: 246px; width: 246px; margin: 3px; background: #fff; text-align: center; position: relative; }
+h2 .fa:before { font-size: 140px; color: #069393; line-height: 246px; }
+h2 strong { position: absolute; bottom: 10px; right: 10px; font-size: 16px; color: #069393; }
 
-.systemMenu li { height: 100px; color: #fff; padding-top: 20px; border-top: 1px solid #666; border-bottom: 1px solid #000; }
-.systemMenu li:first-child { border-top: 0; }
-.systemMenu li:hover { background: #666; }
-.systemMenu a { display: block; height: 100%; text-align: center; }
-.systemMenu a:before { display: inline-block; width: 100%; font-size: 40px; margin-bottom: 5px; }
-.systemMenu li.sel { background: #fff; color: #069393; }
-
-#sysInfo .dialog-content { padding: 15px; }
-#sysInfo .dialog-buttonBar { background: #ccc repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 12px, transparent 0, transparent 24px); }
-#sysInfo .dialog-buttonBar .rexButton { width: 100px; }
-#sysInfo .dialog-title { font-size: 16px; }
-#sysInfo .dialog-title .fa { font-size: 22px; }
-#sysInfo .dialog-title .fa:before { vertical-align: middle; }
-#sysInfo.sure .dialog-title { background: #216cc9; color: #fff; }
+.iconPart { overflow: hidden; width: auto; }
+.iconPart .clearLeft { clear: left; }
+.iconPart a { width: 120px; height: 120px; background: #069393; margin: 3px; float: left; border: 2px solid transparent; text-align: center; position: relative; cursor: pointer; }
+.iconPart a:hover { border-color: #fff; background: #19bbbb; }
+.iconPart a:before { font-size: 60px; display: block; color: rgba(0, 0, 0, 0.5); line-height: 100px; }
+.iconPart a:hover:before { color: rgba(0, 0, 0, 0.3); }
+.iconPart a strong { position: absolute; color: #fff; bottom: 5px; left: 5px; }
+.iconPart .statusIcon { background: #cccc99; }
+.iconPart .statusIcon:hover { background: #cccc99; border-color: transparent; }
+.iconPart .statusIcon strong { color: rgba(0, 0, 0, 0.6); }
+.iconPart .statusIcon b { position: absolute; height: 14px; width: 14px; border-radius: 50%; right: 5px; bottom: 7px; border: 1px solid #f0f0f0; background: #aaa; }
+.iconPart .statusIcon b.off { background: red; }
+.iconPart .statusIcon b.on { background: #37e501; }
 
 /*# sourceMappingURL=main.css.map */
