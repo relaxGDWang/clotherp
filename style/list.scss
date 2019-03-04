@@ -39,7 +39,6 @@
     &.on:after{ background:#37e501;}
     &.off:after{ background:red;}
   }
-  .rexIconInput{ float:left; margin:5px 0 0 330px;}
 }
 .dropItemShow{
   position:relative; width:50px;
@@ -87,6 +86,18 @@
   &:after{ content:',';}
   &:last-child:after{ content:'';}
 }
+//日期加工
+.el-table .datetime{
+  word-break: break-all; line-height:1.2em; font-size:12px;
+  span{
+    white-space: nowrap; margin:0 1px;
+    &:after{ content:' ';}
+    &:last-child:after{ content:'';}
+  }
+}
+
+//分页显示
+.el-pagination{ text-align: center; margin-top:10px;}
 
 //详细页面样式
 .mydetails{
@@ -132,6 +143,7 @@
   .doingShow .error{ border-color:#f02a2a; color:#f02a2a; background:#fff4f4;}
   .doingShow .loading{ border-color:transparent; color:#666; background:transparent;}
 }
+#information .dialog-content strong{ color:red;}
 
 //加载弹框
 #loading .dialog-content{ padding:15px;}
@@ -319,4 +331,25 @@
     strong{ color:#f90; font-weight:normal;}
     .fa:before{ font-size:18px;}
   }
+}
+
+//查找条
+.searchBar{
+  padding:10px 0; text-align:center;
+  .el-select{ width:150px;}
+  .el-select:first-child{ width:105px;}
+  .numberSearch{ width:180px; -webkit-appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: none;
+    padding: 0 15px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);}
 }

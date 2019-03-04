@@ -15,9 +15,8 @@ Vue.component('rex-title', {
         '<div class="titleBar">' +
             '<h1 class="itemButton fa" :class="icon">{{title}}</h1>' +
             '<div class="itemButton dropItemShow fa fa-bars"><ul class="nohead"><li class="fa fa-home" @click="backHome()">返回首页</li><li class="fa fa-refresh" @click="refresh()">刷新列表</li><li class="fa fa-print" @click="printget">取货打印</li></ul></div>' +
-            '<div class="itemButton fa fa-pencil-square" :class="{\'sel\':!search.listType}" @click="setsearch()">待处理</div>' +
-            '<div class="itemButton fa fa-check-square" :class="{\'sel\':search.listType}" @click="setsearch(1)">已完成</div>' +
-            '<span class="rexIconInput" size="S"><span class="fa fa-search"></span><input type="text"/></span>' +
+            '<div class="itemButton fa fa-pencil-square" :class="{\'sel\':!search.listType}" @click="setsearch()">{{text1}}</div>' +
+            '<div class="itemButton fa fa-check-square" :class="{\'sel\':search.listType}" @click="setsearch(1)">{{text2}}</div>' +
             '<span class="userInfo fa fa-user">{{username}}</span>' +
             '<span class="eqStatus fa fa-print" :class="equipment.printer" @click="openSetting()"></span>' +
             '<span class="eqStatus fa fa-legal" :class="equipment.counter" @click="openSetting()"></span>' +
@@ -26,6 +25,12 @@ Vue.component('rex-title', {
     props:{
         title:{
             required:  true
+        },
+        text1:{
+            default: '待处理'
+        },
+        text2:{
+            default: '已完成'
         },
         icon:{
             default: ''

@@ -67,7 +67,8 @@ var PATH = {
     resetLength: CFG.URL+'bolts/{bolt_id}/length',   //重置布长
     addFlaw: CFG.URL+'examine/{bolt_id}/defect',     //新增疵点
     delFlaw: CFG.URL+'bolts/{bolt_id}',              //删除疵点
-    missionCheckFinished: CFG.URL+'examine/{bolt_id}/complete'  //完成检验任务
+    missionCheckFinished: CFG.URL+'examine/{bolt_id}/complete',  //完成检验任务
+    getBook: CFG.URL+'sampleBooks'     //获得样本信息
 };
 if (CFG.DEBUG){
     //通信路径处理

@@ -26,7 +26,6 @@
 .titleBar .eqStatus:after { content: ''; position: absolute; top: 10px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: #aaa; }
 .titleBar .eqStatus.on:after { background: #37e501; }
 .titleBar .eqStatus.off:after { background: red; }
-.titleBar .rexIconInput { float: left; margin: 5px 0 0 330px; }
 
 .dropItemShow { position: relative; width: 50px; }
 .dropItemShow ul { position: absolute; top: 44px; right: 0; max-height: 0; z-index: 10; overflow: hidden; width: 162px; transition-property: max-height; transition-duration: .3s; opacity: .9; }
@@ -76,6 +75,13 @@
 .el-table .positionItem:after { content: ','; }
 .el-table .positionItem:last-child:after { content: ''; }
 
+.el-table .datetime { word-break: break-all; line-height: 1.2em; font-size: 12px; }
+.el-table .datetime span { white-space: nowrap; margin: 0 1px; }
+.el-table .datetime span:after { content: ' '; }
+.el-table .datetime span:last-child:after { content: ''; }
+
+.el-pagination { text-align: center; margin-top: 10px; }
+
 .mydetails .dialog-title { background: #336666; border-bottom: 0; }
 .mydetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
 .mydetails .dialog-title .opBtn:hover, .mydetails .dialog-title .opBtn:active { color: red; }
@@ -102,6 +108,8 @@
 .doing .doingShow .warning { border-color: #ff9900; color: #ff9900; background: #fff8e9; }
 .doing .doingShow .error { border-color: #f02a2a; color: #f02a2a; background: #fff4f4; }
 .doing .doingShow .loading { border-color: transparent; color: #666; background: transparent; }
+
+#information .dialog-content strong { color: red; }
 
 #loading .dialog-content { padding: 15px; }
 
@@ -224,5 +232,10 @@
 .leftClothInfo > span strong { color: #069393; font-size: 18px; }
 .leftClothInfo .rexButton strong { color: #f90; font-weight: normal; }
 .leftClothInfo .rexButton .fa:before { font-size: 18px; }
+
+.searchBar { padding: 10px 0; text-align: center; }
+.searchBar .el-select { width: 150px; }
+.searchBar .el-select:first-child { width: 105px; }
+.searchBar .numberSearch { width: 180px; -webkit-appearance: none; background-color: #fff; background-image: none; border-radius: 4px; border: 1px solid #dcdfe6; box-sizing: border-box; color: #606266; display: inline-block; font-size: inherit; height: 40px; line-height: 40px; outline: none; padding: 0 15px; transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
 
 /*# sourceMappingURL=list.css.map */

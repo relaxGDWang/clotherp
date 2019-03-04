@@ -3,6 +3,8 @@
 // code at 2018-11-06
 // Notice 对于跨域请求，如果contentType设置为json，一次ajax通信在浏览器上会有两次请求，第一次是mothed为option的请求，这次请求成功，下次才是真正的ajax数据发送。对于该contentType的数据，服务端接收方法也不太一样，以PHP为例子，from格式可以用$_POST来获取，而json方式，则需要用...来处理
 // modify by relax 2019-1-16 应对某些框架下参数放在url中的情况 比如 www.test.com/getlist/1/get/ 这种，无法用静态url直接设置，现在扩展url的处理方法，可以动态应对data中的数据，使用 www.test.com/{id}/{method}这种方式进行协调
+// modify by relax 2019-3-3 把error,before,complete事件在send中可设置开放了出来，事件判定处理统一在_chkEventFunction进行
+// modify by relax 2019-3-4 如果在send时设置某个事件为空字符串，那么即使它在实例化的时候绑定过事件，在本次send方法调用中也不会触发该事件
 function relaxAJAX(config) {
     var CON = {
         url: '',      //ajax访问路劲
@@ -69,20 +71,25 @@ function relaxAJAX(config) {
     }
 
     //触发对应的事件
-    function _chkEventFunction(eventStr, eventArg) {
-        if (!CON[eventStr] || typeof(CON[eventStr]) !== 'function') return false;
+    function _chkEventFunction(eventStr, eventArg, eventCover) {
+        var temp=CON;
+        if (eventCover){
+            if (eventCover[eventStr] && typeof(eventCover[eventStr]) === 'function') temp=eventCover;
+            if (eventCover[eventStr]==='') return false;
+        }
+        if (!temp[eventStr] || typeof(temp[eventStr]) !== 'function') return false;
         switch (eventStr) {
             case 'before':
-                CON.before();
+                temp.before();
                 break;
             case 'complete':
-                CON.complete();
+                temp.complete();
                 break;
             case 'error':
-                CON.error(eventArg.code, eventArg.msg);
+                temp.error(eventArg.code, eventArg.msg);
                 break;
             case 'success':
-                CON.success(eventArg);
+                temp.success(eventArg);
                 break;
             default:
                 return false;
@@ -110,6 +117,9 @@ function relaxAJAX(config) {
       headers //请求的自定义头
       method //请求方法 GET/POST...
       success //成功请求的触发事件
+      error   //错误请求的出发事件
+      before  //请求发送时的触发事件
+      complete //流程处理完毕后的触发事件
     */
     function _send(arg) {
         if (window.LG && LG.locale) {
@@ -123,12 +133,12 @@ function relaxAJAX(config) {
         if (urlStr === "") {
             STA.code = 400;
             STA.msg = MGST.nourl;
-            _chkEventFunction('error', STA);
+            _chkEventFunction('error', STA, arg);
             return false;
         }
         //判断是否在发送中
         if (STA.code === 100) {
-            _chkEventFunction('error', STA);
+            _chkEventFunction('error', STA, arg);
             return false;
         }
         //加工发送的数据 modify by relax 2019-1-16 修改了前置处理的逻辑，之前没有参数传递的时候不会调用前置处理，现在不管什么情况都会调用，只要配置了前置处理就行
@@ -170,7 +180,7 @@ function relaxAJAX(config) {
             beforeSend: function (xhr) {
                 STA.code = 100;
                 STA.msg = MGST.sending;
-                _chkEventFunction('before');
+                _chkEventFunction('before',{}, arg);
             },
             //错误反馈事件
             error: function (XHR, status, errorThrown) {
@@ -178,17 +188,17 @@ function relaxAJAX(config) {
                 if (XHR.statusText === "abort") {
                     STA.code = 420;
                     STA.msg = MGST.abort;
-                    _chkEventFunction('error', STA);
+                    _chkEventFunction('error', STA, arg);
                 } else {
                     if (XHR.status === 404) {
                         STA.code = 404;
                         STA.msg = MGST.notfound;
-                        _chkEventFunction('error', STA);
+                        _chkEventFunction('error', STA, arg);
                     } else {
                         if (XHR.statusText === "timeout") {
                             STA.code = 408;
                             STA.msg = MGST.timeout;
-                            _chkEventFunction('error', STA);
+                            _chkEventFunction('error', STA, arg);
                         } else {
                             //未知错误的情况
                             //判定是否是JSON解析出错
@@ -205,7 +215,7 @@ function relaxAJAX(config) {
                                 STA.code = XHR.status;
                                 STA.msg = errorThrown? errorThrown : MGST.unknow;
                             }
-                            _chkEventFunction('error', STA);
+                            _chkEventFunction('error', STA, arg);
                         }
                     }
                 }
@@ -216,7 +226,7 @@ function relaxAJAX(config) {
                     var returnObj = CON.checker(data);
                     if (returnObj.code !== 200) {
                         STA.code = 400;
-                        _chkEventFunction('error', {code: returnObj.code, msg: returnObj.msg});
+                        _chkEventFunction('error', {code: returnObj.code, msg: returnObj.msg}, arg);
                         return;
                     } else {
                         data = returnObj.data;
@@ -224,15 +234,15 @@ function relaxAJAX(config) {
                 }
                 STA.code = 200;
                 STA.msg = "ok";
-                if (arg.success && typeof(arg.success) === 'function') {
-                    arg.success(data);
-                } else {
-                    _chkEventFunction('success', data);
-                }
+                //if (arg.success && typeof(arg.success) === 'function') {
+                    //arg.success(data);
+                //} else {
+                    _chkEventFunction('success', data, arg);
+                //}
             },
             //请求完成
             complete: function (XHR, status) {
-                _chkEventFunction('complete');
+                _chkEventFunction('complete',{}, arg);
             }
         });
     }

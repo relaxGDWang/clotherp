@@ -4,7 +4,19 @@ var vu=new Vue({
     data:{
         search:{
             listType: undefined, //默认进行中任务，finished完成的任务
-            urgent: ''            //是否加急，加急1，否则留空
+            craft: '',           //成品prod 胚布raw
+            book_id: '',         //样本编号
+            bolt_no: undefined,  //卷号
+            urgent: '',          //是否加急，加急1，否则留空
+            craftList:[{key:'prod',label:'成品'},{key:'raw',label:'胚布'}],
+            bookList:[]
+        },
+        cutpage:{
+            page: 1,
+            page2: 1,
+            pageSize: 20,
+            total: 0,
+            count: 0
         },
         username: '',
         equipment:{
@@ -35,12 +47,16 @@ var vu=new Vue({
         getPrintList:[],  //取货打印信息
         printTemplate:'',  //打印模板信息
         editObject: {},
-        mission: [],    //任务细分数组，ajax直接返回
-        missionKey: {}  //bolt_id与数组index对应关系
+        mission: [],     //任务细分数组，ajax直接返回
+        missionKey: {},  //bolt_id与数组index对应关系
+        books: []        //样本信息
     },
     computed:{
         isDisabled: function(){
             return this.search.listType || this.editObject.finished;
+        },
+        isDisabled2: function(){
+            return !this.editObject || !this.editObject.viewObj || this.editObject.viewObj.splits.length===0;
         }
     },
     methods:{
@@ -54,17 +70,30 @@ var vu=new Vue({
         changeSearch: function(val){
             this.search.listType=val;
         },
-        getList: function(){  //获得任务列表
+        getList: function(pageNum){  //获得任务列表
             this.mission=[];
             this.missionKey={};
             this.flagReload=false;
+            if (pageNum) this.cutpage.page=pageNum;
             ajax.send({
                 url: PATH.missionCheck,
-                data:{status: this.search.listType, urgent: (this.search.urgent || undefined)},
+                data:{status: this.search.listType, urgent: (this.search.urgent || undefined), craft: (this.search.craft || undefined), book_id: (this.search.book_id || undefined), bolt_no: this.search.bolt_no, page: this.cutpage.page},
                 success:function(data){
                     dialog.close('loading');
+                    //加工分页数据
+                    vu.cutpage.page2=vu.cutpage.page=data.page-0;
+                    vu.cutpage.count=data.pages;
+                    vu.cutpage.total=data.total;
+                    data=data.items;
                     for (var i = 0; i < data.length; i++) {
                         data[i].position=data[i].position.split(REG.position);  //加工所在仓位
+                        //加工日期时间
+                        if (!data[i].examined_at){
+                            data[i].examined_at=['--'];
+                        }else{
+                            data[i].examined_at=data[i].examined_at.split(/\s/);
+                        }
+                        if (data[i].examined_at.length===1) data[i].examined_at[1]='';
                         vu.mission.push(data[i]);
                         vu.missionKey[data[i]['bolt_id']] = vu.mission[i];
                     }
@@ -74,8 +103,47 @@ var vu=new Vue({
                         vu.printTemplate.info.footer=undefined;
                         vu.printTemplate.info.header='随手订货 取货单';
                     }
+                },
+                error:function(code,msg){
+                    dialog.close('loading');
+                    dialog.open('information',{content:msg, cname:'error', btncancel:''});
+                    vu.cutpage.page=vu.cutpage.page2;
                 }
             });
+        },
+        //分页
+        changePage: function(page){
+            this.getList(page);
+        },
+        //获得样本信息
+        getBookList: function(){
+            this.search.bookList=[];
+            ajaxModify.send({
+                url: PATH.getBook,
+                method: 'get',
+                success: function(data){
+                    for (var x in data){
+                        vu.search.bookList.push({key:x, label:data[x]});
+                    }
+                },
+                before: '',
+                error: ''
+            });
+        },
+        //查询条件变更
+        changeSearchRelation: function(){
+            this.search.bolt_no='';
+            this.getList(1);
+        },
+        //查询条件中的卷号变更
+        changeSearchNumber: function(e){
+            if (e.keyCode===13){
+                this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
+                this.search.craft='';
+                this.search.book_id='';
+                this.getList(1);
+                e.target.blur();
+            }
         },
         //bid 每个裁剪分段的编号 bno 每个布匹的编号
         openDetails: function(bid, start){
@@ -87,12 +155,12 @@ var vu=new Vue({
                     vu.stopEQPosition();
                 }
             };
-            if (this.missionKey[bid].viewObj!==undefined && start===undefined){
+            /*if (this.missionKey[bid].viewObj!==undefined && start===undefined){
                 this.editObject=this.missionKey[bid];
                 this._setColthLen();
                 this.startEQPosition();
                 dialog.open('opDetails',dialogConfig);
-            }else{
+            }else{*/
                 ajax.send({
                     url: PATH.missionCheckDetails,
                     data:{bolt_id: bid, start: (start || undefined)},
@@ -103,7 +171,7 @@ var vu=new Vue({
                         dialog.open('opDetails',dialogConfig);
                     }
                 });
-            }
+            //}
         },
         _setDetailsData: function(data, idStr){
             var flag=false;
@@ -160,9 +228,21 @@ var vu=new Vue({
             });
         },
         askCut: function(){
+            //按当前的定位进行提示文本和提示框的协调
+            var cutLen=this.editObject.viewObj.splits[0].cut_length;
+            var p=0.05,msg,className;
+            var checkValueMax=cutLen + p;
+            var checkValueMin=cutLen - p;
+            if (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax){
+                msg='是否确定在当前疵点位置 '+ cutLen +'米 进行分裁操作？';
+                className='sure';
+            }else{
+                msg='分裁位置与疵点位置 <strong>'+ cutLen +'</strong>米 并不匹配，是否依然进行分裁操作？';
+                className='warning';
+            }
             dialog.open('information',{
-                content: '是否裁剪该布段？',
-                cname: 'sure',
+                content: msg,
+                cname: className,
                 closeCallback: function(id, dialogType, buttonType){
                     if (buttonType==='sure') vu.doCut();
                 }
@@ -172,7 +252,7 @@ var vu=new Vue({
             ajax.send({
                 url: PATH.missionCutFinished,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.bolt_id, cutLength: vu.currentPosition},
+                data:{bolt_id: vu.editObject.viewObj.splits[0].bolt_id, cutLength: vu.currentPosition},
                 success:function(data){
                     dialog.close('loading');
                     vu.flagReload=true;
@@ -180,7 +260,7 @@ var vu=new Vue({
                     vu._setDetailsData(data,'');
                     //自动打印标签
                     vu.printDoing('end');
-                    dialog.open('resultShow',{content:'当前段的裁剪操作已成功！'});
+                    dialog.open('resultShow',{content:'当前段的分裁操作已成功！'});
                 }
             });
         },
@@ -486,10 +566,11 @@ $(function(){
 
     fitUI();
     vu.getList();
+    vu.getBookList();
 
     function fitUI(){
         var H=body.height();
-        vu.UI.listHeight=H-44;
+        vu.UI.listHeight=H-154;
         vu.UI.bottomHeight=H-315;
     }
 });
