@@ -9,6 +9,7 @@
 //pos  当前记米器的位置坐标
 //select 标记该布匹的当前选择段
 //first  标记当前第一个布段
+//原先button 项的disabled判定还有个条件 || select===''"
 Vue.component('rex-cloth', {
     template: ''+
         '<div class="clothShow">'+
@@ -22,7 +23,7 @@ Vue.component('rex-cloth', {
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
             '</div>' +
-            '<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse || select===\'\'"><span class="fa fa-retweet"></span></button>' +
+            '<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse"><span class="fa fa-retweet"></span></button>' +
         '</div>',
     props:{
         len:{

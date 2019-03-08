@@ -64,11 +64,13 @@ var PATH = {
     missionCut: CFG.URL+'cutout',           //裁剪任务列表
     missionCutDetails: CFG.URL+'cutout/{bolt_id}',  //裁剪任务详细
     missionCutFinished: CFG.URL+'cutout/{bolt_id}/cut',  //完成裁剪
+    missionCutQuick: CFG.URL+'cutout/{bolt_id}/quickcut', //快速裁剪中的完成裁剪
     resetLength: CFG.URL+'bolts/{bolt_id}/length',   //重置布长
     addFlaw: CFG.URL+'examine/{bolt_id}/defect',     //新增疵点
     delFlaw: CFG.URL+'bolts/{bolt_id}',              //删除疵点
     missionCheckFinished: CFG.URL+'examine/{bolt_id}/complete',  //完成检验任务
-    getBook: CFG.URL+'sampleBooks'     //获得样本信息
+    getBook: CFG.URL+'sampleBooks',     //获得样本信息
+    quickCutting: CFG.URL+'cutout/{bolt_no}/detail'  //快速裁剪的详情
 };
 if (CFG.DEBUG){
     //通信路径处理

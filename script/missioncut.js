@@ -3,6 +3,7 @@ var vu=new Vue({
     data:{
         search:{
             listType: undefined, //默认进行中任务，cut完成的任务
+            bolt_no: undefined,  //卷号
             urgent: ''            //是否加急，加急1，否则留空
         },
         username: '',
@@ -75,6 +76,30 @@ var vu=new Vue({
                 }
             });
         },
+        //查询条件中的卷号变更
+        changeSearchNumber: function(e){
+            if (e.keyCode===13){
+                this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
+                e.target.blur();
+                ajax.send({
+                    url: PATH.quickCutting,
+                    data: {bolt_no: vu.search.bolt_no},
+                    success: function(data){
+                        dialog.close('loading');
+                        vu._setDetailsData(data, data.bolt_id);
+                        vu.startEQPosition();
+                        dialog.open('opDetails',{
+                            closeCallback: function(){
+                                vu.editObject={};
+                                vu.UI.len='';
+                                vu.stopEQPosition();
+                                vu.$refs.numberSearch.focus();
+                            }
+                        });
+                    }
+                })
+            }
+        },
         //bid 每个裁剪分段的编号 bno 每个布匹的编号
         openDetails: function(bid, start){
             var dialogConfig={
@@ -86,6 +111,7 @@ var vu=new Vue({
                     vu.stopEQPosition();
                 }
             };
+            /*
             if (this.missionKey[bid].viewObj!==undefined && start===undefined){
                 if (this.search.listType){
                     this.showObject=this.missionKey[bid];
@@ -97,6 +123,7 @@ var vu=new Vue({
                     dialog.open('opDetails',dialogConfig);
                 }
             }else{
+            */
                 ajax.send({
                     url: PATH.missionCutDetails,
                     data:{bolt_id: bid, start: (start || undefined)},
@@ -111,10 +138,12 @@ var vu=new Vue({
                         }
                     }
                 });
+            /*
             }
+            */
         },
         _setDetailsData: function(data, idStr){
-            if (this.search.listType){
+            if (this.search.listType && this.search.listType!=='quick'){
                 data.product=this.missionKey[data.bolt_id].product_code;
                 Vue.set(this.missionKey[data.bolt_id],'viewObj',data);
                 this.showObject=this.missionKey[data.bolt_id];
@@ -130,8 +159,18 @@ var vu=new Vue({
                 for (i=0; i<data.splits.length; i++){
                     data.list[data.splits[i].bolt_id]=i;
                 }
-                Vue.set(this.missionKey[idStr],'viewObj',data);
-                if (!flag) this.editObject=this.missionKey[idStr];
+                if (this.search.listType==='quick'){
+                    this.editObject={
+                        bolt_id: data.bolt_id,
+                        product_code: '--',
+                        bolt_no: data.bolt_no,
+                        position: data.position.split(REG.position),
+                        viewObj: data
+                    };
+                }else{
+                    Vue.set(this.missionKey[idStr],'viewObj',data);
+                    if (!flag) this.editObject=this.missionKey[idStr];
+                }
                 this._setColthLen();
 
                 //格式化瑕疵点列表
@@ -173,7 +212,7 @@ var vu=new Vue({
             var p=0.05,msg,className;
             var checkValueMax=this.editObject.viewObj.sel.cut_length + p;
             var checkValueMin=this.editObject.viewObj.sel.cut_length - p;
-            if (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax){
+            if (this.search.listType==='quick' || (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax)){
                 msg='是否完成当前裁剪操作？';
                 className='sure';
             }else{
@@ -189,18 +228,24 @@ var vu=new Vue({
             });
         },
         doFinish: function(){
+            if (this.search.listType==='quick'){
+                this.editObject.viewObj.sel={
+                    bolt_id: this.editObject.viewObj.bolt_id
+                };
+            }
             ajax.send({
-                url: PATH.missionCutFinished,
+                url: vu.search.listType==='quick'? PATH.missionCutQuick: PATH.missionCutFinished,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.sel.bolt_id, cutLength: vu.currentPosition? vu.currentPosition : vu.editObject.viewObj.sel.cut_length},
+                data:{bolt_id: vu.editObject.viewObj.sel.bolt_id, length: vu.currentPosition? vu.currentPosition : vu.editObject.viewObj.sel.cut_length},
                 success:function(data){
                     //自动打印标签
-                    vu.printDoing();
+                    if (vu.search.listType!=='quick') vu.printDoing();
                     vu.flagReload=true;
                     EQUIPMENT.resetCounter(true);
                     dialog.close('loading');
                     vu._setDetailsData(data,'');
-                    if (data.splits.length===0){  //判断是否还有裁剪段
+                    if (vu.search.listType==='quick') vu.printDoing();
+                    if (data.splits.length===0 && vu.search.listType!=='quick'){  //判断是否还有裁剪段
                         vu.UI.len=data.current_length;
                         dialog.open('information',{
                             content: '当前布匹上的裁剪任务已经全部处理完毕!',
@@ -256,7 +301,7 @@ var vu=new Vue({
                         vu._resetInputData();
                     },1500);
                     //调整布长
-                    vu.missionKey[data.bolt_id].current_length=data.current_length;
+                    if (vu.search.listType!=='quick') vu.missionKey[data.bolt_id].current_length=data.current_length;
                     vu._setDetailsData(data,'');
                     vu.flagReload=true;
                 }
@@ -371,7 +416,7 @@ var vu=new Vue({
         //打印标签
         printDoing: function(index){
             var printStr='';
-            if (this.search.listType){   //查看完成订单的打印
+            if (this.search.listType && this.search.listType!=='quick'){   //查看完成订单的打印
                 switch(index){
                     case 'start':
                         if (this.showObject.viewObj.start==='start_a'){
@@ -414,6 +459,8 @@ var vu=new Vue({
                                 printStr=this.editObject.viewObj.print_head;
                             }
                             break;
+                        default:
+                            printStr=this.editObject.viewObj.cutouts[0].print_data;
                     }
                 }
                 printStr=JSON.stringify(printStr);

@@ -20,7 +20,7 @@
 <div class="outFrame" id="app">
     <div class="main">
         <rex-title title="裁剪任务" icon="fa-cut" :username="username" :equipment="equipment" :search="search" searchvalue="cut" @refresh="getList" @setsearch="changeSearch" @printget="printGetCloth"></rex-title>
-        <div class="listContent cutMissionList" :class="{'isCenter':!search.listType}">
+        <div class="listContent cutMissionList" :class="{'isCenter':!search.listType}" v-if="search.listType!=='quick'">
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
                 <el-table-column type="selection" width="50" v-if="!search.listType"></el-table-column>
                 <el-table-column label="#" width="50">
@@ -49,6 +49,12 @@
                     </template>
                 </el-table-column>
             </el-table>
+        </div>
+        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}">
+            <div class="fillBar">
+                <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
+                <input class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" ref="numberSearch"/>
+            </div>
         </div>
     </div>
 
@@ -99,7 +105,7 @@
                                 <span class="fa fa-edit"></span><span>布长修正</span>
                             </button><button class="rexButton" color="info" @click="printDoing('show')" :disabled="editObject.viewObj.examine===1 && editObject.viewObj.splits.length>0">
                                 <span class="fa fa-barcode"></span><span>打印标签</span>
-                            </button><button id="doFinish" class="rexButton" color="warning" :disabled="!editObject.viewObj.sel || editObject.viewObj.sel.bolt_id!==editObject.viewObj.splits[0].bolt_id" @click="askFinish()">
+                            </button><button id="doFinish" class="rexButton" color="warning" :disabled="search.listType!=='quick' && (!editObject.viewObj.sel || editObject.viewObj.sel.bolt_id!==editObject.viewObj.splits[0].bolt_id)" @click="askFinish()">
                                 <span class="fa fa-cut"></span><span>完成裁剪</span>
                             </button>
                         </div>
