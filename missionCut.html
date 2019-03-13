@@ -270,7 +270,7 @@
                 <div class="row">
                     <label>疵点开始位置</label>
                     <span class="inputShow">
-                        <el-input type="tel" v-model.trim="input.end" maxlength="6" :disabled="input.flag || input.step===2" :readonly="input.readonly">
+                        <el-input type="tel" v-model.trim="input.start" maxlength="6" :disabled="input.flag || input.step===2" :readonly="input.readonly">
                             <el-button slot="prepend" class="fa" :class="{'fa-pencil':input.readonly,'fa-legal':!input.readonly}" @click="input.readonly=!input.readonly" :disabled="input.flag || input.step===2"></el-button>
                         </el-input>
                         <strong>米</strong>

@@ -130,7 +130,7 @@ var vu=new Vue({
                     success:function(data){
                         dialog.close('loading');
                         vu._setDetailsData(data, data.bolt_id);
-                        if (vu.search.listType){
+                        if (vu.search.listType && vu.search.listType!=='quick'){
                             dialog.open('finishDetails',dialogConfig);
                         }else{
                             vu.startEQPosition();
