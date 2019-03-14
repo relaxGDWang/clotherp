@@ -242,5 +242,6 @@
 .quickPart { position: relative; }
 
 .fillBar { position: absolute; top: 40%; left: 50%; transform: translateX(-50%); }
+.fillBar .fa { float: left; font-size: 65px; margin-right: 20px; border-right: 1px solid #ccc; padding-right: 20px; color: #069393; }
 
 /*# sourceMappingURL=list.css.map */

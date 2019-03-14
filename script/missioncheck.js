@@ -41,7 +41,7 @@ var vu=new Vue({
             len: '',       //修正布长
             start:'',      //疵点开始
             end:'',        //疵点结束
-            step:2,        //步骤
+            step:1,        //步骤
             readonly: true   //是否自定义输入，否则按计米器数值输入
         },
         getPrintList:[],  //取货打印信息
@@ -56,7 +56,8 @@ var vu=new Vue({
             return this.search.listType || this.editObject.finished;
         },
         isDisabled2: function(){
-            return !this.editObject || !this.editObject.viewObj || this.editObject.viewObj.splits.length===0;
+            return false;
+            //return !this.editObject || !this.editObject.viewObj || this.editObject.viewObj.splits.length===0;
         }
     },
     methods:{
@@ -153,6 +154,9 @@ var vu=new Vue({
                     if (vu.flagReload) vu.getList();
                     vu.UI.len='';
                     vu.stopEQPosition();
+                    if (vu.search.bolt_no){
+                        vu.$refs.numberSearch.focus();
+                    }
                 }
             };
             /*if (this.missionKey[bid].viewObj!==undefined && start===undefined){
@@ -228,31 +232,52 @@ var vu=new Vue({
             });
         },
         askCut: function(){
-            //按当前的定位进行提示文本和提示框的协调
-            var cutLen=this.editObject.viewObj.splits[0].cut_length;
-            var p=0.05,msg,className;
-            var checkValueMax=cutLen + p;
-            var checkValueMin=cutLen - p;
-            if (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax){
-                msg='是否确定在当前疵点位置 '+ cutLen +'米 进行分裁操作？';
-                className='sure';
+            if (this.editObject.viewObj.splits.length>0) {
+                //按当前的定位进行提示文本和提示框的协调
+                var cutLen = this.editObject.viewObj.splits[0].cut_length;
+                var p = 0.05, msg, className;
+                var checkValueMax = cutLen + p;
+                var checkValueMin = cutLen - p;
+                if (this.currentPosition && this.currentPosition >= checkValueMin && this.currentPosition <= checkValueMax) {
+                    msg = '是否确定在当前疵点位置 <strong>' + cutLen + '</strong>米 进行分裁操作？';
+                    className = 'sure';
+                } else {
+                    msg = '分裁位置与疵点位置 <strong>' + cutLen + '</strong>米 并不匹配，是否依然进行分裁操作？';
+                    className = 'warning';
+                }
             }else{
-                msg='分裁位置与疵点位置 <strong>'+ cutLen +'</strong>米 并不匹配，是否依然进行分裁操作？';
-                className='warning';
+                if (this.currentPosition && this.currentPosition>0 && this.currentPosition<=this.editObject.current_length){
+                    msg = '是否确定在当前疵点位置 <strong>' + this.currentPosition + '</strong>米 进行分裁操作？';
+                    className = 'sure';
+                }else{
+                    dialog.open('information',{
+                        content: '没有准确获得当前裁剪位置。',
+                        btncancel: '',
+                        cname: 'warning'
+                    });
+                    return;
+                }
             }
-            dialog.open('information',{
+            dialog.open('information', {
                 content: msg,
                 cname: className,
-                closeCallback: function(id, dialogType, buttonType){
-                    if (buttonType==='sure') vu.doCut();
+                closeCallback: function (id, dialogType, buttonType) {
+                    if (buttonType === 'sure') vu.doCut();
                 }
             });
         },
         doCut: function(){
+            var isQuick=false, sendId;
+            if (this.editObject.viewObj.splits.length>0){
+                sendId=this.editObject.viewObj.splits[0].bolt_id;
+            }else{
+                isQuick=true;
+                sendId=this.editObject.bolt_id;
+            }
             ajax.send({
-                url: PATH.missionCutFinished,
+                url: isQuick? PATH.missionCutQuick: PATH.missionCutFinished,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.splits[0].bolt_id, cutLength: vu.currentPosition},
+                data:{bolt_id: sendId, length: vu.currentPosition},
                 success:function(data){
                     dialog.close('loading');
                     vu.flagReload=true;
@@ -272,7 +297,7 @@ var vu=new Vue({
             this.input.len='';
             this.input.start='';
             this.input.end='';
-            this.input.step=2;
+            this.input.step=1;
             this.input.readonly=true;
         },
         resetLength: function(){  //重写布匹长度操作
@@ -310,10 +335,9 @@ var vu=new Vue({
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
                 dialog.open('addFlaw',{closeCallback: vu._resetInputData});
-                this.input.end=this.currentPosition===''? 0: this.currentPosition;  //notice
+                this.input.start=this.currentPosition===''? 0: this.currentPosition;  //notice
                 this.positionCallBack=function(newVal){
-                    //this.input.start=newVal;
-                    this.input.end=newVal;
+                    this.input.start=newVal;
                 };
             }else{   //删除疵点操作
                 dialog.open('information',{
@@ -368,7 +392,7 @@ var vu=new Vue({
             ajaxModify.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.bolt_id, defects:[vu.input.end+","+vu.input.end]},  //notice
+                data:{bolt_id: vu.editObject.viewObj.bolt_id, defects:[vu.input.start+","+vu.input.end]},  //notice
                 success: function(data){
                     vu._setDetailsData(data);
                     vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功！'});

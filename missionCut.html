@@ -50,8 +50,9 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}">
+        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="search.listType==='quick'">
             <div class="fillBar">
+                <span class="fa fa-search"></span>
                 <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
                 <input class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" ref="numberSearch"/>
             </div>
@@ -105,7 +106,7 @@
                                 <span class="fa fa-edit"></span><span>布长修正</span>
                             </button><button class="rexButton" color="info" @click="printDoing('show')" :disabled="editObject.viewObj.examine===1 && editObject.viewObj.splits.length>0">
                                 <span class="fa fa-barcode"></span><span>打印标签</span>
-                            </button><button id="doFinish" class="rexButton" color="warning" :disabled="search.listType!=='quick' && (!editObject.viewObj.sel || editObject.viewObj.sel.bolt_id!==editObject.viewObj.splits[0].bolt_id)" @click="askFinish()">
+                            </button><button id="doFinish" class="rexButton" color="warning" :disabled="isDisabled" @click="askFinish()">
                                 <span class="fa fa-cut"></span><span>完成裁剪</span>
                             </button>
                         </div>
@@ -117,7 +118,7 @@
                                 <li v-for="(item, index) in editObject.viewObj.defects" :key="item.bolt_id">
                                     <span class="index" :class="{'point':(item.defect_type==='dot'),'block':(item.defect_type!=='dot')}">{{index+1}}</span>
                                     <span class="showtext"><label>位置：</label><b>{{item.position}}</b> 米<label>长度：</label><b>{{item.length || '--'}}</b> 米</span>
-                                    <span class="opButton" @click="operateFlaw(item.bolt_id)" v-if="!search.listType">&times;</span>
+                                    <span class="opButton" @click="operateFlaw(item.bolt_id)">&times;</span>
                                 </li>
                             </transition-group>
                             <ul class="nohead" v-if="editObject.viewObj.defects.length===0">

@@ -30,7 +30,7 @@
                     <el-option label="" value="">选择样本</el-option>
                     <el-option v-for="item in search.bookList" :label="item.label" :value="item.key"></el-option>
                 </el-select>
-                <input type="tel" class="numberSearch" placeholder="查询卷号" v-model="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()"/>
+                <input type="tel" class="numberSearch" placeholder="查询卷号" v-model="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" ref="numberSearch"/>
             </div>
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
                 <el-table-column type="selection" width="50" v-if="!search.listType"></el-table-column>
@@ -224,7 +224,7 @@
                 <div class="row">
                     <label>疵点开始位置</label>
                     <span class="inputShow">
-                        <el-input type="tel" v-model.trim="input.end" maxlength="6" :disabled="input.flag || input.step===2" :readonly="input.readonly">
+                        <el-input type="tel" v-model.trim="input.start" maxlength="6" :disabled="input.flag || input.step===2" :readonly="input.readonly">
                             <el-button slot="prepend" class="fa" :class="{'fa-pencil':input.readonly,'fa-legal':!input.readonly}" @click="input.readonly=!input.readonly" :disabled="input.flag || input.step===2"></el-button>
                         </el-input>
                         <strong>米</strong>

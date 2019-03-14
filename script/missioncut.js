@@ -29,7 +29,7 @@ var vu=new Vue({
             len: '',       //修正布长
             start:'',      //疵点开始
             end:'',        //疵点结束
-            step:2,        //步骤
+            step:1,        //步骤
             readonly: true   //是否自定义输入，否则按计米器数值输入
         },
         getPrintList:[],  //取货打印信息
@@ -38,6 +38,19 @@ var vu=new Vue({
         showObject: {},  //用于标注当前查看的已完成任务对象
         mission: [], //任务细分数组，ajax直接返回
         missionKey: {}, //bolt_id与数组index对应关系
+    },
+    computed:{
+        isDisabled: function(){   //判断完成裁剪是否可用
+            if (this.search.listType==='quick'){
+                if (this.editObject.viewObj.splits.length>0){
+                    return !(this.editObject.viewObj.sel.bolt_id===this.editObject.viewObj.splits[0].bolt_id);
+                }else{
+                    return false;
+                }
+            }else{
+                return !(this.editObject.viewObj.sel && (this.editObject.viewObj.sel.bolt_id===this.editObject.viewObj.splits[0].bolt_id));
+            }
+        }
     },
     methods:{
         startEQPosition: function(){  //开始计米器读数
@@ -49,6 +62,11 @@ var vu=new Vue({
         },
         changeSearch: function(val){
             this.search.listType=val;
+            if (val==='quick'){
+                setTimeout(function(){
+                    vu.$refs.numberSearch.focus();
+                },200);
+            }
         },
         getList: function(){  //获得任务列表
             this.mission=[];
@@ -208,16 +226,30 @@ var vu=new Vue({
             }
         },
         askFinish: function(){
-            //检测当前计米和需裁剪的是否匹配
-            var p=0.05,msg,className;
-            var checkValueMax=this.editObject.viewObj.sel.cut_length + p;
-            var checkValueMin=this.editObject.viewObj.sel.cut_length - p;
-            if (this.search.listType==='quick' || (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax)){
-                msg='是否完成当前裁剪操作？';
-                className='sure';
+            if (this.editObject.viewObj.splits.length>0) {
+                //检测当前计米和需裁剪的是否匹配
+                var p = 0.05, msg, className;
+                var checkValueMax = this.editObject.viewObj.sel.cut_length + p;
+                var checkValueMin = this.editObject.viewObj.sel.cut_length - p;
+                if (this.currentPosition && this.currentPosition >= checkValueMin && this.currentPosition <= checkValueMax) {
+                    msg = '是否完成当前段 <strong>'+ this.editObject.viewObj.sel.cut_length +'</strong>米 的裁剪操作？';
+                    className = 'sure';
+                } else {
+                    msg = '裁剪位置似乎与需要裁剪长度<strong>' + this.editObject.viewObj.sel.cut_length + '</strong>米 不匹配，是否任然完成当前裁剪？';
+                    className = 'warning';
+                }
             }else{
-                msg='裁剪位置似乎与需要裁剪长度不匹配，是否任然完成当前裁剪？';
-                className='warning';
+                if (this.currentPosition && this.currentPosition>0 && this.currentPosition<=this.editObject.viewObj.current_length){
+                    msg = '是否确定在当前疵点位置 <strong>' + this.currentPosition + '</strong>米 进行分裁操作？';
+                    className = 'sure';
+                }else{
+                    dialog.open('information',{
+                        content: '没有准确获得当前裁剪位置。',
+                        btncancel: '',
+                        cname: 'warning'
+                    });
+                    return;
+                }
             }
             dialog.open('information',{
                 content: msg,
@@ -228,13 +260,18 @@ var vu=new Vue({
             });
         },
         doFinish: function(){
+            var isQuick=false;
             if (this.search.listType==='quick'){
-                this.editObject.viewObj.sel={
-                    bolt_id: this.editObject.viewObj.bolt_id
-                };
+                if (this.editObject.viewObj.splits.length>0){
+                }else{
+                    this.editObject.viewObj.sel={
+                        bolt_id: this.editObject.viewObj.bolt_id
+                    };
+                    isQuick=true;
+                }
             }
             ajax.send({
-                url: vu.search.listType==='quick'? PATH.missionCutQuick: PATH.missionCutFinished,
+                url: isQuick? PATH.missionCutQuick: PATH.missionCutFinished,
                 method: 'post',
                 data:{bolt_id: vu.editObject.viewObj.sel.bolt_id, length: vu.currentPosition? vu.currentPosition : vu.editObject.viewObj.sel.cut_length},
                 success:function(data){
@@ -266,7 +303,7 @@ var vu=new Vue({
             this.input.len='';
             this.input.start='';
             this.input.end='';
-            this.input.step=2;
+            this.input.step=1;
             this.input.readonly=true;
         },
         resetLength: function(){  //重写布匹长度操作
@@ -310,10 +347,9 @@ var vu=new Vue({
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
                 dialog.open('addFlaw',{closeCallback: vu._resetInputData});
-                this.input.end=this.currentPosition===''? 0: this.currentPosition; //notice
+                this.input.start=this.currentPosition===''? 0: this.currentPosition; //notice
                 this.positionCallBack=function(newVal){
-                    //this.input.start=newVal;
-                    this.input.end=newVal;
+                    this.input.start=newVal;
                 };
             }else{   //删除疵点操作
                 dialog.open('information',{
@@ -368,7 +404,7 @@ var vu=new Vue({
             ajaxModify.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, defects:[vu.input.end+","+vu.input.end]},  //notice
+                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, defects:[vu.input.start+","+vu.input.end]},  //notice
                 success: function(data){
                     vu.flagReload=true;
                     if (data.splits.length===0){
@@ -514,10 +550,11 @@ var vu=new Vue({
             var temp1,temp2;
             for (var i=0; i<this.getPrintList.length; i++){
                 temp1='◆ $kind$ $store$';
-                temp2='   $id$';
+                temp2='$id$   $len$';
                 temp1=temp1.replace('$kind$',this.getPrintList[i].product_code);
                 temp2=temp2.replace('$id$',this.getPrintList[i].bolt_no);
                 temp1=temp1.replace('$store$',this.getPrintList[i].position.join(','));
+                temp2=temp2.replace('$len$',this.getPrintList[i].current_length+'米');
                 result.push({text:temp1});
                 result.push({text:temp2});
                 result.push({text:''});
