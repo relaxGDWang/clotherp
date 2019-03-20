@@ -35,7 +35,7 @@ var vu=new Vue({
         positionPer: 1000, //读取频率
         positionCallBack: '',  //长度变更时的回调函数
         UI:{
-            view: 'mission',
+            view: 'record',
             type: 'check',
             listHeight: 100,
             bottomListHeight: 100,
@@ -78,10 +78,18 @@ var vu=new Vue({
             this.UI.view=itemStr;
             switch(itemStr){
                 case 'mission':
-                    if (this.mission.length===0) this.getList();
+                    if (this.mission.length===0){
+                        setTimeout(function(){
+                            vu.getList();
+                        },1200);
+                    }
                     break;
                 case 'record':
-                    if (this.record.length===0) this.getRecordList();
+                    if (this.record.length===0){
+                        setTimeout(function(){
+                            vu.getRecordList();
+                        },1200);
+                    }
                     break;
                 case 'quick':
                     setTimeout(function(){
@@ -148,9 +156,8 @@ var vu=new Vue({
                     vu.cutpage2.count=data.pages;
                     vu.cutpage2.total=data.total;
                     data=data.items;
-                    for (var i = 0; i < data.length; i++) {
-
-                    }
+                    vu.record=data;
+                    console.log(vu.record);
                 },
                 error:function(code,msg){
                     dialog.close('loading');
@@ -694,7 +701,7 @@ $(function(){
     });
 
     fitUI();
-    vu.getList();
+    vu.getRecordList();
     vu.getBookList();
 
     function fitUI(){

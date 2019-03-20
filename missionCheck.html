@@ -81,45 +81,14 @@
                 <button class="numberSearchButton" @click="changeSearchNumber()">查找</button>
             </div>
         </div>
-        <div class="listContent checkMissionList" v-if="UI.view==='record'">
+        <div class="listContent" v-if="UI.view==='record'">
             <el-table ref="multipleTable" tooltip-effect="dark" :data="record" :height="UI.listHeight" stripe>
                 <el-table-column label="#" width="50">
                     <template slot-scope="scope">
-                        <span class="urgent fa" :class="{'fa-flag':scope.row.urgent}">{{cutpage2.pageSize*(cutpage2.page2-1)+scope.$index+1}}</span>
+                        <span>{{cutpage2.pageSize*(cutpage2.page2-1)+scope.$index+1}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="product_code" label="商品编号"></el-table-column>
-                <el-table-column prop="bolt_no" label="卷号" width="175"></el-table-column>
-                <el-table-column label="长度">
-                    <template slot-scope="scope">
-                        {{scope.row.current_length}}<span>米</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="craft" label="流程"></el-table-column>
-                <el-table-column label="仓位">
-                    <template slot-scope="scope">
-                        <span class="positionItem" v-for="item in scope.row.position">{{item}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="examine" label="状态"></el-table-column>
-                <el-table-column label="检验员">
-                    <template slot-scope="scope">
-                        {{scope.row.examiner || '--'}}
-                    </template>
-                </el-table-column>
-                <el-table-column label="更新">
-                    <template slot-scope="scope">
-                        <div class="datetime">
-                            <span>{{scope.row.examined_at[0]}}</span> <span>{{scope.row.examined_at[1]}}</span>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" width="50">
-                    <template slot-scope="scope">
-                        <span class="opButton fa fa-instagram" @click="openDetails(scope.row.bolt_id)" v-if="!search.listType"></span>
-                        <span class="opButton fa fa-folder-open-o" @click="openDetails(scope.row.bolt_id)" v-if="search.listType"></span>
-                    </template>
-                </el-table-column>
             </el-table>
             <el-pagination background layout="prev, pager, next" :current-page="cutpage2.page" :page-size="cutpage2.pageSize" :total="cutpage2.total" @current-change="changePage($event)"></el-pagination>
         </div>
