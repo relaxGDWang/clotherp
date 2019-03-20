@@ -19,8 +19,8 @@
 <body>
 <div class="outFrame" id="app">
     <div class="main">
-        <rex-title title="裁剪任务" icon="fa-cut" :username="username" :equipment="equipment" :search="search" searchvalue="cut" @refresh="getList" @setsearch="changeSearch" @printget="printGetCloth"></rex-title>
-        <div class="listContent cutMissionList" :class="{'isCenter':!search.listType}" v-if="search.listType!=='quick'">
+        <rex-title type="cut" :view="UI.view" :username="username" :equipment="equipment" @refresh="getList" @printget="printGetCloth" @changeview="changeView"></rex-title>
+        <div class="listContent cutMissionList" :class="{'isCenter':!search.listType}" v-if="UI.view==='mission'">
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
                 <el-table-column type="selection" width="50" v-if="!search.listType"></el-table-column>
                 <el-table-column label="#" width="50">
@@ -50,17 +50,18 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="search.listType==='quick'">
+        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='quick'">
             <div class="fillBar">
                 <span class="fa fa-search"></span>
                 <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
                 <input class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" ref="numberSearch"/>
             </div>
         </div>
+        <div class="listContent" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='record'">sdlfnnl</div>
     </div>
 
     <!-- 详细页 未完成状态-->
-    <div class="extMenu bottom mydetails" id="opDetails" noclick="noclick">
+    <div class="extMenu bottom mydetails none" id="opDetails" maskfree="true">
         <div class="dialogFrame">
             <div class="dialog-title">
                 <span class="right opBtn btn-close">&times;</span>
@@ -144,7 +145,7 @@
     </div>
 
     <!-- 详细页 已完成状态-->
-    <div class="extMenu bottom mydetails" id="finishDetails" noclick="noclick">
+    <div class="extMenu bottom mydetails none" id="finishDetails" maskfree="true">
         <div class="dialogFrame">
             <div class="dialog-title">
                 <span class="right opBtn btn-close">&times;</span>

@@ -18,6 +18,8 @@ var vu=new Vue({
         positionPer: 1000,     //读取频率
         positionCallBack: '',  //长度变更时的回调函数
         UI:{
+            view: 'mission',
+            type: 'cut',
             listHeight: 100,   //列表高
             bottomHeight: 100,  //详细页面底部列表高
             len:''   //详细页布匹长度
@@ -60,13 +62,8 @@ var vu=new Vue({
             clearInterval(vu.positionTime);
             this.positionTime='';
         },
-        changeSearch: function(val){
-            this.search.listType=val;
-            if (val==='quick'){
-                setTimeout(function(){
-                    vu.$refs.numberSearch.focus();
-                },200);
-            }
+        changeView: function(itemStr){
+            this.UI.view=itemStr;
         },
         getList: function(){  //获得任务列表
             this.mission=[];

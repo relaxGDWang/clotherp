@@ -70,7 +70,9 @@ var PATH = {
     delFlaw: CFG.URL+'bolts/{bolt_id}',              //删除疵点
     missionCheckFinished: CFG.URL+'examine/{bolt_id}/complete',  //完成检验任务
     getBook: CFG.URL+'sampleBooks',     //获得样本信息
-    quickCutting: CFG.URL+'cutout/{bolt_no}/detail'  //快速裁剪的详情
+    quickCutting: CFG.URL+'bolts/{bolt_no}/detail',  //快速裁剪的详情
+    recordList: CFG.URL+'history',    //操作记录
+    recordDetails: CFG.URL+'history/{id}'  //操作记录详细
 };
 if (CFG.DEBUG){
     //通信路径处理

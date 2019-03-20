@@ -1,16 +1,18 @@
 //utf8 界面对话框
 /*
 author relax since 2016/8
-ver 1.3.3 2018/11/08
+ver 1.3.4 2019/3/18
 require jQuery,relax_function.js
 dom config
 	noclick="noclick" 用于设置mask层是否能响应点击关闭对话框
 	class="white" 用于设置展示的mask层为白色
+	maskfree='true' 指屏蔽层是否起屏蔽作用，设置后可以点击在弹出框没遮盖部分的dom内容来响应鼠标事件，采用css3的pointer-events属性，对page,mini类型的不起作用
 dom diy 用于标题部分，内容部分的替换
 @action 由于IE8的点透未作协调处理，请慎用无屏蔽层的弹框
 [2018/1/25] modiby 对本模块在ie8进行了兼容性调整,包括JS和css,html书写结构上也有所变化
 [2018/10/29] 进一步协调的滚动条，文本输入框的移动端协调
 [2018/11/08] 增加针对dialog,menu,page内容框产生滚动的，可以调用方法进行对焦点定位
+[2019/3/18]
 */
 
 function relaxDialog(){
@@ -59,12 +61,18 @@ function relaxDialog(){
           //绑定屏蔽层事件
           //@action 2018/1/25 对于现代浏览器，似乎不存在事件点透的概念，目前IE8测试下来会有此问题，所以暂不作无屏蔽层的弹出框的协调处理，等后期再做完善
           if (tempVar.type==="dialog" || tempVar.type==="menu"){
-            tempVar.dom.on('click',function(e){
-              if (e.target!==this) return;
-              if ($(this).attr("noclick")) return;
-              dialogClose(this.id,"close",null,true);
-              protectEvent(e);
-            });
+            //2019-3-18 modify by relax 添加对屏蔽层是否可点穿的设定
+            if (tempVar.dom.attr('maskfree')){
+                tempVar.dom.css('pointerEvents','none');
+                tempVar.dom.children('.dialogFrame').css('pointerEvents','auto');
+            }else{
+                tempVar.dom.on('click',function(e){
+                    if (e.target!==this) return;
+                    if ($(this).attr("noclick")) return;
+                    dialogClose(this.id,"close",null,true);
+                    protectEvent(e);
+                });
+            }
           }
           if (pcFlag===false){
             //屏蔽滚动穿透
