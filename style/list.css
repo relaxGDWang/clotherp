@@ -27,6 +27,7 @@
 .titleBar .eqStatus.on:after { background: #37e501; }
 .titleBar .eqStatus.off:after { background: red; }
 
+/* 标题下拉菜单 */
 .dropItemShow { position: relative; width: 50px; }
 .dropItemShow ul { position: absolute; top: 44px; right: 0; max-height: 0; z-index: 10; overflow: hidden; width: 162px; transition-property: max-height; transition-duration: .3s; opacity: .9; }
 .dropItemShow li { display: block; line-height: 28px; border-bottom: 1px solid #fff; background: #336666; color: #fff; text-align: center; padding: 5px; }
@@ -37,48 +38,32 @@
 
 /* 表格样式 */
 .el-table th { padding: 6px 0; }
-
+.el-table th:first-child { text-align: center; }
 .el-table td { padding: 6px 0; color: #333; }
-
-.el-table .cell { padding-left: 3px; padding-right: 3px; }
-
 .el-table td .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
-
-.el-table td .opButton:hover, .el-table td .opButton:active { background: #069393; color: #fff; }
-
+.el-table td .opButton:hover, .el-table td .el-table td .opButton:active { background: #069393; color: #fff; }
 .el-table td .opButton:before { display: inline-block; }
-
 .el-table td .opButton.fa-cut:before { transform: rotate(-90deg); }
-
+.el-table td:first-child { text-align: center; }
 .el-table td:last-child { text-align: center; }
-
-.el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
-
-.el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9; }
-
-.el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff; }
-
+.missionList .el-table th:nth-child(2) { text-align: center; }
+.missionList .el-table tr:nth-child(2) { text-align: center; color: red; }
+.el-table .cell { padding-left: 3px; padding-right: 3px; }
+.el-table .el-checkbox__inner { width: 18px; height: 18px; }
+.el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
 .el-table .urgent { position: relative; padding-left: 15px; }
 .el-table .urgent:before { color: red; font-size: 16px; position: absolute; left: -3px; top: 3px; }
-
-.el-table .el-checkbox__inner { width: 18px; height: 18px; }
-
-.el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
-
-.el-table thead .el-table_1_column_2 { text-align: center; }
-
-.isCenter tr th:first-child, .isCenter tr td:first-child { text-align: center; }
-
-.el-table tr th:last-child, .el-table tr td:last-child { text-align: center; }
-
 .el-table .positionItem { white-space: nowrap; margin: 0 1px; }
 .el-table .positionItem:after { content: ','; }
 .el-table .positionItem:last-child:after { content: ''; }
-
 .el-table .datetime { word-break: break-all; line-height: 1.2em; font-size: 12px; }
 .el-table .datetime span { white-space: nowrap; margin: 0 1px; }
 .el-table .datetime span:after { content: ' '; }
 .el-table .datetime span:last-child:after { content: ''; }
+
+.el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
+.el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9; }
+.el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff; }
 
 .el-pagination { text-align: center; margin-top: 10px; }
 
@@ -252,5 +237,17 @@
 .fillBar .fa { float: left; font-size: 65px; margin-right: 20px; border-right: 1px solid #ccc; padding-right: 20px; color: #069393; }
 .fillBar .numberSearchButton { width: auto; height: auto; line-height: 20px; padding: 9px 10px; background: #069393; color: #fff; border-color: #069393; }
 .fillBar .numberSearchButton:active { background: #fff; color: #069393; }
+
+.printBar { padding: 10px; margin: 10px 0; border-bottom: 1px solid #ccc; }
+
+.recordListShow { padding: 0 10px; margin: 10px 0; }
+.recordListShow h3 { font-size: 16px; color: #069393; }
+.recordListShow ul { display: table; width: 100%; }
+.recordListShow li { display: table-row; }
+.recordListShow li:active { background: #cccc99; }
+.recordListShow li span { display: table-cell; border-bottom: 1px dashed #ccc; padding: 5px; }
+.recordListShow li span:nth-child(1) { width: 50px; text-align: center; }
+.recordListShow li span:nth-child(2) { width: 180px; }
+.recordListShow .tr span { border-bottom: 1px solid #666; font-weight: bold; }
 
 /*# sourceMappingURL=list.css.map */

@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>检验任务</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <!-- build:css library/style/webcommon.css -->
     <link rel="stylesheet" href="library/style/font-awesome.css"/>
     <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
@@ -20,7 +21,7 @@
 <div class="outFrame" id="app">
     <div class="main">
         <rex-title type="check" :view="UI.view" :username="username" :equipment="equipment" @refresh="getList" @printget="printGetCloth" @changeview="changeView"></rex-title>
-        <div class="listContent checkMissionList" :class="{'isCenter':!search.listType}" v-if="UI.view==='mission'">
+        <div class="listContent missionList" v-if="UI.view==='mission'">
             <div class="searchBar">
                 <el-select v-model="search.craft" placeholder="选择类型" @change="getList(1)">
                     <el-option label="" value="">选择类型</el-option>
@@ -31,43 +32,43 @@
                     <el-option v-for="item in search.bookList" :label="item.label" :value="item.key"></el-option>
                 </el-select>
             </div>
+
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
-                <el-table-column type="selection" width="50" v-if="!search.listType"></el-table-column>
-                <el-table-column label="#" width="50">
+                <el-table-column type="selection" width="50" key="colSelect"></el-table-column>
+                <el-table-column label="#" width="50" key="colIndex">
                     <template slot-scope="scope">
-                        <span class="urgent fa" :class="{'fa-flag':scope.row.urgent}">{{cutpage.pageSize*(cutpage.page2-1)+scope.$index+1}}</span>
+                        <span class="urgent fa" :class="{'fa-fire':scope.row.urgent}">{{cutpage.pageSize*(cutpage.page2-1)+scope.$index+1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="product_code" label="商品编号"></el-table-column>
-                <el-table-column prop="bolt_no" label="卷号" width="175"></el-table-column>
-                <el-table-column label="长度">
+                <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
+                <el-table-column prop="bolt_no" label="卷号" width="175" key="colBoltNo"></el-table-column>
+                <el-table-column label="布长" key="colLen">
                     <template slot-scope="scope">
                         {{scope.row.current_length}}<span>米</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="craft" label="流程"></el-table-column>
-                <el-table-column label="仓位">
+                <el-table-column prop="craft" label="流程" key="colCraft"></el-table-column>
+                <el-table-column label="仓位" key="colPosition">
                     <template slot-scope="scope">
                         <span class="positionItem" v-for="item in scope.row.position">{{item}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="examine" label="状态"></el-table-column>
-                <el-table-column label="检验员">
+                <el-table-column prop="examine" label="状态" key="colExamine"></el-table-column>
+                <el-table-column label="检验员" key="colExaminer">
                     <template slot-scope="scope">
                         {{scope.row.examiner || '--'}}
                     </template>
                 </el-table-column>
-                <el-table-column label="更新">
+                <el-table-column label="更新" key="colExaminedAt">
                     <template slot-scope="scope">
                         <div class="datetime">
                             <span>{{scope.row.examined_at[0]}}</span> <span>{{scope.row.examined_at[1]}}</span>
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="50">
+                <el-table-column label="" width="50" key="colOpButton">
                     <template slot-scope="scope">
-                        <span class="opButton fa fa-instagram" @click="openDetails(scope.row.bolt_id)" v-if="!search.listType"></span>
-                        <span class="opButton fa fa-folder-open-o" @click="openDetails(scope.row.bolt_id)" v-if="search.listType"></span>
+                        <span class="opButton fa fa-instagram" @click="openDetails(scope.row.bolt_id)"></span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -81,14 +82,30 @@
                 <button class="numberSearchButton" @click="changeSearchNumber()">查找</button>
             </div>
         </div>
-        <div class="listContent" v-if="UI.view==='record'">
-            <el-table ref="multipleTable" tooltip-effect="dark" :data="record" :height="UI.listHeight" stripe>
-                <el-table-column label="#" width="50">
+        <div class="listContent checkMissionList" v-if="UI.view==='record'">
+            <el-table ref="multipleTable" tooltip-effect="dark" :data="record" :height="UI.listHeight+55" stripe>
+                <el-table-column label="#" width="50" key="colIndex">
                     <template slot-scope="scope">
                         <span>{{cutpage2.pageSize*(cutpage2.page2-1)+scope.$index+1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="product_code" label="商品编号"></el-table-column>
+                <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
+                <el-table-column prop="bolt_no" label="卷号" key="colBoltNo"></el-table-column>
+                <el-table-column prop="action_type" label="操作类型" key="colOperation"></el-table-column>
+                <el-table-column prop="content" label="操作内容" key="colOperation"></el-table-column>
+                <el-table-column prop="user" label="操作人" key="colUser"></el-table-column>
+                <el-table-column label="执行时间" key="colDatetime">
+                    <template slot-scope="scope">
+                        <div class="datetime">
+                            <span>{{scope.row.updated_at[0]}}</span> <span>{{scope.row.updated_at[1]}}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="" key="colOpButton">
+                    <template slot-scope="scope">
+                        <span class="opButton fa fa-file-text-o" @click="openRecordDetails(scope.row.bolt_id)"></span>
+                    </template>
+                </el-table-column>
             </el-table>
             <el-pagination background layout="prev, pager, next" :current-page="cutpage2.page" :page-size="cutpage2.pageSize" :total="cutpage2.total" @current-change="changePage($event)"></el-pagination>
         </div>
@@ -111,7 +128,7 @@
                     <template v-if="editObject.viewObj.splits.length>0">
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                             <li v-for="item in editObject.viewObj.splits" :key="item.bolt_no" :class="{'sel':item.bolt_id===editObject.viewObj.sel.bolt_id}" @click="setViewObject(item.bolt_id)">
-                                <strong class="fa" :class="{'fa-flag':item.urgent}">{{item.bolt_no}}</strong>
+                                <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.bolt_no}}</strong>
                                 <div class="statusBar">
                                     <span class="status" :class="getTypeString(item)"></span>
                                     <span class="status length">{{item.cut_length}}</span>
@@ -182,6 +199,44 @@
                             </ul>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作记录详细页 -->
+    <div class="extMenu bottom mydetails none" id="opRecordDetails" maskfree="true">
+        <div class="dialogFrame">
+            <div class="dialog-title">
+                <span class="right opBtn btn-close">&times;</span>
+                <ul class="nohead" v-if="recordObject.bolt_id">
+                    <li><label>商品 </label><span>{{recordObject.product_code}}</span></li>
+                    <li><label>卷号 </label><span>{{recordObject.bolt_no}}</span></li>
+                    <li><label>流程 </label><span>{{recordObject.craft}}</span></li>
+                    <li><label>剩余布长 </label><span>{{recordObject.current_length}}米</span></li>
+                </ul>
+            </div>
+            <div class="dialog-content">
+                <div class="printBar">
+                    <span>布匹标签</span>
+                    <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
+                    <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                </div>
+                <div class="recordListShow">
+                    <h3>操作记录详情</h3>
+                    <ul class="nohead" v-if="recordObject.history && recordObject.history.length>0">
+                        <li class="tr">
+                            <span></span><span>时间</span><span>操作人</span><span>操作类型</span><span>操作内容</span><span>打印</span>
+                        </li>
+                        <li v-for="(item, index) in recordObject.history">
+                            <span>{{index+1}}</span>
+                            <span>{{item.updated_at}}</span>
+                            <span>{{item.user}}</span>
+                            <span>{{item.action_type}}</span>
+                            <span>{{item.content}}</span>
+                            <span><button class="rexButton" size="S" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button></span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

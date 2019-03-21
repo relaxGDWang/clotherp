@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <title>裁剪任务</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <!-- build:css library/style/webcommon.css -->
     <link rel="stylesheet" href="library/style/font-awesome.css"/>
     <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
@@ -19,70 +20,102 @@
 <body>
 <div class="outFrame" id="app">
     <div class="main">
-        <rex-title type="cut" :view="UI.view" :username="username" :equipment="equipment" @refresh="getList" @printget="printGetCloth" @changeview="changeView"></rex-title>
-        <div class="listContent cutMissionList" :class="{'isCenter':!search.listType}" v-if="UI.view==='mission'">
+        <rex-title type="cut" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList()" @printget="printGetCloth" @changeview="changeView"></rex-title>
+        <div class="listContent missionList" v-if="UI.view==='mission'">
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
-                <el-table-column type="selection" width="50" v-if="!search.listType"></el-table-column>
-                <el-table-column label="#" width="50">
+                <el-table-column type="selection" width="50" key="colSelect"></el-table-column>
+                <el-table-column label="#" width="50" key="colIndex">
                     <template slot-scope="scope">
-                        <span class="urgent fa" :class="{'fa-flag':scope.row.urgent}">{{scope.$index+1}}</span>
+                        <span class="urgent fa" :class="{'fa-fire':scope.row.urgent}">{{scope.$index+1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="product_code" label="商品编号" width="100"></el-table-column>
-                <el-table-column prop="bolt_no" label="卷号" width="165"></el-table-column>
-                <el-table-column prop="items" label="裁剪概况"></el-table-column>
-                <el-table-column label="仓位">
+                <el-table-column prop="product_code" label="商品编号" width="100" key="colProduct"></el-table-column>
+                <el-table-column prop="bolt_no" label="卷号" width="165" key="colBoltNo"></el-table-column>
+                <el-table-column prop="items" label="裁剪概况" key="colView"></el-table-column>
+                <el-table-column label="仓位" key="colPosition">
                     <template slot-scope="scope">
                         <span class="positionItem" v-for="item in scope.row.position">{{item}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="布长" width="100">
+                <el-table-column prop="craft" label="流程" key="colCraft"></el-table-column>
+                <el-table-column prop="catalog" label="类型" key="colCatalog"></el-table-column>
+                <el-table-column label="布长" key="colLen">
                     <template slot-scope="scope">
                         {{scope.row.current_length}}米
                     </template>
                 </el-table-column>
-                <el-table-column prop="catalog" label="类型" width="80"></el-table-column>
-                <el-table-column label="操作" width="50" class="operateCol">
+                <el-table-column label="" width="50" class="operateCol" key="colOpButton">
                     <template slot-scope="scope">
-                        <span class="opButton fa fa-cut" @click="openDetails(scope.row.bolt_id)" v-if="!search.listType"></span>
-                        <span class="opButton fa fa-folder-open-o" @click="openDetails(scope.row.bolt_id)" v-if="search.listType"></span>
+                        <span class="opButton fa fa-cut" @click="openDetails(scope.row.bolt_id)"></span>
                     </template>
                 </el-table-column>
             </el-table>
+
+            <el-pagination background layout="prev, pager, next" :current-page="cutpage.page" :page-size="cutpage.pageSize" :total="cutpage.total" @current-change="changePage($event)"></el-pagination>
         </div>
         <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='quick'">
             <div class="fillBar">
                 <span class="fa fa-search"></span>
                 <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
                 <input class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" ref="numberSearch"/>
+                <button class="numberSearchButton" @click="changeSearchNumber()">查找</button>
             </div>
         </div>
-        <div class="listContent" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='record'">sdlfnnl</div>
+        <div class="listContent" v-if="UI.view==='record'">
+            <el-table ref="multipleTable" tooltip-effect="dark" :data="record" :height="UI.listHeight" stripe>
+                <el-table-column label="#" width="50" key="colIndex">
+                    <template slot-scope="scope">
+                        <span>{{cutpage2.pageSize*(cutpage2.page2-1)+scope.$index+1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
+                <el-table-column prop="bolt_no" label="卷号" key="colBoltNo"></el-table-column>
+                <el-table-column prop="action_type" label="操作类型" key="colOperation"></el-table-column>
+                <el-table-column prop="content" label="操作内容" key="colOperation"></el-table-column>
+                <el-table-column prop="user" label="操作人" key="colUser"></el-table-column>
+                <el-table-column label="执行时间" key="colDatetime">
+                    <template slot-scope="scope">
+                        <div class="datetime">
+                            <span>{{scope.row.updated_at[0]}}</span> <span>{{scope.row.updated_at[1]}}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="" key="colOpButton">
+                    <template slot-scope="scope">
+                        <span class="opButton fa fa-file-text-o" @click="openRecordDetails(scope.row.bolt_id)"></span>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination background layout="prev, pager, next" :current-page="cutpage2.page" :page-size="cutpage2.pageSize" :total="cutpage2.total" @current-change="changePage($event)"></el-pagination>
+        </div>
     </div>
 
-    <!-- 详细页 未完成状态-->
+    <!-- 详细页 -->
     <div class="extMenu bottom mydetails none" id="opDetails" maskfree="true">
         <div class="dialogFrame">
             <div class="dialog-title">
                 <span class="right opBtn btn-close">&times;</span>
                 <ul class="nohead" v-if="editObject.bolt_id">
+                    <li v-if="editObject.viewObj.qualified"><span class="passStatus" :class="editObject.viewObj.qualified.class">{{editObject.viewObj.qualified.name}}</span></li>
                     <li><label>商品 </label><span>{{editObject.product_code}}</span></li>
                     <li><label>卷号 </label><span>{{editObject.bolt_no}}</span></li>
                     <li><label>仓位 </label><span>{{editObject.position.join(',')}}</span></li>
                 </ul>
             </div>
             <div class="dialog-content">
-                <div class="leftPart" v-if="editObject.bolt_id">
-                    <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                        <li v-for="item in editObject.viewObj.splits" :key="item.bolt_no" :class="{'sel':item.bolt_id===editObject.viewObj.sel.bolt_id}" @click="setViewObject(item.bolt_id)">
-                            <strong class="fa" :class="{'fa-flag':item.urgent}">{{item.bolt_no}}</strong>
-                            <div class="statusBar">
-                                <span class="status" :class="getTypeString(item)"></span>
-                                <span class="status length">{{item.cut_length}}</span>
-                                <span class="status finished" v-if="item.status_code==='cut'">完成</span>
-                            </div>
-                        </li>
-                    </transition-group>
+                <div class="leftPart" v-if="editObject.bolt_id" :class="{'pinch':editObject.viewObj.splits.length===0}">
+                    <template v-if="editObject.viewObj.splits.length>0">
+                        <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                            <li v-for="item in editObject.viewObj.splits" :key="item.bolt_no" :class="{'sel':item.bolt_id===editObject.viewObj.sel.bolt_id}" @click="setViewObject(item.bolt_id)">
+                                <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.bolt_no}}</strong>
+                                <div class="statusBar">
+                                    <span class="status" :class="getTypeString(item)"></span>
+                                    <span class="status length">{{item.cut_length}}</span>
+                                    <span class="status finished" v-if="item.status_code==='cut'">完成</span>
+                                </div>
+                            </li>
+                        </transition-group>
+                    </template>
                 </div>
                 <div class="rightPart">
                     <ul class="baseInfo nohead" v-if="editObject.bolt_id">
@@ -107,8 +140,10 @@
                                 <span class="fa fa-edit"></span><span>布长修正</span>
                             </button><button class="rexButton" color="info" @click="printDoing('show')" :disabled="editObject.viewObj.examine===1 && editObject.viewObj.splits.length>0">
                                 <span class="fa fa-barcode"></span><span>打印标签</span>
-                            </button><button id="doFinish" class="rexButton" color="warning" :disabled="isDisabled" @click="askFinish()">
+                            </button><button v-if="UI.view!=='quick'" class="rexButton" color="warning" :disabled="isDisabled" @click="askFinish()">
                                 <span class="fa fa-cut"></span><span>完成裁剪</span>
+                            </button><button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut()">
+                                <span class="fa fa-unlink"></span><span>分裁布匹</span>
                             </button>
                         </div>
                     </div>
@@ -127,7 +162,7 @@
                             </ul>
                         </div>
                         <div class="operateList">
-                            <h3>裁剪记录</h3>
+                            <h3>操作记录</h3>
                             <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.viewObj.cutouts.length>0">
                                 <li v-for="(item, index) in editObject.viewObj.cutouts" class="cutRecord" :key="index">
                                     <span class="datetime">{{item.date}}</span>
@@ -135,7 +170,7 @@
                                 </li>
                             </transition-group>
                             <ul class="nohead" v-if="editObject.viewObj.cutouts.length===0">
-                                <li><span class="nodata">没有任何疵点信息</span></li>
+                                <li><span class="nodata">没有任何操作信息</span></li>
                             </ul>
                         </div>
                     </div>
@@ -144,51 +179,39 @@
         </div>
     </div>
 
-    <!-- 详细页 已完成状态-->
-    <div class="extMenu bottom mydetails none" id="finishDetails" maskfree="true">
+    <!-- 操作记录详细页 -->
+    <div class="extMenu bottom mydetails none" id="opRecordDetails" maskfree="true">
         <div class="dialogFrame">
             <div class="dialog-title">
                 <span class="right opBtn btn-close">&times;</span>
-                <ul class="nohead" v-if="showObject.viewObj">
-                    <li><label>商品 </label><span>{{showObject.viewObj.product}}</span></li>
-                    <li><label>卷号 </label><span>{{showObject.viewObj.bolt_no}}</span></li>
+                <ul class="nohead" v-if="recordObject.bolt_id">
+                    <li><label>商品 </label><span>{{recordObject.product_code}}</span></li>
+                    <li><label>卷号 </label><span>{{recordObject.bolt_no}}</span></li>
+                    <li><label>流程 </label><span>{{recordObject.craft}}</span></li>
+                    <li><label>剩余布长 </label><span>{{recordObject.current_length}}米</span></li>
                 </ul>
             </div>
             <div class="dialog-content">
-                <el-table tooltip-effect="dark" :data="showObject.viewObj.cutouts" stripe v-if="showObject.viewObj">
-                    <el-table-column label="#" width="50">
-                        <template slot-scope="scope">
-                            <span>{{scope.$index+1}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="bolt_no" label="编号"></el-table-column>
-                    <el-table-column label="订单">
-                        <template slot-scope="scope">
-                            {{scope.row.order || '疵点分裁'}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="客户">
-                        <template slot-scope="scope">
-                            {{scope.row.order? scope.row.purchaser : '--'}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="date" label="裁剪日期"></el-table-column>
-                    <el-table-column prop="name" label="操作员"></el-table-column>
-                    <el-table-column label="裁剪" width="80">
-                        <template slot-scope="scope">
-                            {{scope.row.length}}米
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" width="100" class="operateCol">
-                        <template slot-scope="scope">
-                            <button class="rexButton" @click="printDoing(scope.$index)" size="M"><span class=" fa fa-barcode"></span>&emsp;打印编号</button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <div class="leftClothInfo" v-if="showObject.viewObj && showObject.viewObj.current_length>0">
-                    <span>剩余布长 <strong>{{showObject.viewObj.current_length}}</strong>米</span>
-                    <button class="rexButton" :color="showObject.viewObj.start==='start_a'? 'info':''" @click="printDoing('start')"><span class="fa fa-print"></span><span>打印<strong>起始</strong>标签</span></button>
-                    <button class="rexButton" :color="showObject.viewObj.start==='start_b'? 'info':''" @click="printDoing('end')"><span class="fa fa-print"></span><span>打印<strong>终止</strong>标签</span></button>
+                <div class="printBar">
+                    <span>布匹标签</span>
+                    <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
+                    <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                </div>
+                <div class="recordListShow">
+                    <h3>操作记录详情</h3>
+                    <ul class="nohead" v-if="recordObject.history && recordObject.history.length>0">
+                        <li class="tr">
+                            <span></span><span>时间</span><span>操作人</span><span>操作类型</span><span>操作内容</span><span>打印</span>
+                        </li>
+                        <li v-for="(item, index) in recordObject.history">
+                            <span>{{index+1}}</span>
+                            <span>{{item.updated_at}}</span>
+                            <span>{{item.user}}</span>
+                            <span>{{item.action_type}}</span>
+                            <span>{{item.content}}</span>
+                            <span><button class="rexButton" size="S" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button></span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -210,7 +233,8 @@
                 <h4><span class="fa fa-info-circle"></span> 系统信息提示</h4>
             </div>
             <div class="dialog-buttonBar">
-                <button class="rexButton opBtn btn-cancel">取消</button>
+                <button class="rexButton opBtn btn-close">取消</button>
+                <button class="rexButton opBtn btn-cancel">不合格</button>
                 <button class="rexButton opBtn btn-sure">确定</button>
             </div>
             <div class="dialog-content">

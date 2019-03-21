@@ -40,6 +40,7 @@
     &.off:after{ background:red;}
   }
 }
+/* 标题下拉菜单 */
 .dropItemShow{
   position:relative; width:50px;
   ul{ position:absolute; top:44px; right:0; max-height:0; z-index:10; overflow:hidden; width:162px; transition-property:max-height; transition-duration: .3s; opacity:.9;}
@@ -53,47 +54,59 @@
 }
 
 /* 表格样式 */
-.el-table th { padding:6px 0;}
-.el-table td{ padding:6px 0; color:#333;}
-.el-table .cell{ padding-left:3px; padding-right:3px;}
-.el-table td .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
-.el-table td .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
-.el-table td .opButton:before{ display:inline-block;}
-.el-table td .opButton.fa-cut:before{ transform:rotate(-90deg);}
-.el-table td:last-child{ text-align:center;}
-
-.el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9;}
-.el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9;}
-.el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff;}
-//加急标记
-.el-table .urgent{
-  position:relative; padding-left:15px;
-  &:before{
-    color:red; font-size:16px; position:absolute; left:-3px; top:3px;
+.el-table{
+  th{
+    padding:6px 0;
+    &:first-child{ text-align:center;}
   }
-}
-//选择按钮
-.el-table .el-checkbox__inner{ width:18px; height:18px;}
-.el-table .el-checkbox__inner::after{ left:6px; top:3px;}
-//#列的列头居中对齐
-.el-table thead .el-table_1_column_2{ text-align:center;}
-.isCenter tr th:first-child, .isCenter tr td:first-child{ text-align:center;}
-.el-table tr th:last-child, .el-table tr td:last-child{ text-align:center;}
+  td{
+    padding:6px 0; color:#333;
+    //末尾操作按钮样式
+    .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+    .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+    .opButton:before{ display:inline-block;}
+    .opButton.fa-cut:before{ transform:rotate(-90deg);}
+    //内容列对齐
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  .missionList & th:nth-child(2){ text-align:center;}
+  .missionList & tr:nth-child(2){ text-align:center;}
+
+  .cell{ padding-left:3px; padding-right:3px;}    //单元格通用
+  .el-checkbox__inner{ width:18px; height:18px;}  //多选框
+  .el-checkbox__inner::after{ left:6px; top:3px;}
+
+  .urgent{  //加急标记
+    position:relative; padding-left:15px;
+    &:before{
+      color:red; font-size:16px; position:absolute; left:-3px; top:3px;
+    }
+  }
 
   //仓库位置
-.el-table .positionItem{
-  white-space: nowrap; margin:0 1px;
-  &:after{ content:',';}
-  &:last-child:after{ content:'';}
-}
-//日期加工
-.el-table .datetime{
-  word-break: break-all; line-height:1.2em; font-size:12px;
-  span{
+  .positionItem{
     white-space: nowrap; margin:0 1px;
-    &:after{ content:' ';}
+    &:after{ content:',';}
     &:last-child:after{ content:'';}
   }
+
+  //日期时间
+  .datetime{
+    word-break: break-all; line-height:1.2em; font-size:12px;
+    span{
+      white-space: nowrap; margin:0 1px;
+      &:after{ content:' ';}
+      &:last-child:after{ content:'';}
+    }
+  }
+}
+
+.el-table--striped {
+  //表格间隔条颜色
+  .el-table__body tr.el-table__row--striped td { background: #e8f9f9;}
+  .el-table__body tr.el-table__row:hover td { background: #f6f6d9;}
+  .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff;}
 }
 
 //分页显示
@@ -376,5 +389,22 @@
   .numberSearchButton{
     width:auto; height:auto; line-height:20px; padding:9px 10px; background:$color4; color:#fff; border-color:$color4;
     &:active{ background:#fff; color:$color4;}
+  }
+}
+
+.printBar{ padding:10px; margin:10px 0; border-bottom:1px solid #ccc;}
+.recordListShow{
+  padding:0 10px; margin:10px 0;
+  h3{ font-size:16px; color:$color4;}
+  ul{ display:table; width:100%;}
+  li{
+    display:table-row;
+    &:active{ background:$color3;}
+    span{ display:table-cell; border-bottom:1px dashed #ccc; padding:5px;}
+    span:nth-child(1){ width:50px; text-align:center;}
+    span:nth-child(2){ width:180px;}
+  }
+  .tr{
+    span{ border-bottom:1px solid #666; font-weight:bold;}
   }
 }

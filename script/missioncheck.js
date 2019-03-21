@@ -6,6 +6,7 @@ var vu=new Vue({
             craft: '',           //成品prod 胚布raw
             book_id: '',         //样本编号
             urgent: '',          //是否加急，加急1，否则留空
+            bolt_no: '',
             craftList: [{key:'prod',label:'成品'},{key:'raw',label:'胚布'}],
             bookList: []
         },
@@ -35,7 +36,7 @@ var vu=new Vue({
         positionPer: 1000, //读取频率
         positionCallBack: '',  //长度变更时的回调函数
         UI:{
-            view: 'record',
+            view: 'mission',
             type: 'check',
             listHeight: 100,
             bottomListHeight: 100,
@@ -63,7 +64,7 @@ var vu=new Vue({
     },
     computed:{
         isDisabled: function(){
-            return this.search.listType || this.editObject.finished;
+            return this.editObject.finished;
         }
     },
     methods:{
@@ -78,24 +79,23 @@ var vu=new Vue({
             this.UI.view=itemStr;
             switch(itemStr){
                 case 'mission':
-                    if (this.mission.length===0){
-                        setTimeout(function(){
-                            vu.getList();
-                        },1200);
-                    }
+                    if (this.mission.length===0) vu.getList();
                     break;
                 case 'record':
-                    if (this.record.length===0){
-                        setTimeout(function(){
-                            vu.getRecordList();
-                        },1200);
-                    }
+                    if (this.record.length===0) vu.getRecordList();
                     break;
                 case 'quick':
                     setTimeout(function(){
                         vu.$refs.numberSearch.focus();
                     },200);
                     break;
+            }
+        },
+        getViewList: function(){
+            if (this.UI.view==='record'){
+                this.getRecordList();
+            }else if(this.UI.view==='mission'){
+                this.getList();
             }
         },
         getList: function(pageNum){  //获得任务列表
@@ -105,7 +105,7 @@ var vu=new Vue({
             if (pageNum) this.cutpage.page=pageNum;
             ajax.send({
                 url: PATH.missionCheck,
-                data:{urgent: (this.search.urgent || undefined), craft: (this.search.craft || undefined), book_id: (this.search.book_id || undefined), page: this.cutpage.page},
+                data:{urgent: (this.search.urgent || undefined), craft: (this.search.craft || undefined), book_id: (this.search.book_id || undefined), page: vu.cutpage.page},
                 success:function(data){
                     dialog.close('loading');
                     //加工分页数据
@@ -156,8 +156,17 @@ var vu=new Vue({
                     vu.cutpage2.count=data.pages;
                     vu.cutpage2.total=data.total;
                     data=data.items;
-                    vu.record=data;
-                    console.log(vu.record);
+                    for (var i=0; i<data.length; i++){
+                        //加工日期时间
+                        if (!data[i].updated_at){
+                            data[i].updated_at=['--'];
+                        }else{
+                            data[i].updated_at=data[i].updated_at.split(/\s/);
+                        }
+                        if (data[i].updated_at.length===1) data[i].updated_at[1]='';
+                        vu.record.push(data[i]);
+                        if (!vu.recordKey[data[i]['bolt_id']]) vu.recordKey[data[i]['bolt_id']] = vu.record[i];
+                    }
                 },
                 error:function(code,msg){
                     dialog.close('loading');
@@ -168,7 +177,11 @@ var vu=new Vue({
         },
         //分页
         changePage: function(page){
-            this.getList(page);
+            if (this.UI.view==='mission'){
+                this.getList(page);
+            }else if(this.UI.view==='record'){
+                this.getRecordList(page);
+            }
         },
         //获得样本信息
         getBookList: function(){
@@ -203,9 +216,6 @@ var vu=new Vue({
                     if (vu.flagReload) vu.getList();
                     vu.UI.len='';
                     vu.stopEQPosition();
-                    if (vu.search.bolt_no){
-                        vu.$refs.numberSearch.focus();
-                    }
                 }
             };
             /*if (this.missionKey[bid].viewObj!==undefined && start===undefined){
@@ -234,6 +244,24 @@ var vu=new Vue({
                 });
             //}
         },
+        //获得操作日志详细
+        openRecordDetails: function(id){
+            var dialogConfig={
+                closeCallback: function(){
+                    vu.recordDetails={};
+                }
+            };
+            ajax.send({
+                url: PATH.recordDetails,
+                data: {id: id},
+                success: function(data){
+                    dialog.close('loading');
+                    vu.recordObject=data;
+                    vu.recordObject.product_code=vu.recordKey[id].product_code;
+                    dialog.open('opRecordDetails',dialogConfig);
+                }
+            });
+        },
         _setDetailsData: function(data, idStr){
             var flag=false;
             if (!idStr){
@@ -260,6 +288,7 @@ var vu=new Vue({
                     bolt_id: data.bolt_id,
                     bolt_no: data.bolt_no,
                     product_code: data.product_code,
+                    current_length: data.current_length,
                     position: data.position,
                     examine: data.examine,
                     examiner: data.examiner,
@@ -572,6 +601,28 @@ var vu=new Vue({
                 EQUIPMENT.print(printStr);
             }
         },
+        //打印历史记录的标签
+        printDoginHistory: function(dataObject,opsition){
+            var printStr;
+            if (opsition==='start'){
+                if (dataObject.start==='start_a'){
+                    printStr=dataObject.print_head;
+                }else{
+                    printStr=dataObject.print_tail;
+                }
+            }else if(opsition==='end'){
+                if (dataObject.start==='start_a'){
+                    printStr=dataObject.print_tail;
+                }else{
+                    printStr=dataObject.print_head;
+                }
+            }else{
+                printStr=dataObject.print_data;
+            }
+            printStr=JSON.stringify(printStr);
+            console.log(printStr);
+            EQUIPMENT.print(printStr);
+        },
         //重置AB面
         goChangePosition: function(){
             var setVal='';
@@ -655,8 +706,9 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
-        'search.listType': function(){
-            this.getList();
+        'input.step': function(newVal){
+            this.input.status='';
+            this.input.msg='';
         },
         'currentPosition': function(newVal){
             if (this.positionCallBack){
@@ -701,7 +753,11 @@ $(function(){
     });
 
     fitUI();
-    vu.getRecordList();
+    if (vu.UI.view==='mission'){
+        vu.getList();
+    }else if(vu.UI.view==='record'){
+        vu.getRecordList();
+    }
     vu.getBookList();
 
     function fitUI(){
