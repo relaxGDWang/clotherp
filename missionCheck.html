@@ -41,7 +41,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
-                <el-table-column prop="bolt_no" label="卷号" width="175" key="colBoltNo"></el-table-column>
+                <el-table-column label="卷号" width="175" class-name="boltNumber" key="colBoltNo">
+                    <template slot-scope="scope">
+                        <div class="fa" :class="scope.row.qualified.class">{{scope.row.bolt_no}}</div>
+                    </template>
+                </el-table-column>
                 <el-table-column label="布长" key="colLen">
                     <template slot-scope="scope">
                         {{scope.row.current_length}}<span>米</span>
@@ -90,7 +94,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
-                <el-table-column prop="bolt_no" label="卷号" key="colBoltNo"></el-table-column>
+                <el-table-column label="卷号" width="190" class-name="boltNumber" key="colBoltNo">
+                    <template slot-scope="scope">
+                        <div class="fa" :class="scope.row.qualified.class">{{scope.row.bolt_no}}</div>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="action_type" label="操作类型" key="colOperation"></el-table-column>
                 <el-table-column prop="content" label="操作内容" key="colOperation"></el-table-column>
                 <el-table-column prop="user" label="操作人" key="colUser"></el-table-column>

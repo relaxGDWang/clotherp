@@ -164,6 +164,8 @@ var vu=new Vue({
                             data[i].updated_at=data[i].updated_at.split(/\s/);
                         }
                         if (data[i].updated_at.length===1) data[i].updated_at[1]='';
+                        //加工合格状态
+                        data[i].qualified=vu._formatQualified(data[i].qualified);
                         vu.record.push(data[i]);
                         if (!vu.recordKey[data[i]['bolt_id']]) vu.recordKey[data[i]['bolt_id']] = vu.record[i];
                     }
@@ -317,8 +319,7 @@ var vu=new Vue({
         },
         //处理检验状态
         _formatQualified: function(status){
-            if (!status) return '';
-            var result={class:'',name:status};
+            var result={class:'',name:status? status: ''};
             switch(status){
                 case '合格':
                     result.class='yes';
@@ -380,6 +381,14 @@ var vu=new Vue({
                 success:function(data){
                     vu.flagReload=true;
                     EQUIPMENT.resetCounter(true);
+                    //重置当前
+                    if (pass){
+                        vu.editObject.viewObj.qualified=vu._formatQualified('合格');
+                        vu.editObject.qualified=vu._formatQualified('合格');
+                    }else{
+                        vu.editObject.viewObj.qualified=vu._formatQualified('不合格');
+                        vu.editObject.qualified=vu._formatQualified('不合格');
+                    }
                     dialog.close('loading');
                     dialog.open('information', {content: '布匹检验已完成！',btnclose:'',btncancel: '',btnsure:'确定',cname:'ok'});
                     //把当前对象标记为已完成

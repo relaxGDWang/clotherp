@@ -153,6 +153,8 @@ var vu=new Vue({
                             data[i].updated_at=data[i].updated_at.split(/\s/);
                         }
                         if (data[i].updated_at.length===1) data[i].updated_at[1]='';
+                        //加工合格状态
+                        data[i].qualified=vu._formatQualified(data[i].qualified);
                         vu.record.push(data[i]);
                         if (!vu.recordKey[data[i]['bolt_id']]) vu.recordKey[data[i]['bolt_id']] = vu.record[i];
                     }
@@ -296,8 +298,7 @@ var vu=new Vue({
         },
         //处理检验状态
         _formatQualified: function(status){
-            if (!status) return '';
-            var result={class:'',name:status};
+            var result={class:'',name:status? status: ''};
             switch(status){
                 case '合格':
                     result.class='yes';

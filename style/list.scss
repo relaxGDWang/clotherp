@@ -100,6 +100,27 @@
       &:last-child:after{ content:'';}
     }
   }
+
+  //检验状态
+  .boltNumber{
+    .cell{ overflow:visible;}
+    .fa {
+      position: relative;
+      &:before {
+        position: absolute;
+        top: 0;
+        left: -12px;
+      }
+      &.yes:before {
+        content: '\f05d';
+        color: green;
+      }
+      &.no:before {
+        content: '\f05c';
+        color: red;
+      }
+    }
+  }
 }
 
 .el-table--striped {

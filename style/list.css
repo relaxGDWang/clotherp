@@ -47,7 +47,7 @@
 .el-table td:first-child { text-align: center; }
 .el-table td:last-child { text-align: center; }
 .missionList .el-table th:nth-child(2) { text-align: center; }
-.missionList .el-table tr:nth-child(2) { text-align: center; color: red; }
+.missionList .el-table tr:nth-child(2) { text-align: center; }
 .el-table .cell { padding-left: 3px; padding-right: 3px; }
 .el-table .el-checkbox__inner { width: 18px; height: 18px; }
 .el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
@@ -60,6 +60,11 @@
 .el-table .datetime span { white-space: nowrap; margin: 0 1px; }
 .el-table .datetime span:after { content: ' '; }
 .el-table .datetime span:last-child:after { content: ''; }
+.el-table .boltNumber .cell { overflow: visible; }
+.el-table .boltNumber .fa { position: relative; }
+.el-table .boltNumber .fa:before { position: absolute; top: 0; left: -10px; }
+.el-table .boltNumber .fa.yes:before { content: '\f05d'; color: green; }
+.el-table .boltNumber .fa.no:before { content: '\f05c'; color: red; }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
 .el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9; }

@@ -15,7 +15,7 @@ Vue.component('rex-title', {
             '<div class="itemButton dropItemShow fa fa-bars"><ul class="nohead">' +
                 '<li class="fa fa-home" @click="backHome()">返回首页</li>' +
                 '<li v-if="type===\'cut\'" class="fa fa-instagram" @click="goPage(\'missionCheck.html\')">检验任务</li>' +
-                '<li v-if="type===\'check\'" class="fa fa-cut" @click="goPage(\'missionCut.html\')">裁剪首页</li>' +
+                '<li v-if="type===\'check\'" class="fa fa-cut" @click="goPage(\'missionCut.html\')">裁剪任务</li>' +
                 '<li v-if="view!==\'quick\'" class="fa fa-refresh" @click="refresh()">刷新列表</li>' +
                 '<li class="fa fa-print" @click="printget">取货打印</li>' +
             '</ul></div>' +
