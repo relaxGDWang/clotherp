@@ -20,7 +20,7 @@
 <body>
 <div class="outFrame" id="app">
     <div class="main">
-        <rex-title type="check" :view="UI.view" :username="username" :equipment="equipment" @refresh="getList" @printget="printGetCloth" @changeview="changeView"></rex-title>
+        <rex-title type="check" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList" @printget="printGetCloth" @changeview="changeView"></rex-title>
         <div class="listContent missionList" v-if="UI.view==='mission'">
             <div class="searchBar">
                 <el-select v-model="search.craft" placeholder="选择类型" @change="getList(1)">
@@ -57,20 +57,7 @@
                         <span class="positionItem" v-for="item in scope.row.position">{{item}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="examine" label="状态" key="colExamine"></el-table-column>
-                <el-table-column label="检验员" key="colExaminer">
-                    <template slot-scope="scope">
-                        {{scope.row.examiner || '--'}}
-                    </template>
-                </el-table-column>
-                <el-table-column label="更新" key="colExaminedAt">
-                    <template slot-scope="scope">
-                        <div class="datetime">
-                            <span>{{scope.row.examined_at[0]}}</span> <span>{{scope.row.examined_at[1]}}</span>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="" width="50" key="colOpButton">
+                <el-table-column label="操作" key="colOpButton">
                     <template slot-scope="scope">
                         <span class="opButton fa fa-instagram" @click="openDetails(scope.row.bolt_id)"></span>
                     </template>
@@ -125,15 +112,15 @@
             <div class="dialog-title">
                 <span class="right opBtn btn-close">&times;</span>
                 <ul class="nohead" v-if="editObject.bolt_id">
-                    <li v-if="editObject.viewObj.qualified"><span class="passStatus" :class="editObject.viewObj.qualified.class">{{editObject.viewObj.qualified.name}}</span></li>
                     <li><label>商品 </label><span>{{editObject.product_code}}</span></li>
                     <li><label>卷号 </label><span>{{editObject.bolt_no}}</span></li>
-                    <li><label>仓位 </label><span>{{editObject.position.join(',')}}</span></li>
+                    <li><label>仓位 </label><span>{{editObject.position.join(',') || '--'}}</span></li>
+                    <li><label>流程 </label><span>{{editObject.viewObj.craft || '--'}}</span></li>
                 </ul>
             </div>
             <div class="dialog-content">
-                <div class="leftPart" v-if="editObject.bolt_id" :class="{'pinch':editObject.viewObj.splits.length===0}">
-                    <template v-if="editObject.viewObj.splits.length>0">
+                <div class="leftPart" v-if="editObject.bolt_id" :class="{'pinch':(UI.type!=='cut' || editObject.viewObj.splits.length===0)}">
+                    <template v-if="UI.type==='cut' && editObject.viewObj.splits.length>0">
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                             <li v-for="item in editObject.viewObj.splits" :key="item.bolt_no" :class="{'sel':item.bolt_id===editObject.viewObj.sel.bolt_id}" @click="setViewObject(item.bolt_id)">
                                 <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.bolt_no}}</strong>
@@ -147,16 +134,17 @@
                     </template>
                 </div>
                 <div class="rightPart">
-                    <ul class="baseInfo nohead" v-if="UI.type==='cut' && editObject && editObject.viewObj">
-                        <li><label>客户信息：</label><span>{{editObject.viewObj.sel.purchaser || '--'}}</span></li>
-                        <li><label>订货长度：</label><span>{{editObject.viewObj.sel.order_length || '--'}}米</span></li>
-                        <li><label>备注：</label><span>{{editObject.viewObj.sel.comment || '--'}}</span></li>
+                    <ul class="baseInfo nohead" v-if="editObject && editObject.viewObj">
+                        <template v-if="editObject.viewObj.examine==='已检验'">
+                            <li><label>状态：</label><span>{{editObject.viewObj.examine}}</span></li>
+                            <li><label>检验人：</label><span>{{editObject.viewObj.examiner}}</span></li>
+                            <li><label>日期：</label><span>{{editObject.viewObj.examined_at.join(' ')}}</span></li>
+                        </template>
+                        <template v-if="editObject.viewObj.examine!=='已检验'">
+                            <li><label>状态：</label><span>该布匹还没有经过检验</span></li>
+                        </template>
                     </ul>
-                    <ul class="baseInfo nohead" v-if="UI.type==='check' && editObject && editObject.viewObj">
-                        <li><label>流程：</label><span>{{editObject.viewObj.craft}}</span></li>
-                        <li><label>状态：</label><span>{{editObject.viewObj.examine}}</span></li>
-                    </ul>
-                    <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :cuts="editObject.viewObj.splits" :select="editObject.viewObj.sel" :fromwhere="editObject.viewObj.start" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
+                    <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :fromwhere="editObject.viewObj.start" :qualified="editObject.viewObj.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
                     <div class="operateShow" v-if="editObject.bolt_id">
                         <div class="operate">
                             <div class="counter">
@@ -165,20 +153,39 @@
                                 {{currentPosition===''? '---.--': currentPosition}}
                             </div>
                         </div><div class="buttonList">
-                        <button class="rexButton" color="info" @click="resetCounter()">
-                            <span class="fa fa-rotate-left"></span><span>计米清零</span>
-                        </button><button class="rexButton" color="info" @click="operateFlaw()">
-                        <span class="fa fa-tag"></span><span>新疵点</span>
-                    </button><button class="rexButton" color="info" @click="resetLength()">
-                        <span class="fa fa-edit"></span><span>布长修正</span>
-                    </button><button class="rexButton" color="info" @click="printDoing()">
-                        <span class="fa fa-barcode"></span><span>打印标签</span>
-                    </button><button v-if="UI.view!=='quick'" class="rexButton" color="warning" :disabled="isDisabled" @click="askFinish()">
-                        <span class="fa fa-check-square-o"></span><span>完成检验</span>
-                    </button><button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut()">
-                        <span class="fa fa-unlink"></span><span>分裁布匹</span>
-                    </button>
-                    </div>
+                            <ul class="nohead">
+                                <li>
+                                    <button class="rexButton" color="info" @click="resetCounter()">
+                                        <span class="fa fa-rotate-left"></span><span>计米清零</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="info" @click="operateFlaw()">
+                                        <span class="fa fa-tag"></span><span>新增疵点</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="info" @click="resetLength()">
+                                        <span class="fa fa-edit"></span><span>布长修正</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="info" @click="printDoing()">
+                                        <span class="fa fa-barcode"></span><span>打印标签</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="warning" @click="askCut()">
+                                        <span class="fa fa-unlink"></span><span>疵点分裁</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="warning" @click="askFinish()">
+                                        <span class="fa fa-check-square-o"></span><span>完成检验</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="elseList" v-if="editObject.bolt_id" :style="{height:UI.bottomHeight+'px'}">
                         <div class="flawList">
@@ -229,6 +236,10 @@
                     <span>布匹标签</span>
                     <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
                     <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                    <div class="buttonBar">
+                        <a :href="'missionCheck.html?bolt_no='+recordObject.bolt_no"><button class="rexButton" color="info"><span class="fa fa-instagram"></span>&emsp;重新检验</button></a>
+                        <a :href="'missionCut.html?bolt_no='+recordObject.bolt_no"><button class="rexButton" color="warning"><span class="fa fa-cut"></span>&emsp;继续裁剪</button></a>
+                    </div>
                 </div>
                 <div class="recordListShow">
                     <h3>操作记录详情</h3>
@@ -242,7 +253,7 @@
                             <span>{{item.user}}</span>
                             <span>{{item.action_type}}</span>
                             <span>{{item.content}}</span>
-                            <span><button class="rexButton" size="S" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button></span>
+                            <span><button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button></span>
                         </li>
                     </ul>
                 </div>

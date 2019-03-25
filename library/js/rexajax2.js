@@ -32,7 +32,7 @@ function relaxAJAX(config) {
             notfound: 'AJAX请求的资源没有找到',
             timeout: 'AJAX请求已超时',
             jsonParse: '返回数据非JSON字符串 ',
-            unknow: '产生未知错误'
+            unknow: '服务端或者网络错误，请管理员排查'
         },
         'en_US': {
             nourl: 'AJAX URL is empty',

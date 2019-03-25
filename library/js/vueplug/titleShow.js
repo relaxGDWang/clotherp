@@ -19,7 +19,7 @@ Vue.component('rex-title', {
                 '<li v-if="view!==\'quick\'" class="fa fa-refresh" @click="refresh()">刷新列表</li>' +
                 '<li class="fa fa-print" @click="printget">取货打印</li>' +
             '</ul></div>' +
-            '<div class="itemButton fa fa-plane" :class="{\'sel\': view===\'quick\'}" @click="changeView(\'quick\')">快速裁剪</div>' +
+            '<div class="itemButton fa fa-plane" :class="{\'sel\': view===\'quick\'}" @click="changeView(\'quick\')">{{type===\'cut\'? \'快速裁剪\':\'快速检验\'}}</div>' +
             '<div class="itemButton fa fa-pencil-square" :class="{\'sel\': view===\'mission\'}" @click="changeView(\'mission\')">任务列表</div>' +
             '<div class="itemButton fa fa-calendar-o" :class="{\'sel\': view===\'record\'}" @click="changeView(\'record\')">操作记录</div>' +
             '<span class="userInfo fa fa-user">{{username}}</span>' +

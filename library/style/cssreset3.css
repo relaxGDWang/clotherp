@@ -299,7 +299,7 @@ ul.nohead, ol.nohead { list-style: none; }
 #information .dialog-title .fa:before { vertical-align: middle; }
 #information.sure .dialog-title { background: #216cc9; color: #fff; }
 #information.warning .dialog-title { background: #f79e03; color: #fff; }
-#information.error .dialog-title { background: #f70303; color: #fff; }
+#information.error .dialog-title { background: #884b0a; color: #fff; }
 #information.ok .dialog-title { background: #02a018; color: #fff; }
 
 /*# sourceMappingURL=cssreset3.css.map */

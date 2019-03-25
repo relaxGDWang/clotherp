@@ -39,6 +39,7 @@
 /* 表格样式 */
 .el-table th { padding: 6px 0; }
 .el-table th:first-child { text-align: center; }
+.el-table th:last-child { text-align: center; }
 .el-table td { padding: 6px 0; color: #333; }
 .el-table td .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
 .el-table td .opButton:hover, .el-table td .el-table td .opButton:active { background: #069393; color: #fff; }
@@ -62,7 +63,7 @@
 .el-table .datetime span:last-child:after { content: ''; }
 .el-table .boltNumber .cell { overflow: visible; }
 .el-table .boltNumber .fa { position: relative; }
-.el-table .boltNumber .fa:before { position: absolute; top: 0; left: -10px; }
+.el-table .boltNumber .fa:before { position: absolute; top: 0; left: -12px; }
 .el-table .boltNumber .fa.yes:before { content: '\f05d'; color: green; }
 .el-table .boltNumber .fa.no:before { content: '\f05c'; color: red; }
 
@@ -76,7 +77,7 @@
 .mydetails .dialog-title { background: #336666; border-bottom: 0; }
 .mydetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
 .mydetails .dialog-title .opBtn:hover, .mydetails .dialog-title .opBtn:active { color: red; }
-.mydetails .dialog-title ul { padding-left: 5px; }
+.mydetails .dialog-title ul { padding-left: 20px; }
 .mydetails .dialog-title li { float: left; line-height: 42px; color: rgba(255, 255, 255, 0.6); margin-right: 15px; }
 .mydetails .dialog-title label { color: #fff; }
 .mydetails .dialog-title .passStatus { display: block; color: #fff; line-height: 30px; margin-top: 6px; padding: 0 10px; border-radius: 6px; background: #999; }
@@ -161,6 +162,9 @@
 .cloth .cutBlock.first { outline-color: #069393; background: #fff repeating-linear-gradient(-45deg, rgba(6, 147, 147, 0.3) 0, rgba(6, 147, 147, 0.3) 10px, transparent 0, transparent 20px); }
 .cloth .endShow { position: absolute; z-index: 3; text-shadow: 0 0 2px #fff; top: 50%; transform: translateY(-50%); font-weight: bold; }
 .cloth .leftCloth { left: 0; right: 0; color: #069393; text-align: center; line-height: 48px; background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 10px, transparent 0, transparent 20px); }
+.cloth .qualified { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 16px; background: rgba(255, 255, 255, 0.6); padding: 3px 20px; border-radius: 2px; }
+.cloth .qualified.yes { color: green; border: 1px solid green; }
+.cloth .qualified.no { color: red; border: 1px solid red; }
 
 .ruler { height: 2px; background: #ccc; position: relative; }
 .ruler span { position: absolute; top: 2px; height: 6px; width: 1px; text-align: center; background: #ccc; font-size: 12px; color: #666; }
@@ -169,9 +173,9 @@
 .operateShow { width: 100%; height: 80px; overflow: hidden; }
 
 .operate { display: inline-block; min-width: 260px; width: 50%; padding-left: 20px; vertical-align: middle; text-align: center; }
-.operate .counter { display: inline-block; position: relative; font-family: arial; color: #3273c3; font-size: 60px; }
+.operate .counter { display: inline-block; position: relative; font-family: arial; color: #3273c3; font-size: 70px; }
 .operate .counter:after { content: '米'; position: absolute; top: .6em; left: 100%; font-size: 14px; color: #999; }
-.operate .iconShow { font-size: 20px; color: #999; position: absolute; top: .6em; left: -1em; }
+.operate .iconShow { font-size: 20px; color: #999; position: absolute; top: .6em; left: -1.2em; }
 .operate .nowCut { font-size: 16px; color: #666; position: absolute; bottom: .6em; left: 100%; }
 .operate .nowCut:before { content: '/'; margin-right: 3px; }
 
@@ -185,8 +189,10 @@
 .checkOperate .inshow strong { font-size: 20px; color: red; font-weight: normal; }
 .checkOperate .operateButton { float: right; }
 
-.buttonList { display: inline-block; vertical-align: middle; width: 50%; height: 100%; padding: 5px 0; text-align: right; }
-.buttonList .rexButton { height: 100%; width: 20%; padding: 0; text-align: center; border-radius: 0; border-left: 1px solid rgba(0, 0, 0, 0.3); border-right: 1px solid rgba(255, 255, 255, 0.3); }
+.buttonList { display: inline-block; width: 50%; height: 100%; text-align: center; vertical-align: middle; }
+.buttonList ul { display: table; width: 100%; height: 100%; }
+.buttonList li { display: table-cell; vertical-align: middle; }
+.buttonList .rexButton { height: 100%; width: 100%; padding: 0; text-align: center; border-radius: 0; border-left: 1px solid rgba(0, 0, 0, 0.3); border-right: 1px solid rgba(255, 255, 255, 0.3); }
 .buttonList .rexButton span { display: block; font-size: 14px; width: 100%; }
 .buttonList .rexButton .fa { font-size: 30px; margin-bottom: 10px; }
 .buttonList .rexButton .fa:before { position: static; }
@@ -244,6 +250,8 @@
 .fillBar .numberSearchButton:active { background: #fff; color: #069393; }
 
 .printBar { padding: 10px; margin: 10px 0; border-bottom: 1px solid #ccc; }
+
+.buttonBar { float: right; }
 
 .recordListShow { padding: 0 10px; margin: 10px 0; }
 .recordListShow h3 { font-size: 16px; color: #069393; }

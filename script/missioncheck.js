@@ -36,7 +36,7 @@ var vu=new Vue({
         positionPer: 1000, //读取频率
         positionCallBack: '',  //长度变更时的回调函数
         UI:{
-            view: 'mission',
+            view: 'quick',
             type: 'check',
             listHeight: 100,
             bottomListHeight: 100,
@@ -79,10 +79,10 @@ var vu=new Vue({
             this.UI.view=itemStr;
             switch(itemStr){
                 case 'mission':
-                    if (this.mission.length===0) vu.getList();
+                    vu.getList();
                     break;
                 case 'record':
-                    if (this.record.length===0) vu.getRecordList();
+                    vu.getRecordList();
                     break;
                 case 'quick':
                     setTimeout(function(){
@@ -90,6 +90,12 @@ var vu=new Vue({
                     },200);
                     break;
             }
+            //关闭详情对话框
+            vu.editObject={};
+            vu.UI.len='';
+            vu.stopEQPosition();
+            dialog.close('opDetails');
+            dialog.close('opRecordDetails');
         },
         getViewList: function(){
             if (this.UI.view==='record'){
@@ -204,13 +210,21 @@ var vu=new Vue({
         changeSearchNumber: function(e){
             if (e===undefined || e.keyCode===13){
                 this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
-                this.search.craft='';
-                this.search.book_id='';
-                if (e) e.target.blur();
-                this.openDetails();
+                if (!this.search.bolt_no){
+                    dialog.open('information',{
+                        cname:'warning',
+                        content: '请填写需要查询的布匹卷号！',
+                        btncancel:'',
+                        btnclose:'',
+                        btnsure:'确定'
+                    });
+                }else{
+                    if (e) e.target.blur();
+                    this.openDetails();
+                }
             }
         },
-        //bid 每个裁剪分段的编号 bno 每个布匹的编号
+        //打开布卷详情
         openDetails: function(bid, start){
             var dialogConfig={
                 closeCallback: function(){
@@ -405,7 +419,7 @@ var vu=new Vue({
                 msg='计米器读数超出布匹长度范围！';
                 className='warning';
             }else{
-                msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行分裁操作？';
+                msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行疵点分裁操作？';
                 className='sure';
                 doFlag=true;
             }
@@ -680,10 +694,11 @@ var vu=new Vue({
             var temp1,temp2;
             for (var i=0; i<this.getPrintList.length; i++){
                 temp1='◆ $kind$ $store$';
-                temp2='   $id$';
+                temp2='$id$   $len$';
                 temp1=temp1.replace('$kind$',this.getPrintList[i].product_code);
                 temp2=temp2.replace('$id$',this.getPrintList[i].bolt_no);
                 temp1=temp1.replace('$store$',this.getPrintList[i].position.join(','));
+                temp2=temp2.replace('$len$',this.getPrintList[i].current_length+'米');
                 result.push({text:temp1});
                 result.push({text:temp2});
                 result.push({text:''});
@@ -768,6 +783,13 @@ $(function(){
         vu.getRecordList();
     }
     vu.getBookList();
+
+    //是否获得卷号，是的话则直接打开改卷详细
+    var boltNo=getUrlQuery('bolt_no');
+    if (boltNo){
+        vu.search.bolt_no=boltNo;
+        vu.openDetails();
+    }
 
     function fitUI(){
         var H=body.height();

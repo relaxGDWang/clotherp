@@ -9,16 +9,18 @@
 //pos  当前记米器的位置坐标
 //select 标记该布匹的当前选择段
 //first  标记当前第一个布段
+//qualified 合格对象 {class,name}
 //原先button 项的disabled判定还有个条件 || select===''"
 Vue.component('rex-cloth', {
     template: ''+
         '<div class="clothShow">'+
             '<div class="cloth" ref="cloth">' +
                 '<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code!==\'cut\'" :class="checkSelect(item)"></span>' +
-                '<span class="cutBlock leftCloth" v-if="select===\'\' && cuts.length===0">剩余布料 <strong>{{len}}</strong>米</span>' +
+                //'<span class="cutBlock leftCloth" v-if="select===\'\' && cuts.length===0">剩余布料 <strong>{{len}}</strong>米</span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
                 '<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
+                '<span class="qualified" v-if="qualified.class" :class="qualified.class">{{qualified.name}}</span>' +
             '</div>' +
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
@@ -52,6 +54,9 @@ Vue.component('rex-cloth', {
         },
         canreverse:{
             default: true
+        },
+        qualified:{
+            default:{class:'',name:''}
         }
     },
     computed:{
