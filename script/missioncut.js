@@ -542,6 +542,8 @@ var vu=new Vue({
             }
         },
         goStep: function(op){   //分步骤展现操作
+            this.input.start-=0;
+            this.input.end-=0;
             switch(op){
                 case 'next':
                     if (REG.flaw.test(this.input.start)===false){
@@ -567,6 +569,8 @@ var vu=new Vue({
             }
         },
         addOperateFlaw: function(){ //添加疵点ajax
+            this.input.start-=0;
+            this.input.end-=0;
             if (REG.flaw.test(this.input.end)===false || this.input.end===0){
                 this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
                 return;
