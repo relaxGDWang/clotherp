@@ -71,7 +71,7 @@ var vu=new Vue({
             this.positionTime='';
         },
         changeView: function(itemStr){
-            this.UI.view=itemStr;
+            if (itemStr) this.UI.view=itemStr;
             switch(itemStr){
                 case 'mission':
                     vu.getList();
@@ -84,6 +84,7 @@ var vu=new Vue({
                         vu.$refs.numberSearch.focus();
                     },200);
                     break;
+                default:
             }
             //关闭详情对话框
             vu.editObject={};
@@ -462,7 +463,7 @@ var vu=new Vue({
                     EQUIPMENT.resetCounter(true);
                     vu._setDetailsData(data,'');
                     //自动打印标签
-                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0]);
+                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',2);
                     dialog.open('resultShow',{content:'当前布匹的分裁操作已成功！'});
                 }
             });
@@ -637,7 +638,7 @@ var vu=new Vue({
             this._setMessage({status:'error', msg:msg});
         },
         //打印标签
-        printDoing: function(index){
+        printDoing: function(index,count){
             var printStr='';
             if (this.search.listType && this.search.listType!=='quick'){   //查看完成订单的打印
                 switch(index){
@@ -689,10 +690,10 @@ var vu=new Vue({
                 printStr=JSON.stringify(printStr);
             }
             console.log(printStr);
-            EQUIPMENT.print(printStr);
+            EQUIPMENT.print(printStr,count);
         },
         //打印历史记录的标签
-        printDoginHistory: function(dataObject,opsition){
+        printDoginHistory: function(dataObject,opsition,count){
             var printStr;
             if (opsition==='start'){
                 if (dataObject.start==='start_a'){
@@ -711,7 +712,7 @@ var vu=new Vue({
             }
             printStr=JSON.stringify(printStr);
             console.log(printStr);
-            EQUIPMENT.print(printStr);
+            EQUIPMENT.print(printStr,count);
         },
         //重置AB面
         goChangePosition: function(){
@@ -819,7 +820,18 @@ var ajax=relaxAJAX({
     },
     error: function(code, msg){
         dialog.close('loading');
-        dialog.open('information',{content:msg, cname:'error', btncancel:'',btnclose:'',btnsure:'确定'});
+        dialog.open('information',{
+            content:msg,
+            cname:'error',
+            btncancel:'',
+            btnclose:'',
+            btnsure:'确定',
+            closeCallback: function(id, dialogType, buttonType){
+                if (buttonType==='sure' && vu.UI.view==='quick'){
+                    vu.$refs.numberSearch.focus();
+                }
+            }
+        });
     }
 });
 var ajaxModify=relaxAJAX({
@@ -847,6 +859,8 @@ $(function(){
         vu.getList();
     }else if(vu.UI.view==='record'){
         vu.getRecordList();
+    }else{
+        vu.$refs.numberSearch.focus();
     }
 
     //是否获得卷号，是的话则直接打开改卷详细

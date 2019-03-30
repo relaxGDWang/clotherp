@@ -113,12 +113,24 @@ var EQUIPMENT=(function(){
         }
     }
 
-    function doPrint(printStr){   //打印标签
-        try{
-            window.register_js.goprint(printStr);
-            showErrorResult('打印指令发送成功！');
-        }catch(e){
-            showErrorResult('打印调用出错，请检查打印机连接情况！');
+    function doPrint(printStr,count){   //打印标签
+        if (count && count>1){
+            count=count-0;
+        }else{
+            count=1;
+        }
+        var timeID=setInterval(_print,800);
+        function _print(){
+            try {
+                window.register_js.goprint(printStr);
+                showErrorResult('打印指令发送成功！');
+            } catch (e) {
+                showErrorResult('打印调用出错，请检查打印机连接情况！');
+            }
+            if ((--count)<=0){
+                clearInterval(timeID);
+                timeID='';
+            }
         }
     }
 

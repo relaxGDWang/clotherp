@@ -12,7 +12,7 @@ Vue.component('rex-title', {
     template: ''+
         '<div class="titleBar">' +
             '<h1 class="itemButton fa" :class="head[type].icon">{{head[type].title}}</h1>' +
-            '<div class="itemButton dropItemShow fa fa-bars"><ul class="nohead">' +
+            '<div class="itemButton dropItemShow fa fa-bars" @click="changeView()"><ul class="nohead">' +
                 '<li class="fa fa-home" @click="backHome()">返回首页</li>' +
                 '<li v-if="type===\'cut\'" class="fa fa-instagram" @click="goPage(\'missionCheck.html\')">检验任务</li>' +
                 '<li v-if="type===\'check\'" class="fa fa-cut" @click="goPage(\'missionCut.html\')">裁剪任务</li>' +

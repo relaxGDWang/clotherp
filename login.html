@@ -25,8 +25,8 @@
                 <li>
                     <el-autocomplete type="tel" class="inline-input" prefix-icon="fa fa-user" size="large" v-model="input.telnumber" :fetch-suggestions="querySearch" placeholder="手机号码" maxlength="11" clearable></el-autocomplete>
                 </li>
-                <li>
-                    <el-input type="password" placeholder="登录密码" prefix-icon="fa fa-lock" size="large" v-model="input.password" maxlength="32" clearable></el-input>
+                <li class="inputPassword">
+                    <el-input type="tel" placeholder="登录密码" prefix-icon="fa fa-lock" size="large" v-model="input.password" maxlength="32" clearable></el-input>
                 </li>
                 <li class="tipMessage">
                     <span v-if="msg.text" class="fa" :class="msg.type">

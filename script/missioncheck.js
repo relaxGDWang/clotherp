@@ -76,7 +76,7 @@ var vu=new Vue({
             this.positionTime='';
         },
         changeView: function(itemStr){
-            this.UI.view=itemStr;
+            if (itemStr) this.UI.view=itemStr;
             switch(itemStr){
                 case 'mission':
                     vu.getList();
@@ -89,6 +89,7 @@ var vu=new Vue({
                         vu.$refs.numberSearch.focus();
                     },200);
                     break;
+                default:
             }
             //关闭详情对话框
             vu.editObject={};
@@ -366,19 +367,25 @@ var vu=new Vue({
         },
         askFinish: function(){
             //检测当前计米和需裁剪的是否匹配
-            var p=0.5,msg,className;
-            var checkValueMax=this.editObject.current_length + p;
-            var checkValueMin=this.editObject.current_length - p;
-            if (this.currentPosition && this.currentPosition>=checkValueMin && this.currentPosition<=checkValueMax){
-                msg='请标记当前布匹的检验结果为';
-                className='sure';
+            if (!this.currentPosition) {
+                dialog.open('information', {
+                    cname: 'warning',
+                    btncancel: '',
+                    btnclose: '',
+                    btnsure: '确定',
+                    content: '当前没有获得计米器的读数，请检查计米器连接。'
+                });
+                return;
+            }
+            var msg;
+            if (this.currentPosition===this.editObject.current_length){
+                msg='请选择该布匹的检验结果为';
             }else{
-                msg='计米长度与布匹长度不匹配，<br/>如果仍需提交，请标记当前布匹的检验结果为';
-                className='warning';
+                msg='布匹的长度将更新为 <strong>'+ this.currentPosition +'</strong>米 ，请选择该布匹的检验结果为';
             }
             dialog.open('information',{
                 content: msg,
-                cname: className,
+                cname: 'sure',
                 btncancel: '不合格',
                 btnsure: '合格',
                 closeCallback: function(id, dialogType, buttonType){
@@ -388,12 +395,17 @@ var vu=new Vue({
             });
         },
         doFinish: function(pass){
+            var nowCurrentPosition=this.currentPosition;
             ajax.send({
                 url: PATH.missionCheckFinished,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.bolt_id, qualified: pass},
+                data:{bolt_id: vu.editObject.viewObj.bolt_id, qualified: pass, length: nowCurrentPosition},
                 success:function(data){
                     vu.flagReload=true;
+                    //更新布匹长度
+                    vu.UI.len=nowCurrentPosition;
+                    vu.refreshPrintLen(nowCurrentPosition);
+                    //计米器清零
                     EQUIPMENT.resetCounter(true);
                     //重置当前
                     if (pass){
@@ -404,9 +416,25 @@ var vu=new Vue({
                         vu.editObject.qualified=vu._formatQualified('不合格');
                     }
                     dialog.close('loading');
-                    dialog.open('information', {content: '布匹检验已完成！',btnclose:'',btncancel: '',btnsure:'确定',cname:'ok'});
+                    dialog.open('information', {
+                        content: '布匹检验已完成！',
+                        btnclose:'',
+                        btncancel: '',
+                        btnsure:'确定',
+                        cname:'ok',
+                        closeCallback: function(){
+                            vu.editObject={};
+                            if (vu.flagReload) vu.getList();
+                            vu.UI.len='';
+                            vu.stopEQPosition();
+                            dialog.close('opDetails');
+                            if (vu.UI.view==='quick') vu.$refs.numberSearch.focus();
+                        }
+                    });
                     //把当前对象标记为已完成
                     vu.editObject.finished=true;
+                    //打印两次末尾标签
+                    vu.printDoing('end',2);
                 }
             });
         },
@@ -455,7 +483,7 @@ var vu=new Vue({
                     EQUIPMENT.resetCounter(true);
                     vu._setDetailsData(data,'');
                     //自动打印标签
-                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0]);
+                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',2);
                     dialog.open('resultShow',{content:'当前布匹的分裁操作已成功！'});
                 }
             });
@@ -605,7 +633,7 @@ var vu=new Vue({
             this._setMessage({status:'error', msg:msg});
         },
         //打印标签
-        printDoing: function(typeStr){
+        printDoing: function(typeStr,count){
             if (!typeStr){
                 dialog.open('printBox');
             }else{
@@ -625,11 +653,11 @@ var vu=new Vue({
                 }
                 printStr=JSON.stringify(printStr);
                 console.log(printStr);
-                EQUIPMENT.print(printStr);
+                EQUIPMENT.print(printStr,count);
             }
         },
         //打印历史记录的标签
-        printDoginHistory: function(dataObject,opsition){
+        printDoginHistory: function(dataObject,opsition,count){
             var printStr;
             if (opsition==='start'){
                 if (dataObject.start==='start_a'){
@@ -648,7 +676,7 @@ var vu=new Vue({
             }
             printStr=JSON.stringify(printStr);
             console.log(printStr);
-            EQUIPMENT.print(printStr);
+            EQUIPMENT.print(printStr,count);
         },
         //重置AB面
         goChangePosition: function(){
@@ -659,6 +687,11 @@ var vu=new Vue({
                 setVal='start_a';
             }
             this.openDetails(this.editObject.bolt_id, setVal);
+        },
+        //更新某些服务端不返回具体新对象情况下的打印信息
+        refreshPrintLen: function(newLen){
+            this.editObject.viewObj.print_head.info.items[1].text='长度：'+newLen;
+            this.editObject.viewObj.print_tail.info.items[1].text='长度：'+newLen;
         },
         //清零计米器
         resetCounter: function(){
@@ -757,7 +790,18 @@ var ajax=relaxAJAX({
     },
     error: function(code, msg){
         dialog.close('loading');
-        dialog.open('information',{content:msg, cname:'error', btncancel:'',btnclose:'',btnsure:'确定'});
+        dialog.open('information',{
+            content:msg,
+            cname:'error',
+            btncancel:'',
+            btnclose:'',
+            btnsure:'确定',
+            closeCallback: function(id, dialogType, buttonType){
+                if (buttonType==='sure' && vu.UI.view==='quick'){
+                    vu.$refs.numberSearch.focus();
+                }
+            }
+        });
     }
 });
 var ajaxModify=relaxAJAX({
@@ -785,6 +829,8 @@ $(function(){
         vu.getList();
     }else if(vu.UI.view==='record'){
         vu.getRecordList();
+    }else{
+        vu.$refs.numberSearch.focus();
     }
     vu.getBookList();
 
