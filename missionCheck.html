@@ -15,7 +15,12 @@
     <!-- build:css style/list.css -->
     <link rel="stylesheet" href="style/list.css"/>
     <!-- endbuild -->
+    <!-- build:js script/configBG.js -->
     <script src="script/configBG.js"></script>
+    <!-- endbuild -->
+    <!-- build:js script/common.js -->
+    <script src="script/common.js"></script>
+    <!-- endbuild -->
 </head>
 <body>
 <div class="outFrame" id="app">
@@ -164,11 +169,11 @@
                                         <span class="fa fa-tag"></span><span>新增疵点</span>
                                     </button>
                                 </li>
-                                <li>
+                                <!--<li>
                                     <button class="rexButton" color="info" @click="resetLength()">
                                         <span class="fa fa-edit"></span><span>布长修正</span>
                                     </button>
-                                </li>
+                                </li>-->
                                 <li>
                                     <button class="rexButton" color="info" @click="printDoing()">
                                         <span class="fa fa-barcode"></span><span>打印标签</span>
