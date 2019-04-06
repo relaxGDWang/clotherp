@@ -66,8 +66,8 @@
             <div class="fillBar">
                 <span class="fa fa-search"></span>
                 <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
-                <input class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" ref="numberSearch"/>
-                <button class="numberSearchButton" @click="changeSearchNumber()">查找</button>
+                <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
+                <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
             </div>
         </div>
         <div class="listContent" v-if="UI.view==='record'">
@@ -116,15 +116,15 @@
                 </ul>
             </div>
             <div class="dialog-content">
-                <div class="leftPart" v-if="editObject.bolt_id" :class="{'pinch':editObject.viewObj.splits.length===0}">
-                    <template v-if="editObject.viewObj.splits.length>0">
+                <div class="leftPart" v-if="editObject.bolt_id" :class="{'pinch':editObject.viewObj.orders.length===0}">
+                    <template v-if="editObject.viewObj.orders.length>0">
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                            <li v-for="item in editObject.viewObj.splits" :key="item.bolt_no" :class="{'sel':item.bolt_id===editObject.viewObj.sel.bolt_id}" @click="setViewObject(item.bolt_id)">
-                                <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.bolt_no}}</strong>
+                            <li key="free" class="freeDo" :class="{'sel':'free'===editObject.viewObj.sel}" @click="setViewObject('free')"><p>自由裁剪</p></li>
+                            <li v-for="item in editObject.viewObj.orders" :key="item.order_item_id" :class="{'sel':item.order_item_id===editObject.viewObj.sel}" @click="setViewObject(item.order_item_id)">
+                                <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.purchaser}}</strong>
                                 <div class="statusBar">
-                                    <span class="status" :class="getTypeString(item)"></span>
-                                    <span class="status length">{{item.cut_length}}</span>
-                                    <span class="status finished" v-if="item.status_code==='cut'">完成</span>
+                                    <span>{{item.order_no}}</span>
+                                    <span class="status length">{{item.quantity}}</span>
                                 </div>
                             </li>
                         </transition-group>
@@ -132,9 +132,9 @@
                 </div>
                 <div class="rightPart">
                     <ul class="baseInfo nohead" v-if="editObject.bolt_id">
-                        <li><label>客户信息：</label><span>{{editObject.viewObj.sel.purchaser || '--'}}</span></li>
-                        <li><label>订货长度：</label><span>{{editObject.viewObj.sel.order_length || '--'}}米</span></li>
-                        <li><label>备注：</label><span>{{editObject.viewObj.sel.comment || '--'}}</span></li>
+                        <li><label>客户信息：</label><span>{{showSelInfo.purchaser}}</span></li>
+                        <li><label>订货长度：</label><span>{{showSelInfo.quantity}}米</span></li>
+                        <li><label>备注：</label><span>--</span></li>
                     </ul>
                     <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :cuts="editObject.viewObj.splits" :select="editObject.viewObj.sel" :fromwhere="editObject.viewObj.start" :qualified="editObject.viewObj.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
                     <div class="operateShow" v-if="editObject.bolt_id">
@@ -242,7 +242,7 @@
                     <h3>操作记录详情</h3>
                     <ul class="nohead" v-if="recordObject.history && recordObject.history.length>0">
                         <li class="tr">
-                            <span></span><span>时间</span><span>操作人</span><span>操作类型</span><span>操作内容</span><span>打印</span>
+                            <span></span><span>时间</span><span>操作人</span><span>操作类型</span><span>操作内容</span><span>操作</span>
                         </li>
                         <li v-for="(item, index) in recordObject.history">
                             <span>{{index+1}}</span>
@@ -250,7 +250,10 @@
                             <span>{{item.user}}</span>
                             <span>{{item.action_type}}</span>
                             <span>{{item.content}}</span>
-                            <span><button class="rexButton" size="S" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button></span>
+                            <span>
+                                <button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button>
+                                <button class="rexButton" v-if="item.action_type==='分裁'" @click="doRecheck(item.bolt_id)">重新检验</button>
+                            </span>
                         </li>
                     </ul>
                 </div>

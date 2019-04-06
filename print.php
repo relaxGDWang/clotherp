@@ -3,95 +3,82 @@
  *  * above, which is before the header() call */
 //header('Location: http://pad.suishou.cc/main.html');
 //header('Location: http://qiang.suishou.cc/');
+//header('Location: http://zufang.suishou.cc/');
 //exit;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>项目调试</title>
-<style type="text/css">
-*, *:after, *:before { box-sizing: border-box; }
-html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, form, iframe, object { margin: 0; padding: 0; }
-a { text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
-input, textarea, select, button, option { font-family: inherit; font-size: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
-a:active, a:focus, input:active, input:focus, button:active, button:focus { outline: none; }
-input[type="button"]::-moz-focus-inner, input[type="submit"]::-moz-focus-inner, button::-moz-focus-inner { border: none; }
-html, body { height: 100%; width: 100%; overflow: hidden; color: #333; font-family: Arial, Helvetica, sans-serif; }
-html { font-size: 14px; }
-body { font-size: 14px; }
-iframe { display: block; width: 100%; height: 100%; position: relative; border: 0; }
-input::-ms-clear, input::-ms-reveal { display: none; }
-ul.nohead, ol.nohead { list-style: none;}
-
-.outFrame{ width:100%; height:100%; position:relative; overflow:hidden;}
-h1{ text-align:center; border-bottom:1px solid #ccc; padding:10px; margin-bottom:10px; font-size:20px; font-weight:normal;}
-.equipmentStatus li{ float:left; padding:5px 10px; font-size:16px; color:#666;}
-.equipmentStatus li strong{ margin-left:5px;}
-.equipmentStatus .title{ background:#999; color:#fff; border-radius:6px;}
-.equipmentStatus .nowValue{ float:none; clear:both; width:100%; border-top:1px solid #ccc; background:#f0f0f0; text-align:center; margin-bottom:20px;}
-.counter{ width:100%; overflow:hidden;}
-.counter h2{ float:left; background:#999; color:#fff; border-radius:6px; padding:0 10px; font-size:16px; line-height:34px;}
-.counter div{ float:left; padding:0 10px; line-height:34px; font-size:16px;}
-.counter strong{ color:red; font-weight:normal; font-size:14px;}
-</style>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<title>工程测试页面</title>
+	<style type="text/css">
+	body{ text-align:center; background:#eee;}
+	h1{ padding:0; margin:0; text-align:left; color:blue;}
+	h2{ border-bottom:1px solid #ddd; padding-bottom:15px; padding-top:0; margin:0; text-align:left; color:#999;}
+	body>div{ padding:20px; max-width:700px; background:#fff; margin:10px auto; border:1px solid #ddd; border-radius:6px; box-shadow:0 0 10px rgba(0,0,0,.1); position:relative;}
+	.noBack{ background:transparent; padding:0; box-shadow:none; border:0;}
+	.noBack h1{ border-bottom:0;}
+	.buttonBar{ position:absolute; top:5px; right:0;}
+	.buttonBar.ext{ top:15px; right:20px;}
+	.showBar{ display:block; padding:10px 0 0 0;}
+	button{ padding:5px 15px; cursor:pointer; font-size:16px;}
+	input[type="text"]{ height:30px;}
+	</style>
 </head>
 <body>
-	<div class="outFrame">
-		<h1>项目调试</h1>
-		<ul class="equipmentStatus nohead">
-			<li class="title">设备状态</li>
-			<li>打印机<strong id="eqPrint">--</strong></li>
-			<li>计米器<strong id="eqCounter">--</strong></li>
-			<li>网络链接<strong id="eqNet">--</strong></li>
-			<li class="nowValue">获得值：<span id="statusText"></span></li>
-		</ul>
-		<div class="counter">
-			<h2>计米器</h2>
-			<div>
-				<span>当前读数</span>
-				<strong id="numbox"></strong>
-			</div>
-			<div>
-				<span>设置</span>
-				<button id="reset">计米器清零</button>
-			</div>
-		</div>
+	<div class="noBack">
+		<h1>工程测试</h1>
+		<span class="buttonBar">
+			<button type="button" onclick="window.register_js.exitwebview()">设置中心</button> <button type="button" onclick="location.reload()">刷新页面</button>
+		</span>
+	</div>
+	<div>
+		<h2>打印机计米器测试</h2>
+		<h3 id="numbox">00.00</h3>
 		<h4 id="statbox">0000</h4>
-		<button type="button" onclick="window.register_js.goprint(str)">打印测试</button>
-<br>
-<br>
-		<button type="button" onclick="window.register_js.gozero()">清零计数</button>
-<br>
-<br>
-		<button type="button" onclick="window.register_js.goalt1(11)">设置alt1</button>
-<br>
-<br>
-		<button type="button" onclick="window.register_js.goalt2(22)">设置alt2</button>
-<br>
-<br>
-		<button type="button" onclick="window.register_js.exitwebview()">设置中心</button>
-<br>
-<br>
-		<a href="">刷新页面</a>
-<br>
-		<a onclick="top.location.href='./test.html?v='+Math.random();">TEST</a>
-<br>
-<br>
-		<a onclick="top.location.href='http://192.168.3.200:10000/login.html?v='+Math.random()">开发环境123</a>
-		<a onclick="top.location.href='http://192.168.1.30:10000/login.html?v='+Math.random();">开发环境-wangleijia</a>
-<br>
-<br>
-		<a onclick="top.location.href='http://pad.suishou.cc/main.html?v='+Math.random();">生产环境</a>
-
-<br>
-<br>
-<input type="text" onkeydown="keydown()" onkeypress="keypress()" onkeyup="keyup()" />
+		<button type="button" onclick="window.register_js.goprint(str)">打印测试</button> <button type="button" onclick="window.register_js.gozero()">清零计数</button>
+	</div>
+	<div>
+		<h2>版本查看</h2>
+		<span class="buttonBar ext">
+			<button type="button" onclick="top.location.href='http://pad.suishou.cc/main.html?v='+Math.random();">生产环境</button> <button onclick="top.location.href='http://pad-dev.suishou.cc/main.html?v='+Math.random();">测试环境</button>
+		</span>
+		<span class="showBar">
+			<label>测试地址</label>
+			<input type="text" id="gourl" placeholder="http://"/>
+			<button type="button" id="goButton">跳转</button>
+		</span>
+	</div>
+	<div>
+		<h2>扫描枪测试</h2>
+		<span class="showBar">
+			<input type="text" onkeydown="keydown()" onkeypress="keypress()" onkeyup="keyup()" />
+		</span>
+	</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-window.setInterval(get_num_val, 1000); //计米器读数
+//获得设备状态信息
+function syncstat(){
+	val = window.register_js? window.register_js.get_syncstat() : '--';
+	dom1.text(val);
+}
+
+//获得计米器读数
+function get_num_val(){
+	val = window.register_js? window.register_js.updatenumbox() : '--';
+	dom2.text(val);
+}
+
+var dom1=$('#statbox');
+var dom2=$('#numbox');
+var dom3=$('#gourl');
+dom3.val(localStorage.getItem('url') || '');
+
+window.setInterval(get_num_val, 1000); 
 window.setInterval(syncstat, 1000); 
 
 var items = [];//创建数组
@@ -124,54 +111,21 @@ info.items= items;
 
 var data = {};
 data.width = "50";	
-data.len = "940";	
-data.gap = "0";	
-data.xblank = "180";	
-data.yblank = "100";	
+data.len = "70";	
+data.gap = "3";	
+data.xblank = "60";	
+data.yblank = "60";	
 data.lineh= "30";	
 data.density = "15";	
 data.speed= "15";	
-data.info= info;
-
-var dom={
-	counter: $('#numbox'),   //计米器读数
-	reset: $('#reset'),       //计米器清零按钮
-	statusText: $('#statusText') //状态返回数值
-};
-
-reset.click(function(){
-	try{
-		window.register_js.gozero();
-	}catch(e){
-		
-	}
-	
-});
+data.info= info;	
 
 
 var str = JSON.stringify(data);//将对象转换为json
+data.gap = "0";	
+data.len = "100";	
+var str2 = JSON.stringify(data);//将对象转换为json
 console.log(str);
-
-//	alert(str);
-function syncstat(){  //获取设备链接状态
-	var val;
-	try{
-		val = window.register_js.get_syncstat();
-	}catch(e){
-		val = '请在APP中访问';
-	}
-	dom.statusText.text(val);
-}
-
-function get_num_val(){  //获得计米器读数
-	var val;
-	try{
-		val = window.register_js.updatenumbox();
-	}catch(e){
-		val = '计米器读数失败';
-	}
-	dom.counter.text(val);
-}
 
 function keydown(event) {
 	console.log('keydown');
@@ -184,8 +138,19 @@ function keypress(event) {
 function keyup(event) {
 	console.log('keyup');
 }
+
+$('#goButton').click(function(){
+	var url=dom3.val();
+	location.href='http://'+url;
+	localStorage.setItem('url',url);
+});
+
+dom3.focus(function(){
+	this.select();
+});
 </script>
-</body>
+
+
 </html>
 
 

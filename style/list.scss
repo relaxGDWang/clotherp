@@ -201,12 +201,16 @@
   li:hover, li:active{ background-color:#19bbbb;}
   strong{ line-height:24px; font-weight:normal; position:relative; padding-left:10px;}
   strong:before{ color:red; position:absolute; top:0; left:0; font-size:14px;}
+  .statusBar{ padding-left:10px;}
   .statusBar span{ display:inline-block; color:rgba(255,255,255,.8);}
-  .length{ background:#f90;}
+  .length{ background:#f90; margin-left:5px;}
   .length:after{ content:'米';}
   .finished{ background:green;}
+  li.freeDo{ font-size:16px; text-align: center; padding:12px 0;}
   li.sel{ background-color:#fff; border-bottom:0;}
   li.sel strong{ color:#333;}
+  li.sel span:first-child{ color:#666;}
+  li.freeDo.sel{ color:#333;}
 }
 .rightPart{ width:auto; margin-left:175px; height:100%; padding:0 10px 0 10px;}
 .leftPart.pinch{

@@ -33,6 +33,7 @@ var vu=new Vue({
         UI:{
             view: 'quick',
             type: 'cut',
+            dialogShow: false,//标记是否打开了详细对话框
             listHeight: 100,   //列表高
             bottomHeight: 100,  //详细页面底部列表高
             len:''   //详细页布匹长度
@@ -50,7 +51,6 @@ var vu=new Vue({
         getPrintList:[],  //取货打印信息
         printTemplate:'', //打印模板信息
         editObject: {},   //用于标注当前查看的未完成任务对象
-        showObject: {},   //用于标注当前查看的已完成任务对象
         mission: [],      //任务细分数组，ajax直接返回
         missionKey: {},   //bolt_id与数组index对应关系
         record: [],       //操作记录数组
@@ -60,6 +60,17 @@ var vu=new Vue({
     computed:{
         isDisabled: function(){   //判断完成裁剪是否可用
             return !(this.editObject.viewObj.sel && (this.editObject.viewObj.sel.bolt_id===this.editObject.viewObj.splits[0].bolt_id));
+        },
+        showSelInfo: function(){   //显示当前选中的订单信息
+            var result={};
+            if (!this.editObject || !this.editObject.viewObj.sel) return result;
+            if (this.editObject.viewObj.sel==='free') return {purchaser:'--',quantity:'--'};
+            for (var i=0; i<this.editObject.viewObj.orders; i++){
+                if (this.editObject.viewObj.sel===this.editObject.viewObj.orders[i].order_item_id){
+                    return {purchaser:this.editObject.viewObj.orders[i].purchaser,quantity:this.editObject.viewObj.orders[i].quantity};
+                }
+            }
+            return result;
         }
     },
     methods:{
@@ -81,16 +92,18 @@ var vu=new Vue({
                     break;
                 case 'quick':
                     setTimeout(function(){
-                        vu.$refs.numberSearch.focus();
+                        vu.$refs.searchInput.focus();
                     },200);
                     break;
                 default:
             }
             //关闭详情对话框
             vu.editObject={};
+            vu.recordDetails={};
             vu.UI.len='';
             vu.stopEQPosition();
             dialog.close('opDetails');
+            vu.UI.dialogShow=false;
             dialog.close('opRecordDetails');
         },
         getViewList: function(){
@@ -204,13 +217,22 @@ var vu=new Vue({
             var dialogConfig={
                 closeCallback: function(){
                     vu.editObject={};
-                    vu.showObject={};
-                    if (vu.flagReload) vu.getList();
-                    vu.UI.len='';
-                    vu.stopEQPosition();
-                    if (vu.UI.view==='quick'){
-                        vu.$refs.numberSearch.focus();
+                    if (vu.UI.view==='record'){
+                        if (vu.flagReload){
+                            vu.recordDetails={};
+                            dialog.close('opRecordDetails');
+                            vu.getRecordList();
+                        }
+                    }else if(vu.UI.view==='mission'){
+                        if (vu.flagReload) vu.getList();
+                        vu.UI.len='';
+                        vu.stopEQPosition();
                     }
+                    vu.UI.dialogShow=false;
+                    if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
+                },
+                openCallback: function(){
+                    vu.UI.dialogShow=true;
                 }
             };
             /*
@@ -275,7 +297,7 @@ var vu=new Vue({
             data.defects=_formatFlawInfor(data.defects);  //瑕疵列表
             data.qualified=this._formatQualified(data.qualified);
             data.list={};
-            data.sel=data.splits.length>0? data.splits[0] : '';
+            data.sel=data.orders.length>0? 'free' : '';
             for (i=0; i<data.splits.length; i++){
                 data.list[data.splits[i].bolt_id]=i;
             }
@@ -325,8 +347,13 @@ var vu=new Vue({
             return result;
         },
         setViewObject: function(bid){
-            if (this.editObject.viewObj.sel.bolt_id===bid) return;
-            this.editObject.viewObj.sel=this.editObject.viewObj.splits[this.editObject.viewObj.list[bid]];
+            if (bid==='free'){
+                if (this.editObject.viewObj.sel==='free') return;
+                this.editObject.viewObj.sel='free';
+            }else{
+                if (this.editObject.viewObj.sel===bid) return;
+                this.editObject.viewObj.sel=bid;
+            }
         },
         _setColthLen: function(){   //设置用于显示的当前布长
             if (this.editObject){
@@ -417,8 +444,8 @@ var vu=new Vue({
             if (!this.currentPosition){
                 msg='没有准确获得计米器当前的读数！';
                 className='warning';
-            }else if(this.currentPosition===0 || this.currentPosition>this.editObject.viewObj.current_length){
-                msg='计米器读数超出布匹长度范围！';
+            }else if(this.currentPosition===0){
+                msg='计米器读数为0！';
                 className='warning';
             }else{
                 if (status){
@@ -640,55 +667,33 @@ var vu=new Vue({
         //打印标签
         printDoing: function(index,count){
             var printStr='';
-            if (this.search.listType && this.search.listType!=='quick'){   //查看完成订单的打印
-                switch(index){
+            if (index==='show'){
+                dialog.open('printBox');
+                return;
+            }
+            if (this.editObject.viewObj.sel && !index){
+                printStr=this.editObject.viewObj.sel.print_data;
+            }else{
+                switch (index){
                     case 'start':
-                        if (this.showObject.viewObj.start==='start_a'){
-                            printStr=this.showObject.viewObj.print_head;
+                        if (this.editObject.viewObj.start==='start_a'){
+                            printStr=this.editObject.viewObj.print_head;
                         }else{
-                            printStr=this.showObject.viewObj.print_tail;
+                            printStr=this.editObject.viewObj.print_tail;
                         }
                         break;
                     case 'end':
-                        if (this.showObject.viewObj.start==='start_a'){
-                            printStr=this.showObject.viewObj.print_tail;
+                        if (this.editObject.viewObj.start==='start_a'){
+                            printStr=this.editObject.viewObj.print_tail;
                         }else{
-                            printStr=this.showObject.viewObj.print_head;
+                            printStr=this.editObject.viewObj.print_head;
                         }
                         break;
                     default:
-                        printStr=this.showObject.viewObj.cutouts[index].print_data;
+                        printStr=this.editObject.viewObj.cutouts[0].print_data;
                 }
-                printStr=JSON.stringify(printStr);
-            }else{
-                if (index==='show'){
-                    dialog.open('printBox');
-                    return;
-                }
-                if (this.editObject.viewObj.sel && !index){
-                    printStr=this.editObject.viewObj.sel.print_data;
-                }else{
-                    switch (index){
-                        case 'start':
-                            if (this.editObject.viewObj.start==='start_a'){
-                                printStr=this.editObject.viewObj.print_head;
-                            }else{
-                                printStr=this.editObject.viewObj.print_tail;
-                            }
-                            break;
-                        case 'end':
-                            if (this.editObject.viewObj.start==='start_a'){
-                                printStr=this.editObject.viewObj.print_tail;
-                            }else{
-                                printStr=this.editObject.viewObj.print_head;
-                            }
-                            break;
-                        default:
-                            printStr=this.editObject.viewObj.cutouts[0].print_data;
-                    }
-                }
-                printStr=JSON.stringify(printStr);
             }
+            printStr=JSON.stringify(printStr);
             console.log(printStr);
             EQUIPMENT.print(printStr,count);
         },
@@ -778,6 +783,10 @@ var vu=new Vue({
                 dialog.open('resultShow',{content:'取货打印一次最多为'+ maxCount +'条！'});
             }
             EQUIPMENT.print(printStr);
+        },
+        //重新检验
+        doRecheck: function(id){
+            location.href='missionCheck.html?bolt_id='+ id;
         }
     },
     beforeMount: function () {
@@ -828,7 +837,7 @@ var ajax=relaxAJAX({
             btnsure:'确定',
             closeCallback: function(id, dialogType, buttonType){
                 if (buttonType==='sure' && vu.UI.view==='quick'){
-                    vu.$refs.numberSearch.focus();
+                    vu.$refs.searchInput.focus();
                 }
             }
         });
@@ -853,21 +862,20 @@ $(function(){
             fitUI();
         },100);
     });
-
     fitUI();
+
+    var boltNo=getUrlQuery('bolt_no');
     if (vu.UI.view==='mission'){
         vu.getList();
     }else if(vu.UI.view==='record'){
         vu.getRecordList();
     }else{
-        vu.$refs.numberSearch.focus();
-    }
-
-    //是否获得卷号，是的话则直接打开改卷详细
-    var boltNo=getUrlQuery('bolt_no');
-    if (boltNo){
-        vu.search.bolt_no=boltNo;
-        vu.openDetails();
+        vu.$refs.searchInput.focus();
+        //是否获得卷号，是的话则直接打开改卷详细
+        if (boltNo){
+            vu.search.bolt_no=boltNo;
+            vu.openDetails();
+        }
     }
 
     function fitUI(){

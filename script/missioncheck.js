@@ -38,6 +38,7 @@ var vu=new Vue({
         UI:{
             view: 'quick',
             type: 'check',
+            dialogShow: false,//标记是否打开了详细对话框
             listHeight: 100,
             bottomListHeight: 100,
             len: 0
@@ -86,16 +87,18 @@ var vu=new Vue({
                     break;
                 case 'quick':
                     setTimeout(function(){
-                        vu.$refs.numberSearch.focus();
+                        vu.$refs.searchInput.focus();
                     },200);
                     break;
                 default:
             }
             //关闭详情对话框
             vu.editObject={};
+            vu.recordDetails={};
             vu.UI.len='';
             vu.stopEQPosition();
             dialog.close('opDetails');
+            vu.UI.dialogShow=false;
             dialog.close('opRecordDetails');
         },
         getViewList: function(){
@@ -220,7 +223,8 @@ var vu=new Vue({
                         btnsure:'确定'
                     });
                 }else{
-                    if (e) e.target.blur();
+                    //if (e) e.target.blur();
+                    //$('body').focus();
                     this.openDetails();
                 }
             }
@@ -230,9 +234,24 @@ var vu=new Vue({
             var dialogConfig={
                 closeCallback: function(){
                     vu.editObject={};
-                    if (vu.flagReload) vu.getList();
-                    vu.UI.len='';
-                    vu.stopEQPosition();
+                    if (vu.UI.view==='record'){
+                        if (vu.flagReload){
+                            vu.recordDetails={};
+                            dialog.close('opRecordDetails');
+                            vu.getRecordList();
+                        }else if(vu.record.length===0){
+                            vu.getRecordList();
+                        }
+                    }else if(vu.UI.view==='mission'){
+                        if (vu.flagReload) vu.getList();
+                        vu.UI.len='';
+                        vu.stopEQPosition();
+                    }
+                    vu.UI.dialogShow=false;
+                    if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
+                },
+                openCallback: function(){
+                    vu.UI.dialogShow=true;
                 }
             };
             /*if (this.missionKey[bid].viewObj!==undefined && start===undefined){
@@ -423,12 +442,19 @@ var vu=new Vue({
                         btnsure:'确定',
                         cname:'ok',
                         closeCallback: function(){
-                            vu.editObject={};
-                            if (vu.flagReload) vu.getList();
+                            if (vu.UI.view==='record'){
+                                vu.recordDetails={};
+                                dialog.close('opRecordDetails');
+                                vu.getRecordList();
+                            }else if (vu.UI.view==='mission'){
+                                vu.getList();
+                            }
                             vu.UI.len='';
                             vu.stopEQPosition();
+                            vu.editObject={};
                             dialog.close('opDetails');
-                            if (vu.UI.view==='quick') vu.$refs.numberSearch.focus();
+                            vu.UI.dialogShow=false;
+                            if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
                         }
                     });
                     //把当前对象标记为已完成
@@ -443,8 +469,8 @@ var vu=new Vue({
             if (!this.currentPosition){
                 msg='没有准确获得计米器当前的读数！';
                 className='warning';
-            }else if(this.currentPosition===0 || this.currentPosition>this.editObject.viewObj.current_length){
-                msg='计米器读数超出布匹长度范围！';
+            }else if(this.currentPosition===0){
+                msg='计米器读数为0！';
                 className='warning';
             }else{
                 msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行疵点分裁操作？';
@@ -499,6 +525,7 @@ var vu=new Vue({
             this.input.step=1;
             this.input.readonly=true;
         },
+        /*
         resetLength: function(){  //重写布匹长度操作
             dialog.open('reLength',{closeCallback: vu._resetInputData});
             this.input.len=this.currentPosition===''? this.UI.len : this.currentPosition;
@@ -531,6 +558,7 @@ var vu=new Vue({
                 }
             });
         },
+        */
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
                 dialog.open('addFlaw',{closeCallback: vu._resetInputData});
@@ -748,6 +776,10 @@ var vu=new Vue({
             }
             console.log(printStr);
             EQUIPMENT.print(printStr);
+        },
+        //重新检验
+        doRecheck: function(id){
+            this.openDetails(id);
         }
     },
     beforeMount: function () {
@@ -798,7 +830,7 @@ var ajax=relaxAJAX({
             btnsure:'确定',
             closeCallback: function(id, dialogType, buttonType){
                 if (buttonType==='sure' && vu.UI.view==='quick'){
-                    vu.$refs.numberSearch.focus();
+                    vu.$refs.searchInput.focus();
                 }
             }
         });
@@ -823,23 +855,33 @@ $(function(){
             fitUI();
         },100);
     });
-
     fitUI();
+
+    var boltNo=getUrlQuery('bolt_no');
+    var boltId=getUrlQuery('bolt_id');
+
+    if (boltNo) vu.UI.view='quick';
+    if (boltId) vu.UI.view='record';
+
     if (vu.UI.view==='mission'){
         vu.getList();
     }else if(vu.UI.view==='record'){
-        vu.getRecordList();
+        //是否获得布段编号，是则打开重新检验（详情）对话框，否则加载列表
+        if (boltId){
+            vu.openDetails(boltId);
+        }else{
+            vu.getRecordList();
+        }
     }else{
-        vu.$refs.numberSearch.focus();
+        vu.$refs.searchInput.focus();
+        //是否获得卷号，是的话则直接打开改卷详细
+        if (boltNo){
+            vu.search.bolt_no=boltNo;
+            vu.openDetails();
+        }
     }
-    vu.getBookList();
 
-    //是否获得卷号，是的话则直接打开改卷详细
-    var boltNo=getUrlQuery('bolt_no');
-    if (boltNo){
-        vu.search.bolt_no=boltNo;
-        vu.openDetails();
-    }
+    vu.getBookList();
 
     function fitUI(){
         var H=body.height();
