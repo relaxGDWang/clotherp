@@ -26,14 +26,15 @@
     <div class="allPart">
         <h1>
             <a href="">随手订货</a>
-            <span class="userInfo fa fa-user">{{username}}</span>
+            <span class="userInfo fa fa-user" v-if="username">{{username}}</span>
         </h1>
-        <h2><span class="fa fa-hand-o-up"></span><strong>v1.0.4</strong></h2>
+        <h2><span class="fa fa-hand-o-up"></span><strong>{{version}}</strong></h2>
         <div class="iconPart">
             <a class="fa fa-cut" :href="'missionCut.html?v='+Math.random()"><strong>裁剪任务</strong></a>
             <a class="fa fa-instagram" :href="'missionCheck.html?v='+Math.random()"><strong>检验任务</strong></a>
             <a class="fa fa-gears" @click="EQUIPMENT.setting()"><strong>系统设置</strong></a>
-            <a class="fa fa-power-off" @click="loginOut()"><strong>退出登录</strong></a>
+            <a class="fa fa-power-off" @click="loginOut()" v-if="username"><strong>退出登录</strong></a>
+            <a class="fa fa-user" @click="loginIn()" v-if="!username"><strong>用户登录</strong></a>
             <a class="fa fa-print clearLeft statusIcon">
                 <strong>标签打印机</strong>
                 <b :class="equipment.printer"></b>

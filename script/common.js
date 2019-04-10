@@ -94,7 +94,7 @@ var EQUIPMENT=(function(){
 //登录状态的通用检测
 (function(){
     //当前版本和版本号检测
-    CFG.VER='1.1.1';
+    CFG.VER='1.1.2';
     if (CFG.URL.indexOf('-dev')){
         CFG.SERVER='dev';
         window.onload=function(){
@@ -104,6 +104,11 @@ var EQUIPMENT=(function(){
         }
     }else{
         CFG.SERVER='pd';
+    }
+
+    if (location.href.indexOf('main.html')>-1){
+        getEquipmentStatus();
+        return;
     }
 
     //var token=localStorage.getItem(CFG.token);

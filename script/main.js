@@ -6,7 +6,8 @@ var vu=new Vue({
             printer:'',
             counter:'',
             neter:''
-        }
+        },
+        version:''
     },
     methods:{
         openSetting: function(){   //打开app设置界面
@@ -24,17 +25,22 @@ var vu=new Vue({
                 closeCallback:function(id,typeStr,btnType){
                     if (btnType==='sure'){
                         localStorage.removeItem(CFG.admin);
-                        top.location.href=CFG.loginPage+'?v='+Math.random();
+                        //top.location.href=CFG.loginPage+'?v='+Math.random();
+                        location.reload();
                     }
                 }
             });
+        },
+        loginIn: function(){
+            top.location.href=CFG.loginPage+'?v='+Math.random();
         }
     },
     watch: {
     },
     beforeMount: function () {
         var temp=JSON.parse(localStorage.getItem(CFG.admin));
-        this.username=temp.name;
+        if (temp) this.username=temp.name;
+        this.version=CFG.VER;
     }
 });
 

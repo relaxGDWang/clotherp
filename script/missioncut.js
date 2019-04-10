@@ -62,12 +62,21 @@ var vu=new Vue({
             return !(this.editObject.viewObj.sel && (this.editObject.viewObj.sel.bolt_id===this.editObject.viewObj.splits[0].bolt_id));
         },
         showSelInfo: function(){   //显示当前选中的订单信息
-            var result={};
-            if (!this.editObject || !this.editObject.viewObj.sel) return result;
-            if (this.editObject.viewObj.sel==='free') return {purchaser:'--',quantity:'--'};
-            for (var i=0; i<this.editObject.viewObj.orders; i++){
-                if (this.editObject.viewObj.sel===this.editObject.viewObj.orders[i].order_item_id){
-                    return {purchaser:this.editObject.viewObj.orders[i].purchaser,quantity:this.editObject.viewObj.orders[i].quantity};
+            var result={index:'', id:'', purchaser:'', quantity:''};
+            if (!this.editObject || !this.editObject.viewObj.sel){
+            }else if (this.editObject.viewObj.sel==='free'){
+               result.purchaser=result.quantity='--';
+            }else{
+                var temp;
+                for (var i=0; i<this.editObject.viewObj.orders.length; i++){
+                    temp=this.editObject.viewObj.orders[i];
+                    if (this.editObject.viewObj.sel===temp.order_item_id){
+                        result.index=i;
+                        result.id=temp.order_item_id;
+                        result.purchaser=temp.purchaser;
+                        result.quantity=temp.quantity+'米';
+                        break;
+                    }
                 }
             }
             return result;
@@ -479,7 +488,11 @@ var vu=new Vue({
         doCut: function(status){
             var sendId=this.editObject.viewObj.bolt_id;
             var sendData={bolt_id: sendId, length: vu.currentPosition};
-            if (status) sendData.status='cut';
+            if (this.showSelInfo.index!==''){
+                sendData.order_item_id=this.showSelInfo.id;
+            }else if (status){
+                sendData.status='cut';
+            }
             ajax.send({
                 url: PATH.missionCutQuick,
                 method: 'post',
@@ -488,10 +501,14 @@ var vu=new Vue({
                     dialog.close('loading');
                     //vu.flagReload=true;
                     EQUIPMENT.resetCounter(true);
+                    if (vu.showSelInfo.index!==''){
+                        dialog.open('resultShow',{content:'订单布段裁剪完成！'});
+                    }else{
+                        dialog.open('resultShow',{content:'当前布匹的分裁操作已成功！'});
+                    }
                     vu._setDetailsData(data,'');
                     //自动打印标签
                     vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',2);
-                    dialog.open('resultShow',{content:'当前布匹的分裁操作已成功！'});
                 }
             });
         },
@@ -810,13 +827,25 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
-        'currentPosition': function(newVal){
+        'currentPosition': function(newVal,oldVal){
             if (this.positionCallBack){
                 this.positionCallBack(newVal);
+            }
+            if (this.editObject && this.showSelInfo.index!==''){
+                var dis=this.showSelInfo.quantity.replace('米','')-0;
+                if ((oldVal==='' || oldVal<dis) && newVal>=dis){
+                    playAudio();
+                }else if(oldVal && oldVal>dis && newVal<=dis){
+                    playAudio();
+                }
             }
         }
     }
 });
+
+function playAudio(){
+    $('#aduioShow')[0].play();
+}
 
 var dialog=relaxDialog();
 var ajax=relaxAJAX({

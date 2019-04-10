@@ -24,6 +24,7 @@
 </head>
 <body>
 <div class="outFrame" id="app">
+    <audio id="aduioShow" src="audio.mp3" preload="preload"></audio>
     <div class="main">
         <rex-title type="cut" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList()" @printget="printGetCloth" @changeview="changeView"></rex-title>
         <div class="listContent missionList" v-if="UI.view==='mission'">
@@ -133,15 +134,15 @@
                 <div class="rightPart">
                     <ul class="baseInfo nohead" v-if="editObject.bolt_id">
                         <li><label>客户信息：</label><span>{{showSelInfo.purchaser}}</span></li>
-                        <li><label>订货长度：</label><span>{{showSelInfo.quantity}}米</span></li>
+                        <li><label>订货长度：</label><span>{{showSelInfo.quantity}}</span></li>
                         <li><label>备注：</label><span>--</span></li>
                     </ul>
-                    <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :cuts="editObject.viewObj.splits" :select="editObject.viewObj.sel" :fromwhere="editObject.viewObj.start" :qualified="editObject.viewObj.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
+                    <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :cuts="editObject.viewObj.splits" :select="showSelInfo.quantity" :fromwhere="editObject.viewObj.start" :qualified="editObject.viewObj.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
                     <div class="operateShow" v-if="editObject.bolt_id">
                         <div class="operate">
                             <div class="counter">
                                 <span class="iconShow fa fa-legal"></span>
-                                <span class="nowCut">{{editObject.viewObj.sel? editObject.viewObj.sel.cut_length : '0.00'}}</span>
+                                <span class="nowCut">{{showSelInfo.index!==''? showSelInfo.quantity.replace('米','') : '0.00'}}</span>
                                 {{currentPosition===''? '---.--': currentPosition}}
                             </div>
                         </div><div class="buttonList">

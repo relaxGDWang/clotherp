@@ -36,6 +36,10 @@
                     <el-option label="" value="">选择样本</el-option>
                     <el-option v-for="item in search.bookList" :label="item.label" :value="item.key"></el-option>
                 </el-select>
+                <el-select v-model="search.product_id" placeholder="选择商品编号" @change="getList(1)">
+                    <el-option label="" value="">选择商品编号</el-option>
+                    <el-option v-for="item in search.productList" :label="item.label" :value="item.key"></el-option>
+                </el-select>
             </div>
 
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>

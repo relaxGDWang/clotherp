@@ -7,7 +7,7 @@
 //flaws 疵点的数组列，推荐结构为 {start:起始位置,end:结束位置,width:宽度，如果为点则为0; type疵点类型，dot或者非dot}
 //cuts 裁剪的布段数组列，推荐结构为
 //pos  当前记米器的位置坐标
-//select 标记该布匹的当前选择段
+//select 当前任务长度
 //first  标记当前第一个布段
 //qualified 合格对象 {class,name}
 //原先button 项的disabled判定还有个条件 || select===''"
@@ -15,7 +15,8 @@ Vue.component('rex-cloth', {
     template: ''+
         '<div class="clothShow">'+
             '<div class="cloth" ref="cloth">' +
-                '<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code!==\'cut\'" :class="checkSelect(item)"></span>' +
+                '<span class="cutBlock sel first" :style="getCutStyle()"></span>' +
+                //'<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code!==\'cut\'" :class="checkSelect(item)"></span>' +
                 //'<span class="cutBlock leftCloth" v-if="select===\'\' && cuts.length===0">剩余布料 <strong>{{len}}</strong>米</span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
@@ -47,7 +48,7 @@ Vue.component('rex-cloth', {
             required: true
         },
         select:{
-            default: 0
+            default: ''
         },
         fromwhere:{
             required: true
@@ -66,7 +67,7 @@ Vue.component('rex-cloth', {
             for (var i=0; i<loopCount; i++){
                 result.push(i*this.perLen);
             }
-            if (this.len-result[result.length-1]>this.perLen/2){
+            if (this.len-result[result.length-1]>this.perLen/2 || result.length===1){
                 result.push(this.len);
             }else{
                 result[result.length-1]=this.len;
@@ -100,13 +101,14 @@ Vue.component('rex-cloth', {
         },
         getPositionStyle: function(){  //计算当前计米器的坐标
             var result={};
-            if (this.pos==='' || this.pos-0>this.len-0){
+            if (this.pos===''){
                 result['display']='none';
             }else{
                 result[this.direction]=this.pos/this.len*100+'%';
             }
             return result;
         },
+        /*
         getCutStyle: function(item,index){  //计算裁剪块的坐标
             var result={};
             var summation=0;
@@ -116,6 +118,19 @@ Vue.component('rex-cloth', {
             }
             result[this.direction]=summation/this.len*100+'%';
             result['width']=item.cut_length/this.len*100+'%';
+            return result;
+        },
+        */
+        getCutStyle: function(){
+            var result={};
+            var checker=/\d+/;
+            var dis=this.select.replace('米','');
+            if (checker.test(dis)){
+                result[this.direction]='0';
+                result['width']=dis/this.len*100+'%';
+            }else{
+                result['display']='none';
+            }
             return result;
         },
         checkSelect: function(item){   //用于标记是否选择，标记是否可截取

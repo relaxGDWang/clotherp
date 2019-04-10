@@ -5,10 +5,13 @@ var vu=new Vue({
         search:{
             craft: '',           //成品prod 胚布raw
             book_id: '',         //样本编号
+            product_id:'',       //商品编号
             urgent: '',          //是否加急，加急1，否则留空
             bolt_no: '',
             craftList: [{key:'prod',label:'成品'},{key:'raw',label:'胚布'}],
-            bookList: []
+            bookList: [],
+            product:{},
+            productList:[]
         },
         cutpage:{
             page: 1,
@@ -115,7 +118,7 @@ var vu=new Vue({
             if (pageNum) this.cutpage.page=pageNum;
             ajax.send({
                 url: PATH.missionCheck,
-                data:{urgent: (this.search.urgent || undefined), craft: (this.search.craft || undefined), book_id: (this.search.book_id || undefined), page: vu.cutpage.page},
+                data:{urgent: (this.search.urgent || undefined), craft: (this.search.craft || undefined), book_id: (this.search.book_id || undefined), product_id: (this.search.product_id || undefined), page: vu.cutpage.page},
                 success:function(data){
                     dialog.close('loading');
                     //加工分页数据
@@ -202,9 +205,10 @@ var vu=new Vue({
                 url: PATH.getBook,
                 method: 'get',
                 success: function(data){
-                    for (var x in data){
-                        vu.search.bookList.push({key:x, label:data[x]});
+                    for (var x in data.books){
+                        vu.search.bookList.push({key:x, label:data.books[x]});
                     }
+                    vu.search.product=data.products;
                 },
                 before: '',
                 error: ''
@@ -807,6 +811,17 @@ var vu=new Vue({
             if (this.positionCallBack){
                 this.positionCallBack(newVal);
             }
+        },
+        'search.book_id': function(newVal){
+            this.search.productList=[];
+            this.search.product_id='';
+            if (newVal!==''){
+                var temp=this.search.product[newVal];
+                for (var x in temp){
+                    this.search.productList.push({key:x, label:temp[x]});
+                }
+            }
+            console.log(this.search.productList);
         }
     }
 });
