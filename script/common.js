@@ -95,7 +95,7 @@ var EQUIPMENT=(function(){
 (function(){
     //当前版本和版本号检测
     CFG.VER='1.1.2';
-    if (CFG.URL.indexOf('-dev')){
+    if (CFG.URL.indexOf('-dev')>=0){
         CFG.SERVER='dev';
         window.onload=function(){
             var div=document.createElement('div');
