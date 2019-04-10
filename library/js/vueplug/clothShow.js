@@ -13,7 +13,7 @@
 //原先button 项的disabled判定还有个条件 || select===''"
 Vue.component('rex-cloth', {
     template: ''+
-        '<div class="clothShow">'+
+        '<div class="clothShow" :class="{\'zero\':len===0}">'+
             '<div class="cloth" ref="cloth">' +
                 '<span class="cutBlock sel first" :style="getCutStyle()"></span>' +
                 //'<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code!==\'cut\'" :class="checkSelect(item)"></span>' +
@@ -26,7 +26,7 @@ Vue.component('rex-cloth', {
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
             '</div>' +
-            '<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse"><span class="fa fa-retweet"></span></button>' +
+            '<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse || len===0"><span class="fa fa-retweet"></span></button>' +
         '</div>',
     props:{
         len:{

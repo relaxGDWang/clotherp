@@ -153,7 +153,7 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <button class="rexButton" color="info" @click="operateFlaw()">
+                                    <button class="rexButton" color="info" @click="operateFlaw()" :disabled="UI.len===0">
                                         <span class="fa fa-tag"></span><span>新增疵点</span>
                                     </button>
                                 </li>
@@ -163,22 +163,22 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <button class="rexButton" color="info" @click="printDoing('show')" :disabled="editObject.viewObj.examine===1 && editObject.viewObj.splits.length>0">
+                                    <button class="rexButton" color="info" @click="printDoing('show')" :disabled="(editObject.viewObj.examine===1 && editObject.viewObj.splits.length>0) || UI.len===0">
                                         <span class="fa fa-barcode"></span><span>打印标签</span>
                                     </button>
                                 </li>
                                 <li>
-                                    <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut()">
+                                    <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut()" :disabled="UI.len===0">
                                         <span class="fa fa-unlink"></span><span>疵点分裁</span>
                                     </button>
                                 </li>
                                 <li>
-                                    <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut('order')">
+                                    <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut('order')" :disabled="UI.len===0">
                                         <span class="fa fa-cut"></span><span>订单裁剪</span>
                                     </button>
                                 </li>
                                 <li>
-                                    <button v-if="UI.view!=='quick'" class="rexButton" color="warning" :disabled="isDisabled" @click="askFinish()">
+                                    <button v-if="UI.view!=='quick'" class="rexButton" color="warning" :disabled="isDisabled || UI.len===0" @click="askFinish()">
                                         <span class="fa fa-cut"></span><span>完成裁剪</span>
                                     </button>
                                 </li>

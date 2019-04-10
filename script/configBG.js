@@ -72,7 +72,9 @@ var PATH = {
     getBook: CFG.URL+'sampleBooks',     //获得样本信息
     quickCutting: CFG.URL+'bolts/{bolt_no}/detail',  //快速裁剪的详情
     recordList: CFG.URL+'history',    //操作记录
-    recordDetails: CFG.URL+'history/{id}'  //操作记录详细
+    recordDetails: CFG.URL+'history/{id}',  //操作记录详细
+    import: CFG.URL+'imports',        //入库操作
+    importDetails: CFG.URL+'imports/{id}'  //入库详情
 };
 if (CFG.DEBUG){
     //通信路径处理

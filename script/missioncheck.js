@@ -463,8 +463,8 @@ var vu=new Vue({
                     });
                     //把当前对象标记为已完成
                     vu.editObject.finished=true;
-                    //打印两次末尾标签
-                    vu.printDoing('end',2);
+                    //打印4次末尾标签
+                    vu.printDoing('end',4);
                 }
             });
         },

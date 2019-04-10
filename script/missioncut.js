@@ -531,7 +531,7 @@ var vu=new Vue({
             };
         },
         doResetLength: function(){ //重写布匹长度ajax
-            if (REG.flaw.test(this.input.len)===false || this.input.len==0){
+            if (REG.flaw.test(this.input.len)===false){
                 this._setMessage({status:'warning',msg:'布长填写错误，请重新输入'});
                 return;
             }
