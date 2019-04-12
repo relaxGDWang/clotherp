@@ -29,6 +29,7 @@ var EQUIPMENT=(function(){
         }
         var timeID=setInterval(_print,800);
         function _print(){
+            console.log('print');
             try {
                 window.register_js.goprint(printStr);
                 showErrorResult('打印指令发送成功！');

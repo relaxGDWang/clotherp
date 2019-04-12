@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>ElemuntUI 表格控件行展开测试</title>
+    <link rel="stylesheet" href="library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
+	<link rel="stylesheet" href="library/style/cssreset3.css"/>
+    <style type="text/css">
+	.demo-table-expand {
+		font-size: 0;
+	}
+	.demo-table-expand label {
+		width: 90px;
+		color: #99a9bf;
+	}
+	.demo-table-expand .el-form-item {
+		margin-right: 0;
+		margin-bottom: 0;
+		width: 50%;
+	}
+    </style>
+</head>
+<body>
+	<div class="outFrame" id="app">
+	  <el-table ref="myTable" :data="tableData" style="width: 100%">
+		<el-table-column label="商品 ID" prop="id"></el-table-column>
+		<el-table-column label="商品名称" prop="name"></el-table-column>
+		<el-table-column label="描述" prop="desc"></el-table-column>
+		<el-table-column type="expand" width="0">
+		  <template slot-scope="props">
+			<ul>
+				<li><strong>商品名称</strong><span>{{ props.row.name }}</span></li>
+			</ul>
+		  </template>
+		</el-table-column>
+	  </el-table>
+	  <div>
+		<button @click="vu.$refs.myTable.toggleRowExpansion(tableData[1])">测试</button>
+	  </div>
+	</div>
+<script src="library/js/vue.min.js"></script>
+<script src="library/js/elementui2.4.11.js"></script>
+<script>
+var vu=new Vue({
+	el: '#app',
+	data:{
+		tableData: [{
+          id: '12987122',
+          name: '1好滋好味鸡蛋仔',
+          category: '江浙小吃、小吃零食',
+          desc: '荷兰优质淡奶，奶香浓而不腻',
+          address: '上海市普陀区真北路',
+          shop: '王小虎夫妻店',
+          shopId: '10333'
+        }, {
+          id: '12987123',
+          name: '2好滋好味鸡蛋仔',
+          category: '江浙小吃、小吃零食',
+          desc: '荷兰优质淡奶，奶香浓而不腻',
+          address: '上海市普陀区真北路',
+          shop: '王小虎夫妻店',
+          shopId: '10333'
+        }, {
+          id: '12987125',
+          name: '3好滋好味鸡蛋仔',
+          category: '江浙小吃、小吃零食',
+          desc: '荷兰优质淡奶，奶香浓而不腻',
+          address: '上海市普陀区真北路',
+          shop: '王小虎夫妻店',
+          shopId: '10333'
+        }, {
+          id: '12987126',
+          name: '4好滋好味鸡蛋仔',
+          category: '江浙小吃、小吃零食',
+          desc: '荷兰优质淡奶，奶香浓而不腻',
+          address: '上海市普陀区真北路',
+          shop: '王小虎夫妻店',
+          shopId: '10333'
+        }]
+	},
+	methods:{
+	}
+});
+</script>
+<!-- 
+某些横向信息不足以在一行中显示的情况下，固定列表头，使其他部分可以横向滚动是一个解决方法，另外，使用行扩展的方法也可以
+1.平级的行扩展
+	在列标签el-table-column中增加type="expand"，这一列的内容会自动显示为>箭头
+	在设定的这个列中增加 <template slot-scope="props"> 这列的数据调用和普通表格的数据自定义的情形是一致的
+	在<template>标签包含下，内部可以自定义任何标签
+</body>
+</html>

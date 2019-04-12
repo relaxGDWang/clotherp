@@ -25,54 +25,60 @@
 <body>
 <div class="outFrame" id="app">
     <div class="main">
-        <rex-title type="check" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList" @printget="printGetCloth" @changeview="changeView"></rex-title>
+        <rex-title type="check" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList" @changeview="changeView"></rex-title>
         <div class="listContent missionList" v-if="UI.view==='mission'">
-            <div class="searchBar">
-                <el-select v-model="search.craft" placeholder="选择类型" @change="getList(1)">
-                    <el-option label="" value="">选择类型</el-option>
-                    <el-option v-for="item in search.craftList" :label="item.label" :value="item.key"></el-option>
-                </el-select>
-                <el-select v-model="search.book_id" placeholder="选择样本" @change="getList(1)">
-                    <el-option label="" value="">选择样本</el-option>
-                    <el-option v-for="item in search.bookList" :label="item.label" :value="item.key"></el-option>
-                </el-select>
-                <el-select v-model="search.product_id" placeholder="选择商品编号" @change="getList(1)">
-                    <el-option label="" value="">选择商品编号</el-option>
-                    <el-option v-for="item in search.productList" :label="item.label" :value="item.key"></el-option>
-                </el-select>
-            </div>
-
-            <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
-                <el-table-column type="selection" width="50" key="colSelect"></el-table-column>
+            <el-table ref="myTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight + 104" stripe @row-click="getMissionList">
                 <el-table-column label="#" width="50" key="colIndex">
                     <template slot-scope="scope">
-                        <span class="urgent fa" :class="{'fa-fire':scope.row.urgent}">{{cutpage.pageSize*(cutpage.page2-1)+scope.$index+1}}</span>
+                        <span>{{scope.$index+1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
-                <el-table-column label="卷号" width="175" class-name="boltNumber" key="colBoltNo">
+                <el-table-column label="制单时间" key="colTime" width="170">
                     <template slot-scope="scope">
-                        <div class="fa" :class="scope.row.qualified.class">{{scope.row.bolt_no}}</div>
+                        <div class="datetime">
+                            <span>{{scope.row.created_at[0]}}</span> <span>{{scope.row.created_at[1]}}</span>
+                        </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="布长" key="colLen">
+                <el-table-column prop="process_factory" label="加工厂" key="colFactory" width="200"></el-table-column>
+                <el-table-column prop="purpose" label="加工类型" key="colType"></el-table-column>
+                <el-table-column prop="form_no" label="入库单" key="colNumber" width="140"></el-table-column>
+                <el-table-column label="数量" key="colCount">
                     <template slot-scope="scope">
-                        {{scope.row.current_length}}<span>米</span>
+                        <span class="lineHeightShow">{{scope.row.bolts_num}}匹</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="craft" label="流程" key="colCraft"></el-table-column>
-                <el-table-column label="仓位" key="colPosition">
+                <el-table-column prop="status" label="状态" key="colStatus"></el-table-column>
+                <el-table-column prop="user" label="操作员" key="colUser"></el-table-column>
+                <el-table-column type="expand" key="colExt" width="0">
                     <template slot-scope="scope">
-                        <span class="positionItem" v-for="item in scope.row.position">{{item}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" key="colOpButton">
-                    <template slot-scope="scope">
-                        <span class="opButton fa fa-instagram" @click="openDetails(scope.row.bolt_id)"></span>
+                        <table class="rexTable">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>商品编号</th>
+                                <th>卷号</th>
+                                <th>流程</th>
+                                <th>仓位</th>
+                                <th>样册</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(item,index) in scope.row.children">
+                                <td>{{index+1}}</td>
+                                <td>{{item.product_code}}</td>
+                                <td>{{item.bolt_no}}</td>
+                                <td>{{item.craft}}</td>
+                                <td>{{item.position}}</td>
+                                <td>{{item.book_code}}</td>
+                                <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination background layout="prev, pager, next" :current-page="cutpage.page" :page-size="cutpage.pageSize" :total="cutpage.total" @current-change="changePage($event)"></el-pagination>
         </div>
         <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='quick'">
             <div class="fillBar">

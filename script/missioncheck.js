@@ -3,22 +3,7 @@ var vu=new Vue({
     el: '#app',
     data:{
         search:{
-            craft: '',           //成品prod 胚布raw
-            book_id: '',         //样本编号
-            product_id:'',       //商品编号
-            urgent: '',          //是否加急，加急1，否则留空
-            bolt_no: '',
-            craftList: [{key:'prod',label:'成品'},{key:'raw',label:'胚布'}],
-            bookList: [],
-            product:{},
-            productList:[]
-        },
-        cutpage:{
-            page: 1,
-            page2: 1,
-            pageSize: 20,
-            total: 0,
-            count: 0
+            bolt_no: ''
         },
         cutpage2:{
             page: 1,
@@ -56,20 +41,12 @@ var vu=new Vue({
             step:1,        //步骤
             readonly: true //是否自定义输入，否则按计米器数值输入
         },
-        getPrintList:[],   //取货打印信息
-        printTemplate:'',  //打印模板信息
+        mission: [],      //入库单列表
+        missionKey:{},    //id与数组索引对应关系
         editObject: {},
-        mission: [],      //任务细分数组，ajax直接返回
-        missionKey: {},   //bolt_id与数组index对应关系
-        books: [],        //样本信息
         record: [],       //操作记录数组
         recordKey: {},    //对照表
         recordObject: {}  //操作记录详情
-    },
-    computed:{
-        isDisabled: function(){
-            return this.editObject.finished;
-        }
     },
     methods:{
         startEQPosition: function(){  //开始计米器读数
@@ -111,48 +88,49 @@ var vu=new Vue({
                 this.getList();
             }
         },
-        getList: function(pageNum){  //获得任务列表
+        getList: function(){  //获得任务列表
             this.mission=[];
             this.missionKey={};
             this.flagReload=false;
-            if (pageNum) this.cutpage.page=pageNum;
             ajax.send({
-                url: PATH.missionCheck,
-                data:{urgent: (this.search.urgent || undefined), craft: (this.search.craft || undefined), book_id: (this.search.book_id || undefined), product_id: (this.search.product_id || undefined), page: vu.cutpage.page},
+                url: PATH.import,
+                data:{},
                 success:function(data){
                     dialog.close('loading');
-                    //加工分页数据
-                    vu.cutpage.page2=vu.cutpage.page=data.page-0;
-                    vu.cutpage.count=data.pages;
-                    vu.cutpage.total=data.total;
-                    data=data.items;
-                    for (var i = 0; i < data.length; i++) {
-                        data[i].position=data[i].position.split(REG.position);  //加工所在仓位
-                        //加工日期时间
-                        if (!data[i].examined_at){
-                            data[i].examined_at=['--'];
-                        }else{
-                            data[i].examined_at=data[i].examined_at.split(/\s/);
-                        }
-                        if (data[i].examined_at.length===1) data[i].examined_at[1]='';
-                        //加工合格状态
-                        data[i].qualified=vu._formatQualified(data[i].qualified);
-                        vu.mission.push(data[i]);
-                        vu.missionKey[data[i]['bolt_id']] = vu.mission[i];
+                    //加工列表数据
+                    for (var i=0; i<data.length; i++){
+                        data[i].children=[];
+                        data[i].childrenLoad=false;
+                        //加工日期
+                        data[i].created_at=data[i].created_at.split(' ');
+                        vu.missionKey[data[i].id]=i;
                     }
-                    if (vu.printTemplate==='' && data.length!==0){
-                        vu.printTemplate=vu.mission[0].print_data;
-                        vu.printTemplate.info.code=undefined;
-                        vu.printTemplate.info.footer=undefined;
-                        vu.printTemplate.info.header='随手订货 取货单';
-                    }
+                    vu.mission=data;
                 },
                 error:function(code,msg){
                     dialog.close('loading');
                     dialog.open('information',{content:msg, cname:'error', btncancel:'',btnclose:'',btnsure:'确定'});
-                    vu.cutpage.page=vu.cutpage.page2;
                 }
             });
+        },
+        getMissionList: function(row, event){  //获得入库单对应的检验任务
+            var obj=this.mission[this.missionKey[row.id]];
+            if (!obj.childrenLoad) {
+                var sendData = {id: obj.id};
+                ajax.send({
+                    url: PATH.importDetails,
+                    data: sendData,
+                    success: function (data) {
+                        dialog.close('loading');
+                        obj.childrenLoad = true;
+                        obj.children = data.bolts;
+                        console.log('ok');
+                        vu.$refs.myTable.toggleRowExpansion(obj);
+                    }
+                });
+            }else{
+                vu.$refs.myTable.toggleRowExpansion(obj);
+            }
         },
         //获得操作记录
         getRecordList: function(pageNum){
@@ -198,23 +176,7 @@ var vu=new Vue({
                 this.getRecordList(page);
             }
         },
-        //获得样本信息
-        getBookList: function(){
-            this.search.bookList=[];
-            ajaxModify.send({
-                url: PATH.getBook,
-                method: 'get',
-                success: function(data){
-                    for (var x in data.books){
-                        vu.search.bookList.push({key:x, label:data.books[x]});
-                    }
-                    vu.search.product=data.products;
-                },
-                before: '',
-                error: ''
-            });
-        },
-        //查询条件中的卷号变更
+        //快速检验输入框应对
         changeSearchNumber: function(e){
             if (e===undefined || e.keyCode===13){
                 this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
@@ -315,15 +277,15 @@ var vu=new Vue({
             for (i=0; i<data.splits.length; i++){
                 data.list[data.splits[i].bolt_id]=i;
             }
+            data.position=data.position.split(REG.position);  //加工所在仓位
+            //加工日期时间
+            if (!data.examined_at){
+                data.examined_at=['--'];
+            }else{
+                data.examined_at=data.examined_at.split(/\s/);
+            }
+            if (data.examined_at.length===1) data.examined_at[1]='';
             if (!this.missionKey[data.bolt_id]){
-                data.position=data.position.split(REG.position);  //加工所在仓位
-                //加工日期时间
-                if (!data.examined_at){
-                    data.examined_at=['--'];
-                }else{
-                    data.examined_at=data.examined_at.split(/\s/);
-                }
-                if (data.examined_at.length===1) data.examined_at[1]='';
                 this.editObject={
                     bolt_id: data.bolt_id,
                     bolt_no: data.bolt_no,
@@ -426,11 +388,13 @@ var vu=new Vue({
                 success:function(data){
                     vu.flagReload=true;
                     //更新布匹长度
-                    vu.UI.len=nowCurrentPosition;
-                    vu.refreshPrintLen(nowCurrentPosition);
+                    //vu.UI.len=nowCurrentPosition;
+                    //vu.refreshPrintLen(nowCurrentPosition);
                     //计米器清零
                     EQUIPMENT.resetCounter(true);
+                    vu._setDetailsData(data,'');
                     //重置当前
+                    /*
                     if (pass){
                         vu.editObject.viewObj.qualified=vu._formatQualified('合格');
                         vu.editObject.qualified=vu._formatQualified('合格');
@@ -438,6 +402,7 @@ var vu=new Vue({
                         vu.editObject.viewObj.qualified=vu._formatQualified('不合格');
                         vu.editObject.qualified=vu._formatQualified('不合格');
                     }
+                    */
                     dialog.close('loading');
                     dialog.open('information', {
                         content: '布匹检验已完成！',
@@ -464,7 +429,11 @@ var vu=new Vue({
                     //把当前对象标记为已完成
                     vu.editObject.finished=true;
                     //打印4次末尾标签
-                    vu.printDoing('end',4);
+                    if (vu.editObject.viewObj.craft_val===1){
+                        vu.printDoing('end',4);
+                    }else{
+                        vu.printDoing('end',2);
+                    }
                 }
             });
         },
@@ -743,44 +712,6 @@ var vu=new Vue({
                 }
             });
         },
-        //选择取货信息
-        selectGetCloth: function(e){
-            this.getPrintList=[];
-            var temp;
-            for (var i=0; i<e.length; i++){
-                this.getPrintList.push(e[i]);
-            }
-        },
-        //取货打印
-        printGetCloth: function(){
-            var maxCount=5;
-            if (this.getPrintList.length===0){
-                dialog.open('resultShow',{content:'没有选择需要打印的布卷信息！'});
-                return;
-            }
-            var template=vu.printTemplate;
-            var result=[];
-            var temp1,temp2;
-            for (var i=0; i<this.getPrintList.length; i++){
-                temp1='◆ $kind$ $store$';
-                temp2='$id$   $len$';
-                temp1=temp1.replace('$kind$',this.getPrintList[i].product_code);
-                temp2=temp2.replace('$id$',this.getPrintList[i].bolt_no);
-                temp1=temp1.replace('$store$',this.getPrintList[i].position.join(','));
-                temp2=temp2.replace('$len$',this.getPrintList[i].current_length+'米');
-                result.push({text:temp1});
-                result.push({text:temp2});
-                result.push({text:''});
-                if (i>=maxCount) break;
-            }
-            template.info.items=result;
-            var printStr=JSON.stringify(template);
-            if (this.getPrintList.length>maxCount){
-                dialog.open('resultShow',{content:'取货打印一次最多为'+ maxCount +'条！'});
-            }
-            console.log(printStr);
-            EQUIPMENT.print(printStr);
-        },
         //重新检验
         doRecheck: function(id){
             this.openDetails(id);
@@ -811,17 +742,6 @@ var vu=new Vue({
             if (this.positionCallBack){
                 this.positionCallBack(newVal);
             }
-        },
-        'search.book_id': function(newVal){
-            this.search.productList=[];
-            this.search.product_id='';
-            if (newVal!==''){
-                var temp=this.search.product[newVal];
-                for (var x in temp){
-                    this.search.productList.push({key:x, label:temp[x]});
-                }
-            }
-            console.log(this.search.productList);
         }
     }
 });
@@ -859,6 +779,7 @@ var ajaxModify=relaxAJAX({
     error: vu.operateError
 });
 
+
 $(function(){
     var timeID, body=$('body');
     $(window).resize(function(){
@@ -895,8 +816,6 @@ $(function(){
             vu.openDetails();
         }
     }
-
-    vu.getBookList();
 
     function fitUI(){
         var H=body.height();

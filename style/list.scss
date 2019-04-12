@@ -72,7 +72,7 @@
     &:last-child{ text-align:center;}
   }
   .missionList & th:nth-child(2){ text-align:center;}
-  .missionList & tr:nth-child(2){ text-align:center;}
+  .missionList & td:nth-child(2){ text-align:center;}
 
   .cell{ padding-left:3px; padding-right:3px;}    //单元格通用
   .el-checkbox__inner{ width:18px; height:18px;}  //多选框
@@ -121,6 +121,21 @@
         color: red;
       }
     }
+  }
+
+  //行扩展样式
+  .el-table__expanded-cell{ padding:0 10px 10px 10px; background-color: #aaa;}
+  .el-table__expand-icon{ font-size:18px;}
+
+  //行加高
+  .lineHeightShow{ line-height:36px;}
+
+  //扩展表格样式
+  .rexTable{
+    th{ background:#3679de; color:#fff;}
+    td{ padding:2px 0;}
+    tr:nth-child(odd){ background:#e3eeff;}
+    tr:nth-child(even){ background:#d1e3fe;}
   }
 }
 

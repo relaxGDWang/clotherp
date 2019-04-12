@@ -535,35 +535,55 @@ var vu=new Vue({
                 this._setMessage({status:'warning',msg:'布长填写错误，请重新输入'});
                 return;
             }
-            if (this.input.len==this.editObject.viewObj.current_length){
+            if (this.input.len-0===this.editObject.viewObj.current_length-0){
                 this._setMessage({status:'warning',msg:'填写值和当前长度一致，无需提交'});
                 return;
             }
-            ajaxModify.send({
-                url: PATH.resetLength,
-                method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, length: vu.input.len},
-                success: function(data){
-                    if (vu.UI.view==='quick'){
-                        vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
-                    }else{
-                        if (vu.editObject.viewObj.splits.length>0 && data.splits.length===0){
-                            vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len+'! 裁剪任务调整，该卷布已无任务裁剪任务。'});
-                        }else{
-                            vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
-                        }
+            if (this.input.len-0===0){
+                dialog.open('information',{
+                    content:'标记布长为0表示当前布卷已被裁剪完，是否继续？',
+                    btncancel:'',
+                    btnsure:'继续提交',
+                    cname:'sure',
+                    closeCallback: function(id, dialogType, buttonType){
+                        if (buttonType==='sure') _tempDo();
                     }
-                    vu.positionCallBack='';
-                    setTimeout(function(){
-                        dialog.close('reLength');
-                        vu._resetInputData();
-                    },1500);
-                    //调整布长
-                    vu.editObject.current_length=data.current_length;
-                    vu._setDetailsData(data,'');
-                    vu.flagReload=true;
-                }
-            });
+                });
+            }else{
+                _tempDo();
+            }
+
+            function _tempDo() {  //发送重置布长的操作
+                ajaxModify.send({
+                    url: PATH.resetLength,
+                    method: 'post',
+                    data: {bolt_id: vu.editObject.viewObj.init_bolt_id, length: vu.input.len},
+                    success: function (data) {
+                        if (vu.UI.view === 'quick') {
+                            vu._setMessage({flag: true, status: 'ok', msg: '布长已经成功标记为' + vu.input.len});
+                        } else {
+                            if (vu.editObject.viewObj.splits.length > 0 && data.splits.length === 0) {
+                                vu._setMessage({
+                                    flag: true,
+                                    status: 'ok',
+                                    msg: '布长已经成功标记为' + vu.input.len + '! 裁剪任务调整，该卷布已无任务裁剪任务。'
+                                });
+                            } else {
+                                vu._setMessage({flag: true, status: 'ok', msg: '布长已经成功标记为' + vu.input.len});
+                            }
+                        }
+                        vu.positionCallBack = '';
+                        setTimeout(function () {
+                            dialog.close('reLength');
+                            vu._resetInputData();
+                        }, 1500);
+                        //调整布长
+                        vu.editObject.current_length = data.current_length;
+                        vu._setDetailsData(data, '');
+                        vu.flagReload = true;
+                    }
+                });
+            }
         },
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
