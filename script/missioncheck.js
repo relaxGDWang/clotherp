@@ -124,7 +124,6 @@ var vu=new Vue({
                         dialog.close('loading');
                         obj.childrenLoad = true;
                         obj.children = data.bolts;
-                        console.log('ok');
                         vu.$refs.myTable.toggleRowExpansion(obj);
                     }
                 });
@@ -587,10 +586,12 @@ var vu=new Vue({
                 this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
                 return;
             }
+            /*
             if (this.input.end>this.editObject.viewObj.current_length){
                 this._setMessage({status:'warning',msg:'疵点结束位置大于布长，请重新输入'});
                 return;
             }
+            */
             if (this.input.end<this.input.start){
                 this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
                 return;
