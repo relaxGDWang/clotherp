@@ -1,4 +1,3 @@
-var PCOUNT=0;
 var vu=new Vue({
     el: '#app',
     data:{
@@ -43,6 +42,7 @@ var vu=new Vue({
         },
         mission: [],      //入库单列表
         missionKey:{},    //id与数组索引对应关系
+        childrenKey:{},
         editObject: {},
         record: [],       //操作记录数组
         recordKey: {},    //对照表
@@ -91,6 +91,7 @@ var vu=new Vue({
         getList: function(){  //获得任务列表
             this.mission=[];
             this.missionKey={};
+            this.childrenKey={};
             this.flagReload=false;
             ajax.send({
                 url: PATH.import,
@@ -124,6 +125,10 @@ var vu=new Vue({
                         dialog.close('loading');
                         obj.childrenLoad = true;
                         obj.children = data.bolts;
+                        for (var i=0; i<data.bolts.length; i++){
+                            data.bolts[i].position=data.bolts[i].position.split(REG.position);
+                            vu.childrenKey[data.bolts[i].bolt_id]=data.bolts[i];
+                        }
                         vu.$refs.myTable.toggleRowExpansion(obj);
                     }
                 });
@@ -219,31 +224,26 @@ var vu=new Vue({
                     vu.UI.dialogShow=true;
                 }
             };
-            /*if (this.missionKey[bid].viewObj!==undefined && start===undefined){
-                this.editObject=this.missionKey[bid];
-                this._setColthLen();
-                this.startEQPosition();
-                dialog.open('opDetails',dialogConfig);
-            }else{*/
-                var sendData,url;
-                if (!bid){
-                    sendData={bolt_no: this.search.bolt_no};
-                    url=PATH.quickCutting;
-                }else{
-                    sendData={bolt_id: bid, start: (start || undefined)};
-                    url=PATH.missionCheckDetails;
+
+            var sendData,url;
+            if (!bid){
+                sendData={bolt_no: this.search.bolt_no};
+                //url=PATH.quickCutting;
+                url=PATH.missionCheck;
+            }else{
+                sendData={bolt_id: bid, start: (start || undefined)};
+                url=PATH.missionCheckDetails;
+            }
+            ajax.send({
+                url: url,
+                data: sendData,
+                success:function(data){
+                    dialog.close('loading');
+                    vu._setDetailsData(data,data.bolt_id);
+                    vu.startEQPosition();
+                    dialog.open('opDetails',dialogConfig);
                 }
-                ajax.send({
-                    url: url,
-                    data: sendData,
-                    success:function(data){
-                        dialog.close('loading');
-                        vu._setDetailsData(data,data.bolt_id);
-                        vu.startEQPosition();
-                        dialog.open('opDetails',dialogConfig);
-                    }
-                });
-            //}
+            });
         },
         //获得操作日志详细
         openRecordDetails: function(id){
@@ -284,7 +284,7 @@ var vu=new Vue({
                 data.examined_at=data.examined_at.split(/\s/);
             }
             if (data.examined_at.length===1) data.examined_at[1]='';
-            if (!this.missionKey[data.bolt_id]){
+            if (!this.childrenKey[data.bolt_id]){
                 this.editObject={
                     bolt_id: data.bolt_id,
                     bolt_no: data.bolt_no,
@@ -297,9 +297,9 @@ var vu=new Vue({
                     viewObj: data
                 };
             }else{
-                Vue.set(this.missionKey[idStr],'viewObj',data);
-                Vue.set(this.missionKey[idStr],'finished',false);  //标记当前布匹是否完成检验
-                if (!flag) Vue.set(this,'editObject',this.missionKey[idStr]);
+                Vue.set(this.childrenKey[idStr],'viewObj',data);
+                Vue.set(this.childrenKey[idStr],'finished',false);  //标记当前布匹是否完成检验
+                if (!flag) Vue.set(this,'editObject',this.childrenKey[idStr]);
             }
             this._setColthLen();
 
@@ -386,22 +386,8 @@ var vu=new Vue({
                 data:{bolt_id: vu.editObject.viewObj.bolt_id, qualified: pass, length: nowCurrentPosition},
                 success:function(data){
                     vu.flagReload=true;
-                    //更新布匹长度
-                    //vu.UI.len=nowCurrentPosition;
-                    //vu.refreshPrintLen(nowCurrentPosition);
-                    //计米器清零
                     EQUIPMENT.resetCounter(true);
                     vu._setDetailsData(data,'');
-                    //重置当前
-                    /*
-                    if (pass){
-                        vu.editObject.viewObj.qualified=vu._formatQualified('合格');
-                        vu.editObject.qualified=vu._formatQualified('合格');
-                    }else{
-                        vu.editObject.viewObj.qualified=vu._formatQualified('不合格');
-                        vu.editObject.qualified=vu._formatQualified('不合格');
-                    }
-                    */
                     dialog.close('loading');
                     dialog.open('information', {
                         content: '布匹检验已完成！',
@@ -427,7 +413,7 @@ var vu=new Vue({
                     });
                     //把当前对象标记为已完成
                     vu.editObject.finished=true;
-                    //打印4次末尾标签
+                    //胚布打印4次末尾标签
                     if (vu.editObject.viewObj.craft_val===1){
                         vu.printDoing('end',4);
                     }else{

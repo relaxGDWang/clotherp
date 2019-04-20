@@ -17,12 +17,16 @@ h1 .fa:before { display: inline-block; font-size: 60px; width: 80px; height: 80p
 
 .loginForm { padding: 10px 10px 20px 10px; list-style: none; }
 .loginForm li { padding: 8px; font-size: 16px; }
-.loginForm button, .loginForm .el-input { width: 260px; font-size: 16px; }
+.loginForm .el-input { width: 260px; font-size: 16px; }
 .loginForm .el-input .el-input__prefix { color: #069393; font-size: 20px; }
 .loginForm .el-input .el-input__clear { font-size: 20px; }
+.loginForm .rexButton { font-size: 16px; }
 .loginForm .rexButton[color='green'] { border: 1px solid #336666; background-color: #336666; color: #fff; }
 .loginForm .rexButton[color='green']:hover { border-color: #669999; background-color: #669999; }
 .loginForm .rexButton[color='green']:active { border-color: #336666; background-color: #cccc99; color: #336666; }
+.loginForm .buttonBar .rexButton { width: 200px; }
+.loginForm .buttonBar .rexButton:first-child { width: 55px; margin-right: 5px; }
+.loginForm .buttonBar .rexButton:first-child .fa:before { font-size: 24px; }
 
 .tipMessage span { display: inline-block; padding: .4em .8em; border: 1px solid #999; background: #fff; font-size: 14px; }
 .tipMessage span .loadingBlock { display: none; }
