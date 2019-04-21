@@ -790,7 +790,7 @@ $(function(){
         //是否获得卷号，是的话则直接打开改卷详细
         if (boltNo){
             vu.search.bolt_no=boltNo;
-            vu.openDetails();
+            vu.changeSearchNumber();
         }
     }
 

@@ -79,12 +79,26 @@
                     <tr>
                         <th>#</th>
                         <th>商品编号</th>
+                        <th>卷号</th>
+                        <th>类型</th>
+                        <th>流程</th>
+                        <th>仓位</th>
+                        <th>裁剪概况</th>
+                        <th>布长</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in searchResult">
                         <td>{{index+1}}</td>
                         <td>{{item.product_code}}</td>
+                        <td>{{item.bolt_no}}</td>
+                        <td>{{item.catalog}}</td>
+                        <td>{{item.craft}}</td>
+                        <td>{{item.position.join(',')}}</td>
+                        <td>{{item.items}}</td>
+                        <td>{{item.current_length}}</td>
+                        <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
                     </tr>
                     </tbody>
                 </table>

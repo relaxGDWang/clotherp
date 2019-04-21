@@ -216,25 +216,25 @@ var vu=new Vue({
                 }else{
                     this.searchResult=[];
                     if (e) e.target.blur();
-                    /*
                     ajax.send({
                         url: PATH.missionCut,
-                        //url: PATH.quickCutting,
                         data: {bolt_no: this.search.bolt_no},
                         success:function(data){
                             dialog.close('loading');
-                            data=data.items;
-                            if (data.length===0){
+                            for (var x in data){
+                                vu.searchResult.push(data[x]);
+                            }
+                            if (vu.searchResult.length===0){
                                 dialogCfg.cname='sure';
                                 dialogCfg.content='没有找到对应的布卷信息';
                                 dialog.open('information',dialogCfg);
                             }else{
-                                alert('ok');
+                                for (var i=0; i<vu.searchResult.length; i++){
+                                    vu.searchResult[i].position=vu.searchResult[i].position.split(REG.position);
+                                }
                             }
                         }
                     });
-                    */
-                    this.openDetails();
                 }
             }
         },
