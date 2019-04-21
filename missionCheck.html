@@ -27,6 +27,7 @@
     <div class="main">
         <rex-title type="check" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList" @changeview="changeView"></rex-title>
         <div class="listContent missionList" v-if="UI.view==='mission'">
+            <!-- 检验任务 -->
             <el-table ref="myTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight + 104" stripe @row-click="getMissionList">
                 <el-table-column label="#" width="50" key="colIndex">
                     <template slot-scope="scope">
@@ -80,14 +81,44 @@
                 </el-table-column>
             </el-table>
         </div>
-        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='quick'">
-            <div class="fillBar">
-                <span class="fa fa-search"></span>
-                <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
-                <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
-                <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
+        <!-- 快速检验 -->
+        <div class="listContent quickPart" :style="{height:UI.listHeight+110+'px'}" v-if="UI.view==='quick'">
+            <div class="searchPartShow" :class="{'showList':searchResult.length>0}">
+                <div class="fillBar">
+                    <span class="fa fa-search"></span>
+                    <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
+                    <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
+                    <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
+                </div>
+            </div>
+            <div class="searchResultShow">
+                <table class="rexTable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>商品编号</th>
+                        <th>卷号</th>
+                        <th>流程</th>
+                        <th>仓位</th>
+                        <th>样册</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in searchResult">
+                        <td>{{index+1}}</td>
+                        <td>{{item.product_code}}</td>
+                        <td>{{item.bolt_no}}</td>
+                        <td>{{item.craft}}</td>
+                        <td>{{item.position.join(',')}}</td>
+                        <td>{{item.book_code}}</td>
+                        <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+        <!-- 操作记录 -->
         <div class="listContent checkMissionList" v-if="UI.view==='record'">
             <el-table ref="multipleTable" tooltip-effect="dark" :data="record" :height="UI.listHeight+55" stripe>
                 <el-table-column label="#" width="50" key="colIndex">

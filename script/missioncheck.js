@@ -41,6 +41,7 @@ var vu=new Vue({
             readonly: true //是否自定义输入，否则按计米器数值输入
         },
         mission: [],      //入库单列表
+        searchResult:[],  //搜索列表
         missionKey:{},    //id与数组索引对应关系
         childrenKey:{},
         editObject: {},
@@ -182,25 +183,46 @@ var vu=new Vue({
         },
         //快速检验输入框应对
         changeSearchNumber: function(e){
+            var dialogCfg={btncancel:'', btnclose:'', btnsure:'确定'};
             if (e===undefined || e.keyCode===13){
                 this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
                 if (!this.search.bolt_no){
-                    dialog.open('information',{
-                        cname:'warning',
-                        content: '请填写需要查询的布匹卷号！',
-                        btncancel:'',
-                        btnclose:'',
-                        btnsure:'确定'
-                    });
+                    dialogCfg.cname='warning';
+                    dialogCfg.content='请填写需要查询的布匹卷号！';
+                    dialog.open('information',dialogCfg);
                 }else{
-                    //if (e) e.target.blur();
-                    //$('body').focus();
-                    this.openDetails();
+                    //this.openDetails();
+                    this.searchResult=[];
+                    if (e) e.target.blur();
+                    ajax.send({
+                        url: PATH.missionCheck,
+                        data: {bolt_no: this.search.bolt_no},
+                        success:function(data){
+                            dialog.close('loading');
+                            data=data.items;
+                            if (data.length===0){
+                                dialogCfg.cname='sure';
+                                dialogCfg.content='没有找到对应的布卷信息';
+                                dialog.open('information',dialogCfg);
+                            }else{
+                                if (data.length===1 && data.detail){
+                                    //打开详情框
+                                    vu.openDetails('','',data.detail);
+                                }else{
+                                    //显示列表
+                                    for (var i=0; i<data.length; i++){
+                                        data[i].position=data[i].position.split(REG.position);
+                                    }
+                                    vu.searchResult=data;
+                                }
+                            }
+                        }
+                    });
                 }
             }
         },
         //打开布卷详情
-        openDetails: function(bid, start){
+        openDetails: function(bid, start, getData){
             var dialogConfig={
                 closeCallback: function(){
                     vu.editObject={};
@@ -225,25 +247,22 @@ var vu=new Vue({
                 }
             };
 
-            var sendData,url;
-            if (!bid){
-                sendData={bolt_no: this.search.bolt_no};
-                //url=PATH.quickCutting;
-                url=PATH.missionCheck;
-            }else{
-                sendData={bolt_id: bid, start: (start || undefined)};
-                url=PATH.missionCheckDetails;
+            if (bid){
+                ajax.send({
+                    url: PATH.missionCheckDetails,
+                    data: {bolt_id: bid, start: (start || undefined)},
+                    success:function(data){
+                        dialog.close('loading');
+                        vu._setDetailsData(data,data.bolt_id);
+                        vu.startEQPosition();
+                        dialog.open('opDetails',dialogConfig);
+                    }
+                });
+            }else if(getData){
+                vu._setDetailsData(getData,getData.bolt_id);
+                vu.startEQPosition();
+                dialog.open('opDetails',dialogConfig);
             }
-            ajax.send({
-                url: url,
-                data: sendData,
-                success:function(data){
-                    dialog.close('loading');
-                    vu._setDetailsData(data,data.bolt_id);
-                    vu.startEQPosition();
-                    dialog.open('opDetails',dialogConfig);
-                }
-            });
         },
         //获得操作日志详细
         openRecordDetails: function(id){
@@ -273,7 +292,7 @@ var vu=new Vue({
             data.qualified=this._formatQualified(data.qualified);
             data.list={};
             data.sel=data.splits.length>0? data.splits[0] : '';
-            for (i=0; i<data.splits.length; i++){
+            for (var i=0; i<data.splits.length; i++){
                 data.list[data.splits[i].bolt_id]=i;
             }
             data.position=data.position.split(REG.position);  //加工所在仓位
@@ -285,17 +304,22 @@ var vu=new Vue({
             }
             if (data.examined_at.length===1) data.examined_at[1]='';
             if (!this.childrenKey[data.bolt_id]){
+                console.log(data);
                 this.editObject={
                     bolt_id: data.bolt_id,
                     bolt_no: data.bolt_no,
                     product_code: data.product_code,
                     current_length: data.current_length,
-                    position: data.position,
                     examine: data.examine,
                     examiner: data.examiner,
                     examined_at: data.examined_at,
                     viewObj: data
                 };
+                if (data.position.constructor===Array){
+                    this.editObject.position=data.position;
+                }else{
+                    this.editObject.position=data.position.split(REG.position);
+                }
             }else{
                 Vue.set(this.childrenKey[idStr],'viewObj',data);
                 Vue.set(this.childrenKey[idStr],'finished',false);  //标记当前布匹是否完成检验
@@ -483,40 +507,6 @@ var vu=new Vue({
             this.input.step=1;
             this.input.readonly=true;
         },
-        /*
-        resetLength: function(){  //重写布匹长度操作
-            dialog.open('reLength',{closeCallback: vu._resetInputData});
-            this.input.len=this.currentPosition===''? this.UI.len : this.currentPosition;
-            this.positionCallBack=function(newVal){
-                this.input.len=newVal;
-            };
-        },
-        doResetLength: function(){ //重写布匹长度ajax
-            if (REG.flaw.test(this.input.len)===false || this.input.len==0){
-                this._setMessage({status:'warning',msg:'布长填写错误，请重新输入'});
-                return;
-            }
-            if (this.input.len==this.editObject.viewObj.current_length){
-                this._setMessage({status:'warning',msg:'填写值和当前长度一致，无需提交'});
-                return;
-            }
-            ajaxModify.send({
-                url: PATH.resetLength,
-                method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.bolt_id, length: vu.input.len},
-                success: function(data){
-                    //调整布长
-                    vu._setDetailsData(data);
-                    vu._setMessage({flag:true, status:'ok', msg:'布长已经成功标记为'+vu.input.len});
-                    vu.positionCallBack='';
-                    setTimeout(function(){
-                        dialog.close('reLength');
-                        vu._resetInputData();
-                    },1500);
-                }
-            });
-        },
-        */
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
                 dialog.open('addFlaw',{closeCallback: vu._resetInputData});

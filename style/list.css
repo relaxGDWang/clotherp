@@ -69,10 +69,15 @@
 .el-table .el-table__expanded-cell { padding: 0 10px 10px 10px; background-color: #aaa; }
 .el-table .el-table__expand-icon { font-size: 18px; }
 .el-table .lineHeightShow { line-height: 36px; }
-.el-table .rexTable th { background: #3679de; color: #fff; }
-.el-table .rexTable td { padding: 2px 0; }
-.el-table .rexTable tr:nth-child(odd) { background: #e3eeff; }
-.el-table .rexTable tr:nth-child(even) { background: #d1e3fe; }
+
+.rexTable th { background: #3679de; color: #fff; padding: 6px 0; }
+.rexTable td { padding: 2px 0; text-align: center; }
+.rexTable tr:nth-child(odd) { background: #e3eeff; }
+.rexTable tr:nth-child(even) { background: #d1e3fe; }
+.rexTable .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
+.rexTable .opButton:hover, .rexTable .el-table td .opButton:active { background: #069393; color: #fff; }
+.rexTable .opButton:before { display: inline-block; }
+.rexTable .opButton.fa-cut:before { transform: rotate(-90deg); }
 
 .el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
 .el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9; }
@@ -258,9 +263,17 @@
 
 .numberSearch, .numberSearchButton { width: 180px; -webkit-appearance: none; background-color: #fff; background-image: none; border-radius: 4px; border: 1px solid #dcdfe6; box-sizing: border-box; color: #606266; display: inline-block; font-size: inherit; height: 40px; line-height: 40px; outline: none; padding: 0 15px; transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
 
-.quickPart { position: relative; }
+.quickPart { position: relative; padding-top: 200px; }
 
-.fillBar { position: absolute; top: 40%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+.searchPartShow { width: 100%; height: calc(100% + 200px); margin-top: -200px; position: relative; transition-property: height; transition-duration: .5s; }
+
+.searchResultShow { width: 100%; height: 0; overflow: hidden; transition-property: height,hidden; transition-duration: .5s; }
+
+.searchPartShow.showList { height: 200px; }
+
+.searchPartShow.showList + .searchResultShow { height: 100%; overflow: auto; padding: 1px; }
+
+.fillBar { position: absolute; top: 35%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
 .fillBar .fa { float: left; font-size: 65px; margin-right: 20px; border-right: 1px solid #ccc; padding-right: 20px; color: #069393; }
 .fillBar .numberSearchButton { width: auto; height: auto; line-height: 20px; padding: 9px 10px; background: #069393; color: #fff; border-color: #069393; }
 .fillBar .numberSearchButton:active { background: #fff; color: #069393; }

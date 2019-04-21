@@ -129,14 +129,17 @@
 
   //行加高
   .lineHeightShow{ line-height:36px;}
-
-  //扩展表格样式
-  .rexTable{
-    th{ background:#3679de; color:#fff;}
-    td{ padding:2px 0;}
-    tr:nth-child(odd){ background:#e3eeff;}
-    tr:nth-child(even){ background:#d1e3fe;}
-  }
+}
+//扩展表格样式
+.rexTable{
+  th{ background:#3679de; color:#fff; padding:6px 0;}
+  td{ padding:2px 0; text-align: center;}
+  tr:nth-child(odd){ background:#e3eeff;}
+  tr:nth-child(even){ background:#d1e3fe;}
+  .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+  .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+  .opButton:before{ display:inline-block;}
+  .opButton.fa-cut:before{ transform:rotate(-90deg);}
 }
 
 .el-table--striped {
@@ -431,9 +434,13 @@
   padding: 0 15px;
   transition: border-color .2s cubic-bezier(.645,.045,.355,1);
 }
-.quickPart{ position:relative;}
+.quickPart{ position:relative; padding-top:200px;}
+.searchPartShow{ width:100%; height:calc(100% + 200px); margin-top:-200px; position:relative; transition-property: height; transition-duration: .5s;}
+.searchResultShow{ width:100%; height:0; overflow:hidden; transition-property: height,hidden; transition-duration: .5s;}
+.searchPartShow.showList{ height:200px;}
+.searchPartShow.showList+.searchResultShow{ height:100%; overflow:auto; padding:1px;}
 .fillBar{
-  position:absolute; top:40%; left:50%; transform:translateX(-50%); white-space: nowrap;
+  position:absolute; top:35%; left:50%; transform:translateX(-50%); white-space: nowrap;
   .fa{ float: left;
     font-size: 65px;
     margin-right: 20px;

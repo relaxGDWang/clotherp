@@ -52,6 +52,7 @@ var vu=new Vue({
         printTemplate:'', //打印模板信息
         editObject: {},   //用于标注当前查看的未完成任务对象
         mission: [],      //任务细分数组，ajax直接返回
+        searchResult:[],  //查询结果
         missionKey: {},   //bolt_id与数组index对应关系
         record: [],       //操作记录数组
         recordKey: {},    //对照表
@@ -205,18 +206,34 @@ var vu=new Vue({
         },
         //查询条件中的卷号变更
         changeSearchNumber: function(e){
+            var dialogCfg={btncancel:'', btnclose:'', btnsure:'确定'};
             if (e===undefined || e.keyCode===13){
                 this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
                 if (!this.search.bolt_no){
-                    dialog.open('information',{
-                        cname:'warning',
-                        content: '请填写需要查询的布匹卷号！',
-                        btncancel:'',
-                        btnclose:'',
-                        btnsure:'确定'
-                    });
+                    dialogCfg.cname='warning';
+                    dialogCfg.content='请填写需要查询的布匹卷号！';
+                    dialog.open('information',dialogCfg);
                 }else{
+                    this.searchResult=[];
                     if (e) e.target.blur();
+                    /*
+                    ajax.send({
+                        url: PATH.missionCut,
+                        //url: PATH.quickCutting,
+                        data: {bolt_no: this.search.bolt_no},
+                        success:function(data){
+                            dialog.close('loading');
+                            data=data.items;
+                            if (data.length===0){
+                                dialogCfg.cname='sure';
+                                dialogCfg.content='没有找到对应的布卷信息';
+                                dialog.open('information',dialogCfg);
+                            }else{
+                                alert('ok');
+                            }
+                        }
+                    });
+                    */
                     this.openDetails();
                 }
             }
@@ -244,40 +261,24 @@ var vu=new Vue({
                     vu.UI.dialogShow=true;
                 }
             };
-            /*
-            if (this.missionKey[bid].viewObj!==undefined && start===undefined){
-                if (this.search.listType){
-                    this.showObject=this.missionKey[bid];
-                    dialog.open('finishDetails',dialogConfig);
-                }else{
-                    this.editObject=this.missionKey[bid];
-                    this._setColthLen();
-                    this.startEQPosition();
+            var sendData,url;
+            if (!bid){
+                sendData={bolt_no: this.search.bolt_no, type:'cut'};
+                url=PATH.quickCutting;
+            }else{
+                sendData={bolt_id: bid, start: (start || undefined)};
+                url=PATH.missionCutDetails;
+            }
+            ajax.send({
+                url: url,
+                data: sendData,
+                success:function(data){
+                    dialog.close('loading');
+                    vu._setDetailsData(data,data.bolt_id);
+                    vu.startEQPosition();
                     dialog.open('opDetails',dialogConfig);
                 }
-            }else{
-            */
-                var sendData,url;
-                if (!bid){
-                    sendData={bolt_no: this.search.bolt_no, type:'cut'};
-                    url=PATH.quickCutting;
-                }else{
-                    sendData={bolt_id: bid, start: (start || undefined)};
-                    url=PATH.missionCutDetails;
-                }
-                ajax.send({
-                    url: url,
-                    data: sendData,
-                    success:function(data){
-                        dialog.close('loading');
-                        vu._setDetailsData(data,data.bolt_id);
-                        vu.startEQPosition();
-                        dialog.open('opDetails',dialogConfig);
-                    }
-                });
-            /*
-            }
-            */
+            });
         },
         //获得操作日志详细
         openRecordDetails: function(id){
@@ -640,12 +641,6 @@ var vu=new Vue({
                 this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
                 return;
             }
-            /*
-            if (this.input.end>this.editObject.viewObj.current_length){
-                this._setMessage({status:'warning',msg:'疵点结束位置大于布长，请重新输入'});
-                return;
-            }
-            */
             if (this.input.end<this.input.start){
                 this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
                 return;

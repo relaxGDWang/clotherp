@@ -63,12 +63,31 @@
 
             <el-pagination background layout="prev, pager, next" :current-page="cutpage.page" :page-size="cutpage.pageSize" :total="cutpage.total" @current-change="changePage($event)"></el-pagination>
         </div>
+        <!-- 快速裁剪 -->
         <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='quick'">
-            <div class="fillBar">
-                <span class="fa fa-search"></span>
-                <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
-                <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
-                <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
+            <div class="searchPartShow" :class="{'showList':searchResult.length>0}">
+                <div class="fillBar">
+                    <span class="fa fa-search"></span>
+                    <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
+                    <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
+                    <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
+                </div>
+            </div>
+            <div class="searchResultShow">
+                <table class="rexTable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>商品编号</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in searchResult">
+                        <td>{{index+1}}</td>
+                        <td>{{item.product_code}}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="listContent" v-if="UI.view==='record'">
