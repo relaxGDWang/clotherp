@@ -36,7 +36,8 @@ var vu=new Vue({
             dialogShow: false,//标记是否打开了详细对话框
             listHeight: 100,   //列表高
             bottomHeight: 100,  //详细页面底部列表高
-            len:''   //详细页布匹长度
+            len:'',   //详细页布匹长度
+            sel:''    //标准当前选择的布段编号，如果是自由裁剪为free
         },
         input:{
             flag: false,  //标记修改操作的ajax是否在提交
@@ -52,8 +53,9 @@ var vu=new Vue({
         printTemplate:'', //打印模板信息
         editObject: {},   //用于标注当前查看的未完成任务对象
         mission: [],      //任务细分数组，ajax直接返回
-        searchResult:[],  //查询结果
         missionKey: {},   //bolt_id与数组index对应关系
+        searchResult:[],  //查询结果
+        searchResultKey:{},
         record: [],       //操作记录数组
         recordKey: {},    //对照表
         recordObject: {}  //操作记录详情
@@ -64,14 +66,14 @@ var vu=new Vue({
         },
         showSelInfo: function(){   //显示当前选中的订单信息
             var result={index:'', id:'', purchaser:'', quantity:''};
-            if (!this.editObject || !this.editObject.viewObj.sel){
-            }else if (this.editObject.viewObj.sel==='free'){
+            if (!this.UI.sel){
+            }else if (this.UI.sel==='free'){
                result.purchaser=result.quantity='--';
             }else{
                 var temp;
                 for (var i=0; i<this.editObject.viewObj.orders.length; i++){
                     temp=this.editObject.viewObj.orders[i];
-                    if (this.editObject.viewObj.sel===temp.order_item_id){
+                    if (this.UI.sel===temp.order_item_id){
                         result.index=i;
                         result.id=temp.order_item_id;
                         result.purchaser=temp.purchaser;
@@ -126,6 +128,7 @@ var vu=new Vue({
         getList: function(pageNum){  //获得任务列表
             this.mission=[];
             this.missionKey={};
+            vu.UI.sel='';
             this.flagReload=false;
             if (pageNum) this.cutpage.page=pageNum;
             ajax.send({
@@ -214,23 +217,30 @@ var vu=new Vue({
                     dialogCfg.content='请填写需要查询的布匹卷号！';
                     dialog.open('information',dialogCfg);
                 }else{
-                    this.searchResult=[];
+                    vu.searchResult=[];
+                    vu.searchResultKey={};
+                    vu.UI.sel='';
                     if (e) e.target.blur();
                     ajax.send({
                         url: PATH.missionCut,
                         data: {bolt_no: this.search.bolt_no},
                         success:function(data){
                             dialog.close('loading');
-                            for (var x in data){
-                                vu.searchResult.push(data[x]);
+                            for (var i=0; i<data.length; i++){
+                                vu.searchResult.push(data[i]);
+                                vu.searchResultKey[data[i].bolt_id]=data[i];
                             }
                             if (vu.searchResult.length===0){
                                 dialogCfg.cname='sure';
                                 dialogCfg.content='没有找到对应的布卷信息';
                                 dialog.open('information',dialogCfg);
                             }else{
-                                for (var i=0; i<vu.searchResult.length; i++){
+                                for (i=0; i<vu.searchResult.length; i++){
                                     vu.searchResult[i].position=vu.searchResult[i].position.split(REG.position);
+                                }
+                                if (vu.searchResult.length===1 && vu.searchResult[0].detail){
+                                    //打开详情框
+                                    vu.openDetails('','',vu.searchResult[0].detail);
                                 }
                             }
                         }
@@ -239,7 +249,7 @@ var vu=new Vue({
             }
         },
         //bid 每个裁剪分段的编号 bno 每个布匹的编号
-        openDetails: function(bid, start){
+        openDetails: function(bid, start, getData){
             var dialogConfig={
                 closeCallback: function(){
                     vu.editObject={};
@@ -261,24 +271,22 @@ var vu=new Vue({
                     vu.UI.dialogShow=true;
                 }
             };
-            var sendData,url;
-            if (!bid){
-                sendData={bolt_no: this.search.bolt_no, type:'cut'};
-                url=PATH.quickCutting;
-            }else{
-                sendData={bolt_id: bid, start: (start || undefined)};
-                url=PATH.missionCutDetails;
+            if (bid) {
+                ajax.send({
+                    url: PATH.missionCutDetails,
+                    data: {bolt_id: bid, start: (start || undefined)},
+                    success: function (data) {
+                        dialog.close('loading');
+                        vu._setDetailsData(data, data.bolt_id);
+                        vu.startEQPosition();
+                        dialog.open('opDetails', dialogConfig);
+                    }
+                });
+            }else if(getData){
+                vu._setDetailsData(getData,getData.bolt_id);
+                vu.startEQPosition();
+                dialog.open('opDetails',dialogConfig);
             }
-            ajax.send({
-                url: url,
-                data: sendData,
-                success:function(data){
-                    dialog.close('loading');
-                    vu._setDetailsData(data,data.bolt_id);
-                    vu.startEQPosition();
-                    dialog.open('opDetails',dialogConfig);
-                }
-            });
         },
         //获得操作日志详细
         openRecordDetails: function(id){
@@ -307,11 +315,12 @@ var vu=new Vue({
             data.defects=_formatFlawInfor(data.defects);  //瑕疵列表
             data.qualified=this._formatQualified(data.qualified);
             data.list={};
-            data.sel=data.orders.length>0? 'free' : '';
+            this.UI.sel=data.orders.length>0? 'free' : '';
             for (i=0; i<data.splits.length; i++){
                 data.list[data.splits[i].bolt_id]=i;
             }
-            if (!this.missionKey[data.bolt_id]){
+            /* 目前不再有searchResultKey未定义的情况，因为即使是单个数据，都有有列表值对应
+            if (!this.searchResultKey[data.bolt_id]){
                 data.position=data.position.split(REG.position);  //加工所在仓位
                 this.editObject={
                     bolt_id: data.bolt_id,
@@ -325,9 +334,10 @@ var vu=new Vue({
                     viewObj: data
                 };
             }else{
-                Vue.set(this.missionKey[idStr],'viewObj',data);
-                if (!flag) Vue.set(this,'editObject',this.missionKey[idStr]);
-            }
+            */
+                Vue.set(this.searchResultKey[idStr],'viewObj',data);
+                if (!flag) Vue.set(this,'editObject',this.searchResultKey[idStr]);
+            //}
             this._setColthLen();
 
             //格式化瑕疵点列表
@@ -358,11 +368,11 @@ var vu=new Vue({
         },
         setViewObject: function(bid){
             if (bid==='free'){
-                if (this.editObject.viewObj.sel==='free') return;
-                this.editObject.viewObj.sel='free';
+                if (this.UI.sel==='free') return;
+                this.UI.sel='free';
             }else{
-                if (this.editObject.viewObj.sel===bid) return;
-                this.editObject.viewObj.sel=bid;
+                if (this.UI.sel===bid) return;
+                this.UI.sel=bid;
             }
         },
         _setColthLen: function(){   //设置用于显示的当前布长
@@ -382,6 +392,7 @@ var vu=new Vue({
             }
         },
         askFinish: function(){
+            /* 目前完成裁剪暂不可用 因为裁剪任务不做分派
             var msg,className,doFlag=false;
             if (!this.currentPosition){
                 msg='没有准确获得计米器当前的读数！';
@@ -421,8 +432,10 @@ var vu=new Vue({
                     btnsure:'确定'
                 });
             }
+            */
         },
         doFinish: function(){
+            /* 目前完成裁剪暂不可用 因为裁剪任务不做分派
             ajax.send({
                 url: PATH.missionCutFinished,
                 method: 'post',
@@ -448,6 +461,7 @@ var vu=new Vue({
                     }
                 }
             });
+            */
         },
         askCut: function(status){
             var msg,className,doFlag=false;
@@ -920,7 +934,7 @@ $(function(){
         //是否获得卷号，是的话则直接打开改卷详细
         if (boltNo){
             vu.search.bolt_no=boltNo;
-            vu.openDetails();
+            vu.changeSearchNumber();
         }
     }
 

@@ -132,8 +132,14 @@
 }
 //扩展表格样式
 .rexTable{
-  th{ background:#3679de; color:#fff; padding:6px 0;}
-  td{ padding:2px 0; text-align: center;}
+  th{
+    background:#3679de; color:#fff; padding:6px 0; text-align:left;
+    &:first-child, &:last-child{ text-align:center;}
+  }
+  td{
+    padding:2px 0; text-align: left;
+    &:first-child, &:last-child{ text-align:center;}
+  }
   tr:nth-child(odd){ background:#e3eeff;}
   tr:nth-child(even){ background:#d1e3fe;}
   .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}

@@ -28,7 +28,8 @@ var vu=new Vue({
             dialogShow: false,//标记是否打开了详细对话框
             listHeight: 100,
             bottomListHeight: 100,
-            len: 0
+            len: 0,
+            expand: '',
         },
         input:{
             flag: false,   //标记修改操作的ajax是否在提交
@@ -119,6 +120,7 @@ var vu=new Vue({
             var obj=this.mission[this.missionKey[row.id]];
             if (!obj.childrenLoad) {
                 var sendData = {id: obj.id};
+                this.flagReload=false;
                 ajax.send({
                     url: PATH.importDetails,
                     data: sendData,
@@ -130,11 +132,22 @@ var vu=new Vue({
                             data.bolts[i].position=data.bolts[i].position.split(REG.position);
                             vu.childrenKey[data.bolts[i].bolt_id]=data.bolts[i];
                         }
-                        vu.$refs.myTable.toggleRowExpansion(obj);
+                        if (vu.UI.expand!==obj){
+                            vu.$refs.myTable.toggleRowExpansion(obj);
+                            if (vu.UI.expand) vu.$refs.myTable.toggleRowExpansion(vu.UI.expand);
+                            vu.UI.expand=obj;
+                        }
                     }
                 });
             }else{
-                vu.$refs.myTable.toggleRowExpansion(obj);
+                if (vu.UI.expand===obj){
+                    vu.UI.expand='';
+                    vu.$refs.myTable.toggleRowExpansion(obj);
+                }else{
+                    vu.$refs.myTable.toggleRowExpansion(vu.UI.expand);
+                    vu.$refs.myTable.toggleRowExpansion(obj);
+                    vu.UI.expand=obj;
+                }
             }
         },
         //获得操作记录
@@ -205,9 +218,9 @@ var vu=new Vue({
                                 dialogCfg.content='没有找到对应的布卷信息';
                                 dialog.open('information',dialogCfg);
                             }else{
-                                if (data.length===1 && data.detail){
+                                if (data.length===1 && data[0].detail){
                                     //打开详情框
-                                    vu.openDetails('','',data.detail);
+                                    vu.openDetails('','',data[0].detail);
                                 }else{
                                     //显示列表
                                     for (var i=0; i<data.length; i++){
@@ -235,7 +248,13 @@ var vu=new Vue({
                             vu.getRecordList();
                         }
                     }else if(vu.UI.view==='mission'){
-                        if (vu.flagReload) vu.getList();
+                        //if (vu.flagReload) vu.getList();
+                        if (vu.flagReload){
+                            if (vu.UI.expand){
+                                vu.UI.expand.childrenLoad=false;
+                                vu.getMissionList(vu.UI.expand);
+                            }
+                        }
                         vu.UI.len='';
                         vu.stopEQPosition();
                     }
@@ -304,7 +323,6 @@ var vu=new Vue({
             }
             if (data.examined_at.length===1) data.examined_at[1]='';
             if (!this.childrenKey[data.bolt_id]){
-                console.log(data);
                 this.editObject={
                     bolt_id: data.bolt_id,
                     bolt_no: data.bolt_no,
@@ -425,7 +443,13 @@ var vu=new Vue({
                                 dialog.close('opRecordDetails');
                                 vu.getRecordList();
                             }else if (vu.UI.view==='mission'){
-                                vu.getList();
+                                if (vu.UI.expand){
+                                    vu.UI.expand.childrenLoad=false;
+                                    vu.getMissionList(vu.UI.expand);
+                                }
+                                //vu.getList();
+                            }else if(vu.UI.view==='quick'){
+                                vu.changeSearchNumber();
                             }
                             vu.UI.len='';
                             vu.stopEQPosition();

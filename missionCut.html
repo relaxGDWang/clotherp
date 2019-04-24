@@ -77,7 +77,7 @@
                 <table class="rexTable">
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th width="30">#</th>
                         <th>商品编号</th>
                         <th>卷号</th>
                         <th>类型</th>
@@ -97,7 +97,7 @@
                         <td>{{item.craft}}</td>
                         <td>{{item.position.join(',')}}</td>
                         <td>{{item.items}}</td>
-                        <td>{{item.current_length}}</td>
+                        <td>{{item.current_length}}米</td>
                         <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
                     </tr>
                     </tbody>
@@ -153,8 +153,8 @@
                 <div class="leftPart" v-if="editObject.bolt_id" :class="{'pinch':editObject.viewObj.orders.length===0}">
                     <template v-if="editObject.viewObj.orders.length>0">
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                            <li key="free" class="freeDo" :class="{'sel':'free'===editObject.viewObj.sel}" @click="setViewObject('free')"><p>自由裁剪</p></li>
-                            <li v-for="item in editObject.viewObj.orders" :key="item.order_item_id" :class="{'sel':item.order_item_id===editObject.viewObj.sel}" @click="setViewObject(item.order_item_id)">
+                            <li key="free" class="freeDo" :class="{'sel':'free'===UI.sel}" @click="setViewObject('free')"><p>自由裁剪</p></li>
+                            <li v-for="item in editObject.viewObj.orders" :key="item.order_item_id" :class="{'sel':item.order_item_id===UI.sel}" @click="setViewObject(item.order_item_id)">
                                 <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.purchaser}}</strong>
                                 <div class="statusBar">
                                     <span>{{item.order_no}}</span>

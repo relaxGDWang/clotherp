@@ -70,8 +70,10 @@
 .el-table .el-table__expand-icon { font-size: 18px; }
 .el-table .lineHeightShow { line-height: 36px; }
 
-.rexTable th { background: #3679de; color: #fff; padding: 6px 0; }
-.rexTable td { padding: 2px 0; text-align: center; }
+.rexTable th { background: #3679de; color: #fff; padding: 6px 0; text-align: left; }
+.rexTable th:first-child, .rexTable th:last-child { text-align: center; }
+.rexTable td { padding: 2px 0; text-align: left; }
+.rexTable td:first-child, .rexTable td:last-child { text-align: center; }
 .rexTable tr:nth-child(odd) { background: #e3eeff; }
 .rexTable tr:nth-child(even) { background: #d1e3fe; }
 .rexTable .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }

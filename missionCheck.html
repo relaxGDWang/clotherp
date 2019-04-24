@@ -56,12 +56,14 @@
                         <table class="rexTable">
                             <thead>
                             <tr>
-                                <th>#</th>
+                                <th width="30">#</th>
                                 <th>商品编号</th>
                                 <th>卷号</th>
                                 <th>流程</th>
                                 <th>仓位</th>
                                 <th>样册</th>
+                                <th>检验</th>
+                                <th>检验米数</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -73,6 +75,8 @@
                                 <td>{{item.craft}}</td>
                                 <td>{{item.position.join(',')}}</td>
                                 <td>{{item.book_code}}</td>
+                                <td>{{item.examine}}</td>
+                                <td>{{item.examined_quantity? item.examined_quantity+'米':'--'}}</td>
                                 <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
                             </tr>
                             </tbody>
@@ -95,12 +99,14 @@
                 <table class="rexTable">
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th width="30">#</th>
                         <th>商品编号</th>
                         <th>卷号</th>
                         <th>流程</th>
                         <th>仓位</th>
                         <th>样册</th>
+                        <th>检验</th>
+                        <th>检验米数</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -112,6 +118,8 @@
                         <td>{{item.craft}}</td>
                         <td>{{item.position.join(',')}}</td>
                         <td>{{item.book_code}}</td>
+                        <td>{{item.examine}}</td>
+                        <td>{{item.examined_quantity? item.examined_quantity+'米':'--'}}</td>
                         <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
                     </tr>
                     </tbody>
