@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>布匹绘画测试</title>
+    <link rel="stylesheet" href="library/style/font-awesome.css"/>
+	<link rel="stylesheet" href="library/style/cssreset3.css"/>
+	<link rel="stylesheet" href="style/list.css"/>
+<style type="text/css">
+.showCloth{ width:80%; margin:100px auto;}
+.ttshow{ position:absolute; top:200px; left:200px; width:50px; height:80px; border:1px solid #0b5c5c;}
+.ttshow:before{ content:''; position:absolute; left:0; top:-25px; width:100%; height:50px; background:#fff; border-radius:50% 50% 0 0; box-shadow:0 -1px 0 1px #0b5c5c;}
+.ttshow:after{ content:''; position:absolute; left:0; bottom:-1px; width:100%; height:25px; background:#eee; border-radius:50% / 100% 100% 0 0; box-shadow:0 -1px 0 1px #0b5c5c;}
+</style>
+</head>
+<body>
+	<div id="app">
+		<div class="showCloth">
+			<rex-cloth :len="50" :flaws="[]" :pos="10" :select="'54'" :fromwhere="'start_a'" :qualified="{class:'yes',name:'合格'}"></rex-cloth>
+		</div>
+		<div class="ttshow"></div>
+	</div>
+<script src="library/js/vue.min.js"></script>
+<script src="library/js/vueplug/clothShow.js"></script>
+<script>
+var vu=new Vue({
+	el: '#app',
+	data:{
+		
+	},
+	methods:{
+	}
+});
+</script>
+<!-- 
+-->
+</body>
+</html>

@@ -287,7 +287,12 @@
   .clip:before, .clip:after{ content:''; position:absolute; border:9px solid transparent; width:0; height:0; overflow:hidden; left:50%; transform:translateX(-50%); opacity:.8;}
   .clip:before{ border-top-color:red; top:-5px;}
   .clip:after{ border-bottom-color:red; bottom:-5px;}
-  .cutBlock{ position:absolute; top:1px; bottom:1px; outline:1px dashed rgba(0,0,0,.3); outline-offset:-1px;}
+  .cutBlock{
+    position:absolute; top:1px; bottom:1px; outline:1px dashed rgba(0,0,0,.3); outline-offset:-1px; max-width:100%;
+    .exceed{ position:absolute; left:-20px; width:40px; height:100%; border:1px solid $color4; background:#fff; border-right-style:dashed;}
+    .exceed:before{ content:''; position:absolute; width:100%; height:14px; top:-14px; background:#fff; border-radius:50% / 100% 100% 0 0; box-shadow:0 -1px 0 1px $color4;}
+    .exceed:after{ content:''; position:absolute; width:100%; height:14px; bottom:-2px; background:#999; border-radius:50% / 100% 100% 0 0; box-shadow:0 -1px 0 1px $color4;}
+  }
   .cutBlock.sel{ outline-color:#f90; background:rgba(255,153,0,.2);}
   .cutBlock.first{ outline-color:$color4; background:#fff repeating-linear-gradient(-45deg, rgba(6,147,147,.3) 0, rgba(6,147,147,.3) 10px, transparent 0, transparent 20px);}
   .endShow{ position:absolute; z-index:3; text-shadow:0 0 2px #fff; top:50%; transform:translateY(-50%); font-weight:bold;}

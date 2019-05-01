@@ -56,7 +56,18 @@ var EQUIPMENT=(function(){
 
     function resetCounter(flag){   //置0计米器读数,参数flag 表示如果异常是否提示信息
         try{
+            console.log('clear zero');
             window.register_js.gozero();
+            var count=5;
+            var timeID=setInterval(function(){
+                if (count<=1 || (window.register_js.updatenumbox()-0)/100===0){
+                    clearInterval(timeID);
+                    timeID='';
+                }else{
+                    window.register_js.gozero();
+                    count--;
+                }
+            },200);
             //if (window.vu) vu.currentPosition=0;
         }catch(e){
             if (!flag){

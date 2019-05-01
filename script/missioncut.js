@@ -211,6 +211,7 @@ var vu=new Vue({
         changeSearchNumber: function(e){
             var dialogCfg={btncancel:'', btnclose:'', btnsure:'确定'};
             if (e===undefined || e.keyCode===13){
+                this.flagReload=false;
                 this.search.bolt_no=this.search.bolt_no.replace(/00\s/,'');
                 if (!this.search.bolt_no){
                     dialogCfg.cname='warning';
@@ -263,6 +264,8 @@ var vu=new Vue({
                         if (vu.flagReload) vu.getList();
                         vu.UI.len='';
                         vu.stopEQPosition();
+                    }else if(vu.UI.view==='quick'){
+                        if (vu.flagReload) vu.changeSearchNumber();
                     }
                     vu.UI.dialogShow=false;
                     if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
@@ -464,6 +467,7 @@ var vu=new Vue({
             */
         },
         askCut: function(status){
+            /*
             var msg,className,doFlag=false;
             if (!this.currentPosition){
                 msg='没有准确获得计米器当前的读数！';
@@ -499,15 +503,52 @@ var vu=new Vue({
                     btnsure:'确定'
                 });
             }
+            */
+            this.input.start-=0;
+            this.input.end-=0;
+            if (REG.flaw.test(this.input.end)===false || this.input.end===0){
+                this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
+                return;
+            }
+            if (this.input.end<this.input.start){
+                this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
+                return;
+            }
+            ajaxModify.send({
+                url: PATH.addFlaw,
+                method: 'post',
+                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, defects:[vu.input.start+","+vu.input.end], cut:1},  //notice
+                success: function(data){
+                    vu._setDetailsData(data,'');
+                    vu.flagReload=true;
+                    if (vu.input.start===vu.input.end){
+                        vu._setMessage({flag:true, status:'ok', msg:'点状疵点裁剪成功。'});
+                        //打印信息
+                        vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',4);
+                        //清零计米
+                        setTimeout(function(){
+                            EQUIPMENT.resetCounter(true);
+                        },200);
+                    }else{
+                        vu._setMessage({flag:true, status:'ok', msg:'块状疵点裁剪成功。'});
+                    }
+                    setTimeout(function(){
+                        dialog.close('addFlaw');
+                        vu._resetInputData();
+                    },2000);
+                }
+            });
         },
         doCut: function(status){
+            /*
             var sendId=this.editObject.viewObj.bolt_id;
             var sendData={bolt_id: sendId, length: vu.currentPosition};
-            if (this.showSelInfo.index!==''){
+            if (this.showSelInfo.index!=='' && status){   //订单裁剪并且选中的订单
                 sendData.order_item_id=this.showSelInfo.id;
-            }else if (status){
                 sendData.status='cut';
-            }
+            }else if(status){  //订单裁剪，但未选中订单（自由裁剪）
+                sendData.status='cut';
+            }//疵点分裁
             ajax.send({
                 url: PATH.missionCutQuick,
                 method: 'post',
@@ -515,7 +556,9 @@ var vu=new Vue({
                 success:function(data){
                     dialog.close('loading');
                     //vu.flagReload=true;
-                    EQUIPMENT.resetCounter(true);
+                    setTimeout(function(){
+                        EQUIPMENT.resetCounter(true);
+                    },200);
                     if (vu.showSelInfo.index!==''){
                         dialog.open('resultShow',{content:'订单布段裁剪完成！'});
                     }else{
@@ -523,9 +566,10 @@ var vu=new Vue({
                     }
                     vu._setDetailsData(data,'');
                     //自动打印标签
-                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',2);
+                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',4);
                 }
             });
+            */
         },
         _resetInputData: function(){  //重置输入数据
             this.positionCallBack='';

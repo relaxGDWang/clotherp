@@ -471,6 +471,7 @@ var vu=new Vue({
             });
         },
         askCut: function(){
+            /*
             var msg,className,doFlag=false;
             if (!this.currentPosition){
                 msg='没有准确获得计米器当前的读数！';
@@ -502,8 +503,44 @@ var vu=new Vue({
                     btnsure:'确定'
                 });
             }
+            */
+            this.input.start-=0;
+            this.input.end-=0;
+            if (REG.flaw.test(this.input.end)===false || this.input.end===0){
+                this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
+                return;
+            }
+            if (this.input.end<this.input.start){
+                this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
+                return;
+            }
+            ajaxModify.send({
+                url: PATH.addFlaw,
+                method: 'post',
+                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, defects:[vu.input.start+","+vu.input.end], cut:1},  //notice
+                success: function(data){
+                    vu._setDetailsData(data,'');
+                    vu.flagReload=true;
+                    if (vu.input.start===vu.input.end){
+                        vu._setMessage({flag:true, status:'ok', msg:'点状疵点裁剪成功。'});
+                        //打印信息
+                        vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',4);
+                        //清零计米
+                        setTimeout(function(){
+                            EQUIPMENT.resetCounter(true);
+                        },200);
+                    }else{
+                        vu._setMessage({flag:true, status:'ok', msg:'块状疵点裁剪成功。'});
+                    }
+                    setTimeout(function(){
+                        dialog.close('addFlaw');
+                        vu._resetInputData();
+                    },2000);
+                }
+            });
         },
         doCut: function(){
+            /*
             var sendId=this.editObject.viewObj.bolt_id;
             ajax.send({
                 url: PATH.missionCutQuick,
@@ -512,13 +549,16 @@ var vu=new Vue({
                 success:function(data){
                     dialog.close('loading');
                     //vu.flagReload=true;
-                    EQUIPMENT.resetCounter(true);
+                    setTimeout(function(){
+                        EQUIPMENT.resetCounter(true);
+                    },200);
                     vu._setDetailsData(data,'');
                     //自动打印标签
-                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',2);
+                    vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',4);
                     dialog.open('resultShow',{content:'当前布匹的分裁操作已成功！'});
                 }
             });
+            */
         },
         _resetInputData: function(){  //重置输入数据
             this.positionCallBack='';

@@ -166,9 +166,18 @@
                 </div>
                 <div class="rightPart">
                     <ul class="baseInfo nohead" v-if="editObject.bolt_id">
-                        <li><label>客户信息：</label><span>{{showSelInfo.purchaser}}</span></li>
-                        <li><label>订货长度：</label><span>{{showSelInfo.quantity}}</span></li>
-                        <li><label>备注：</label><span>--</span></li>
+                        <template v-if="editObject.viewObj.examine==='已检验'">
+                            <li><label>状态：</label><span>{{editObject.viewObj.examine}}</span></li>
+                            <li><label>检验人：</label><span>{{editObject.viewObj.examiner}}</span></li>
+                            <li><label>日期：</label><span>{{editObject.viewObj.examined_at}}</span></li>
+                        </template>
+                        <template v-if="editObject.viewObj.examine!=='已检验'">
+                            <li><label>状态：</label><span>该布匹还没有经过检验</span></li>
+                        </template>
+                        <template v-if="showSelInfo.purchaser">
+                            <li><label>客户信息：</label><span>{{showSelInfo.purchaser}}</span></li>
+                            <li><label>订货长度：</label><span>{{showSelInfo.quantity}}</span></li>
+                        </template>
                     </ul>
                     <rex-cloth :len="UI.len" :flaws="editObject.viewObj.defects" :pos="currentPosition" :cuts="editObject.viewObj.splits" :select="showSelInfo.quantity" :fromwhere="editObject.viewObj.start" :qualified="editObject.viewObj.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
                     <div class="operateShow" v-if="editObject.bolt_id">
@@ -200,11 +209,13 @@
                                         <span class="fa fa-barcode"></span><span>打印标签</span>
                                     </button>
                                 </li>
+                                <!--
                                 <li>
                                     <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut()" :disabled="UI.len===0">
                                         <span class="fa fa-unlink"></span><span>疵点分裁</span>
                                     </button>
                                 </li>
+                                -->
                                 <li>
                                     <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut('order')" :disabled="UI.len===0">
                                         <span class="fa fa-cut"></span><span>订单裁剪</span>
@@ -366,9 +377,10 @@
             </div>
             <div class="dialog-buttonBar">
                 <button class="rexButton opBtn btn-close" :disabled="input.flag">取消</button>
-                <button class="rexButton" :disabled="input.flag" v-if="input.step===2 && false" @click="goStep('prev')">上一步</button>
+                <button class="rexButton" :disabled="input.flag" v-if="input.step===2" @click="goStep('prev')">上一步</button>
                 <button class="rexButton" v-if="input.step===1" @click="goStep('next')">下一步</button>
-                <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">提交</button>
+                <button class="rexButton" color="warning" @click="askCut()" v-if="input.step===2" :disabled="input.flag">疵点分裁</button>
+                <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">提交新增</button>
             </div>
             <div class="dialog-content">
                 <div class="row">

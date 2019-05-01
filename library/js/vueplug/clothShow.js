@@ -15,9 +15,7 @@ Vue.component('rex-cloth', {
     template: ''+
         '<div class="clothShow" :class="{\'zero\':len===0}">'+
             '<div class="cloth" ref="cloth">' +
-                '<span class="cutBlock sel first" :style="getCutStyle()"></span>' +
-                //'<span class="cutBlock" v-for="(item,index) in cuts" :style="getCutStyle(item,index)" v-if="item.status_code!==\'cut\'" :class="checkSelect(item)"></span>' +
-                //'<span class="cutBlock leftCloth" v-if="select===\'\' && cuts.length===0">剩余布料 <strong>{{len}}</strong>米</span>' +
+                '<span class="cutBlock sel first" :style="getCutStyle()"><span class="exceed" v-if="exceed"></span></span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
                 '<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
@@ -58,6 +56,9 @@ Vue.component('rex-cloth', {
         },
         qualified:{
             default:{class:'',name:''}
+        },
+        exceed:{
+            default: false
         }
     },
     computed:{
@@ -108,19 +109,6 @@ Vue.component('rex-cloth', {
             }
             return result;
         },
-        /*
-        getCutStyle: function(item,index){  //计算裁剪块的坐标
-            var result={};
-            var summation=0;
-            for (var i=0; i<index; i++){
-                if (this.cuts[i].status_code==='cut') continue;
-                summation+=this.cuts[i].cut_length;
-            }
-            result[this.direction]=summation/this.len*100+'%';
-            result['width']=item.cut_length/this.len*100+'%';
-            return result;
-        },
-        */
         getCutStyle: function(){
             var result={};
             var checker=/\d+/;
@@ -128,6 +116,7 @@ Vue.component('rex-cloth', {
             if (checker.test(dis)){
                 result[this.direction]='0';
                 result['width']=dis/this.len*100+'%';
+                if (dis/this.len>1) this.exceed=true;
             }else{
                 result['display']='none';
             }
