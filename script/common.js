@@ -106,7 +106,7 @@ var EQUIPMENT=(function(){
 //登录状态的通用检测
 (function(){
     //当前版本和版本号检测
-    CFG.VER='1.1.2';
+    CFG.VER='2.0';
     if (CFG.URL.indexOf('-dev')>=0){
         CFG.SERVER='dev';
         window.onload=function(){
@@ -124,7 +124,8 @@ var EQUIPMENT=(function(){
     }
 
     //var token=localStorage.getItem(CFG.token);
-    var token=localStorage.getItem(CFG.admin);
+    var token=localStorage.getItem(CFG.admin);//
+
     var isLogin=!!(location.href.indexOf(CFG.loginPage)>-1);
     if (token){
         token=JSON.parse(token);
@@ -150,6 +151,7 @@ var EQUIPMENT=(function(){
         setInterval(EQUIPMENT.status,1000);
     }
 })();
+
 
 //格式化ajax数据通用
 var DFG=(function(){

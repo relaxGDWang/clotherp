@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>app接口测试</title>
+	<link rel="stylesheet" href="library/style/cssreset3.css"/>
+<style type="text/css">
+.showTest{ padding:10px;}
+.showTest h3{ border-bottom:1px solid #ccc; font-size:20px; padding:10px;}
+.userinfo{ padding:10px; font-size:16px; overflow:hidden; border-bottom:1px dashed #ccc;}
+.userinfo li{ float:left; margin-right:40px;}
+.buttonBar{  text-align:left; padding:10px; padding-left:40px;}
+.contentShow{ padding:10px;}
+#err{ color:red;}
+</style>
+</head>
+<body>
+	<div class="outFrame">
+		<div>Ver 460</div>
+		<div class="showTest">
+			<h3>用户信息获取测试</h3>
+			<ul class="userinfo nohead">
+				<li>手机号码 <b id="mobile"></b></li><li>姓名 <b id="name"></b></li><li>token <b id="api_token"></b></li>
+			</ul>
+			<div class="buttonBar">
+				<button class="rexButton" id="userGet">获取</button>
+				<button class="rexButton" id="userClear">清除</button>
+			</div>
+		</div>
+		<div class="showTest">
+			<h3>url跳转测试</h3>
+			<div class="contentShow">
+				<span>选择跳转页面</span>
+				<button class="rexButton nowButton" id="goHome">首页</button>
+				<button class="rexButton nowButton" id="goCut">裁剪页面</button>
+				<button class="rexButton nowButton" id="goCheck">检验页面</button>
+				<button class="rexButton nowButton" id="goSelf">自定义</button>
+				<input type="text" class="rexInput" id="url"/><br/><br/>
+				<span>url地址</span> <b id="urlShow"></b><br/><br/>
+				<button class="rexButton" id="goDo">跳转页面</button>
+			</div>
+		</div>
+		<div class="contentShow">
+			<span>出错信息</span>&emsp;<b id="err"></b>
+		</div>
+		<div class="contentShow">
+			<button class="rexButton" color="alert" id="lostToken">token过期模拟</button>
+		</div>
+	</div>
+<script src="library/js/jquery.min.js"></script>
+<script>
+$(function(){
+	var user={
+		mobile: $('#mobile'),
+		name: $('#name'),
+		'api_token': $('#api_token')
+	};
+	var errDom=$('#err');
+	var urlShow=$('#urlShow');
+	
+	var pageType='';
+	var selfURL='';
+	
+	$('.rexButton').click(function(e){
+		var id=this.id;
+		switch(id){
+			case 'userGet':   //获取用户信息
+				try{
+					var userInfo=JSON.parse(window.register_js.getLoginUser());
+					setUser(userInfo);
+				}catch(e){
+					showErr('要么getLoginUser未注册，要么解析有错误');
+				}
+				break;
+			case 'userClear':
+				setUser('');
+				break;
+			case 'goHome':
+				pageType='home';
+				showURL(e);
+				break;
+			case 'goCut':
+				pageType='cut';
+				showURL(e);
+				break;
+			case 'goCheck':
+				pageType='check';
+				showURL(e);
+				break;
+			case 'goSelf':
+				pageType='self';
+				showURL(e);
+				break;
+			case 'goDo':
+				goPage();
+				break;
+			case 'lostToken':
+				try{
+					window.register_js.tokenUpdate();
+				}catch(e){
+					showErr('应该是tokenUpdate没有注册');
+				}
+		}
+	});
+	
+	$('#url')[0].oninput=function(e){
+		selfURL=$(e.target).val();
+		if (pageType==='self'){
+			urlShow.text(selfURL);
+		}
+	};
+	
+	function setUser(userInfo){
+		if (userInfo){
+			for (var x in user){
+				user[x].text(userInfo[x]);
+			}
+		}else{
+			for (var x in user){
+				user[x].text('');
+			}
+		}
+	}
+	
+	function showURL(e){
+		var url='';
+		switch(pageType){
+			case 'home':
+				url= 'app处理';
+				break;
+			case 'cut':
+				url= 'missionCut.html';
+				break;
+			case 'check':
+				url= 'missionCheck.html';
+				break;
+			case 'self':
+				url= selfURL;
+				break;
+		}
+		urlShow.text(url);
+		selfURL=url;
+		$('.nowButton').removeAttr('color');
+		$(e.target).attr('color','info');
+	}
+	
+	function goPage(){
+		if (pageType==='home'){
+			try{
+				window.register_js.backHome();
+			}catch(e){
+				showErr('应该是backHome没有注册');
+			}
+		}else{
+			try{
+				alert(selfURL);
+				window.register_js.jumpUrl(selfURL);
+			}catch(e){
+				showErr('应该是jumpUrl没有注册');
+			}
+		}
+	}
+	
+	function showErr(msg){
+		errDom.html(msg);
+		setTimeout(function(){
+			errDom.html('');
+		},10000);
+	}
+	
+});
+</script>
+</body>
+</html>
