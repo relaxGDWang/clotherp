@@ -1,5 +1,8 @@
+var USER;  //用户信息公共变量
 //app设备调用方法
 var EQUIPMENT=(function(){
+    var app=!!window.register_js;  //标记是否在app下运行
+
     function getStatus(){  //获得设备状态
         try{
             var result=window.register_js.get_syncstat();
@@ -78,11 +81,78 @@ var EQUIPMENT=(function(){
         }
     }
 
+    //回到设置界面
     function openSetting(){
         try{
             window.register_js.exitwebview();
         }catch(e){
             showErrorResult('请在APP中使用该功能');
+        }
+    }
+    //获得用户登录信息，如未登录返回token为空的对象，如出错返回空字符，否则返回登录信息对象 token,mobile,name
+    function getCurrentUser(){
+        var result={token:'',mobile:'',name:''};
+        var temp;
+        if (app){
+            try{
+                temp=window.register_js.getLoginUser();
+                if (temp!==''){
+                    temp=JSON.parse(temp);
+                    result.token=temp.api_token;
+                    result.mobile=temp.mobile;
+                    result.name=temp.name;
+                }
+            }catch(e){
+                result='';
+            }
+        }else{   //不是在app下运行，检验localStorage
+            temp=localStorage.getItem(CFG.admin);
+            if (temp) result=JSON.parse(temp);
+        }
+        return result;
+    }
+
+    //返回APP首页
+    function gotoHome(){
+        if (app){
+            try{
+                window.register_js.backHome();
+            }catch(e){
+                showErrorResult('调用跳转首页方法似乎有问题');
+            }
+        }else{
+            location.href=CFG.defaultPage;
+        }
+    }
+
+    //跳转页面
+    function gotoPage(url){
+        if (app){
+            try{
+                window.register_js.jumpUrl(url);
+            }catch(e){
+                showErrorResult('调用页面跳转方法似乎有问题');
+            }
+        }else{
+            location.href=url;
+        }
+    }
+
+    //登录超时
+    function loginTimeout(){
+        if (app){
+            try{
+                window.register_js.tokenUpdate();
+            }catch(e){
+                gotoHome();
+            }
+        }else{
+            localStorage.removeItem(CFG.admin);
+            if (location.href.indexOf(CFG.defaultPage)>=0){
+                location.reload();
+            }else{
+                location.href=CFG.loginPage;
+            }
         }
     }
 
@@ -95,16 +165,36 @@ var EQUIPMENT=(function(){
     }
 
     return {
+        app: app,
         status: getStatus,
         print: doPrint,
         getCounter: getCounter,
         resetCounter: resetCounter,
-        setting: openSetting
+        setting: openSetting,
+        getCurrentUser: getCurrentUser,
+        gotoHome: gotoHome,
+        gotoPage: gotoPage,
+        loginTimeout: loginTimeout
     };
 })();
 
 //登录状态的通用检测
 (function(){
+    USER=EQUIPMENT.getCurrentUser();
+    if (USER===''){  //调用出错的情况
+        setTimeout(function(){
+            EQUIPMENT.gotoHome();
+        },2000);
+        return;
+    }else if(USER.token===''){  //未登录的情况
+        if (location.href.indexOf(CFG.defaultPage)<0 && location.href.indexOf(CFG.loginPage)<0){
+            EQUIPMENT.gotoHome();
+            return;
+        }
+    }
+    //如果是main.html，则调用设备连接状态刷新
+    if(location.href.indexOf(CFG.defaultPage)>=0) getEquipmentStatus();
+
     //当前版本和版本号检测
     CFG.VER='2.0';
     if (CFG.URL.indexOf('-dev')>=0){
@@ -117,34 +207,6 @@ var EQUIPMENT=(function(){
     }else{
         CFG.SERVER='pd';
     }
-
-    if (location.href.indexOf('main.html')>-1){
-        getEquipmentStatus();
-        return;
-    }
-
-    //var token=localStorage.getItem(CFG.token);
-    var token=localStorage.getItem(CFG.admin);//
-
-    var isLogin=!!(location.href.indexOf(CFG.loginPage)>-1);
-    if (token){
-        token=JSON.parse(token);
-        //获得当前的unix时间
-        //var nowTime=getUnixTime();
-        //if (token.uid && token.live>nowTime){
-        if (token.token){
-            if (isLogin){
-                top.location.replace(CFG.defaultPage);
-                //alert('登录信息存在，自动跳转到默认页面');
-            }
-            getEquipmentStatus();
-            return;
-        }
-    }
-    //alert('退回登录界面，通用检查不成功'+ nowTime);
-    //localStorage.removeItem(CFG.token);
-    localStorage.removeItem(CFG.admin);
-    if (!isLogin) top.location.replace(CFG.loginPage);
 
     function getEquipmentStatus(){
         //设备状态检测

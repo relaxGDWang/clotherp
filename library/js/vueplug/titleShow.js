@@ -17,7 +17,7 @@ Vue.component('rex-title', {
                 '<li v-if="type===\'cut\'" class="fa fa-instagram" @click="goPage(\'missionCheck.html\')">检验任务</li>' +
                 '<li v-if="type===\'check\'" class="fa fa-cut" @click="goPage(\'missionCut.html\')">裁剪任务</li>' +
                 '<li v-if="view!==\'quick\'" class="fa fa-refresh" @click="refresh()">刷新列表</li>' +
-                '<li class="fa fa-print" @click="printget">取货打印</li>' +
+                '<li class="fa fa-print" @click="printget" v-if="0">取货打印</li>' +
             '</ul></div>' +
             '<div class="itemButton fa fa-plane" :class="{\'sel\': view===\'quick\'}" @click="changeView(\'quick\')">{{type===\'cut\'? \'快速裁剪\':\'快速检验\'}}</div>' +
             '<div class="itemButton fa fa-pencil-square" :class="{\'sel\': view===\'mission\'}" @click="changeView(\'mission\')">任务列表</div>' +
@@ -62,7 +62,8 @@ Vue.component('rex-title', {
             this.$emit('refresh');
         },
         backHome: function(){
-            location.replace('main.html?v='+Math.random());
+            //location.replace('main.html?v='+Math.random());
+            EQUIPMENT.gotoHome();
         },
         changeView: function(keyValue){
             this.$emit('changeview',keyValue);
@@ -75,7 +76,8 @@ Vue.component('rex-title', {
             if (window.EQUIPMENT) EQUIPMENT.setting();
         },
         goPage: function(page){
-            location.replace(page+'?v='+Math.random());
+            //location.replace(page+'?v='+Math.random());
+            EQUIPMENT.gotoPage(page);
         }
     }
 });

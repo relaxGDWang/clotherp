@@ -270,7 +270,7 @@ var vu=new Vue({
                         if (vu.flagReload) vu.changeSearchNumber();
                     }
                     vu.UI.dialogShow=false;
-                    if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
+                    //if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
                 },
                 openCallback: function(){
                     vu.UI.dialogShow=true;
@@ -468,21 +468,16 @@ var vu=new Vue({
             });
             */
         },
-        askCut: function(status){
-            /*
+        askCut2: function(status){  //自由裁剪，任务裁剪处理
             var msg,className,doFlag=false;
             if (!this.currentPosition){
                 msg='没有准确获得计米器当前的读数！';
                 className='warning';
             }else if(this.currentPosition===0){
-                msg='计米器读数为0！';
+                msg='计米器读数为0，无法在该位置裁剪！';
                 className='warning';
             }else{
-                if (status){
-                    msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行订单裁剪操作？';
-                }else{
-                    msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行疵点分裁操作？';
-                }
+                msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行裁剪操作？';
                 className='sure';
                 doFlag=true;
             }
@@ -505,7 +500,8 @@ var vu=new Vue({
                     btnsure:'确定'
                 });
             }
-            */
+        },
+        askCut: function(){ //疵点分裁处理
             this.input.start-=0;
             this.input.end-=0;
             if (REG.flaw.test(this.input.end)===false || this.input.end===0){
@@ -542,7 +538,6 @@ var vu=new Vue({
             });
         },
         doCut: function(status){
-            /*
             var sendId=this.editObject.viewObj.bolt_id;
             var sendData={bolt_id: sendId, length: vu.currentPosition};
             if (this.showSelInfo.index!=='' && status){   //订单裁剪并且选中的订单
@@ -550,7 +545,7 @@ var vu=new Vue({
                 sendData.status='cut';
             }else if(status){  //订单裁剪，但未选中订单（自由裁剪）
                 sendData.status='cut';
-            }//疵点分裁
+            }
             ajax.send({
                 url: PATH.missionCutQuick,
                 method: 'post',
@@ -571,7 +566,6 @@ var vu=new Vue({
                     vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',4);
                 }
             });
-            */
         },
         _resetInputData: function(){  //重置输入数据
             this.positionCallBack='';
@@ -894,8 +888,7 @@ var vu=new Vue({
         }
     },
     beforeMount: function () {
-        var temp=JSON.parse(localStorage.getItem(CFG.admin));
-        this.username=temp.name;
+        this.username=USER.name;
     },
     watch: {
         'input.len': function(newVal){
@@ -951,11 +944,11 @@ var ajax=relaxAJAX({
             btncancel:'',
             btnclose:'',
             btnsure:'确定',
-            closeCallback: function(id, dialogType, buttonType){
+            /*closeCallback: function(id, dialogType, buttonType){
                 if (buttonType==='sure' && vu.UI.view==='quick'){
                     vu.$refs.searchInput.focus();
                 }
-            }
+            }*/
         });
     }
 });

@@ -17,7 +17,7 @@
 </head>
 <body>
 	<div class="outFrame">
-		<div>Ver 460</div>
+		<div>Ver 461</div>
 		<div class="showTest">
 			<h3>用户信息获取测试</h3>
 			<ul class="userinfo nohead">
@@ -67,8 +67,13 @@ $(function(){
 		switch(id){
 			case 'userGet':   //获取用户信息
 				try{
-					var userInfo=JSON.parse(window.register_js.getLoginUser());
-					setUser(userInfo);
+					var userInfo=window.register_js.getLoginUser();
+					if (userInfo===''){
+						showErr('用户信息为空，可能用户未登录');
+					}else{
+						userInfo=JSON.parse(userInfo);
+						setUser(userInfo);
+					}
 				}catch(e){
 					showErr('要么getLoginUser未注册，要么解析有错误');
 				}

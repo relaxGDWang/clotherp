@@ -268,7 +268,7 @@
 .searchBar .el-select { width: 150px; }
 .searchBar .el-select:first-child { width: 105px; }
 
-.numberSearch, .numberSearchButton { width: 180px; -webkit-appearance: none; background-color: #fff; background-image: none; border-radius: 4px; border: 1px solid #dcdfe6; box-sizing: border-box; color: #606266; display: inline-block; font-size: inherit; height: 40px; line-height: 40px; outline: none; padding: 0 15px; transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
+.numberSearch, .numberSearchButton { width: 180px; -webkit-appearance: none; background-color: #fff; background-image: none; border-radius: 4px; border: 1px solid #dcdfe6; box-sizing: border-box; color: #606266; display: inline-block; height: 46px; line-height: 46px; font-size: 16px; outline: none; padding: 0 15px; transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
 
 .quickPart { position: relative; padding-top: 200px; }
 
@@ -282,7 +282,8 @@
 
 .fillBar { position: absolute; top: 35%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
 .fillBar .fa { float: left; font-size: 65px; margin-right: 20px; border-right: 1px solid #ccc; padding-right: 20px; color: #069393; }
-.fillBar .numberSearchButton { width: auto; height: auto; line-height: 20px; padding: 9px 10px; background: #069393; color: #fff; border-color: #069393; }
+.fillBar span:nth-child(2) { display: inline-block; margin-bottom: 10px; }
+.fillBar .numberSearchButton { width: auto; height: auto; line-height: 20px; padding: 12px 20px; background: #069393; color: #fff; border-color: #069393; }
 .fillBar .numberSearchButton:active { background: #fff; color: #069393; }
 
 .printBar { padding: 10px; margin: 10px 0; border-bottom: 1px solid #ccc; }

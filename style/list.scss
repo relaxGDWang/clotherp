@@ -441,9 +441,9 @@
   box-sizing: border-box;
   color: #606266;
   display: inline-block;
-  font-size: inherit;
-  height: 40px;
-  line-height: 40px;
+  height: 46px;
+  line-height: 46px;
+  font-size: 16px;
   outline: none;
   padding: 0 15px;
   transition: border-color .2s cubic-bezier(.645,.045,.355,1);
@@ -461,8 +461,9 @@
     border-right: 1px solid #ccc;
     padding-right: 20px; color:$color4;
   }
+  span:nth-child(2){ display:inline-block; margin-bottom:10px;}
   .numberSearchButton{
-    width:auto; height:auto; line-height:20px; padding:9px 10px; background:$color4; color:#fff; border-color:$color4;
+    width:auto; height:auto; line-height:20px; padding:12px 20px; background:$color4; color:#fff; border-color:$color4;
     &:active{ background:#fff; color:$color4;}
   }
 }

@@ -23,16 +23,12 @@ var vu=new Vue({
                 content:'是否注销当前登录的用户 '+ that.username +' ？',
                 cname:'sure',
                 closeCallback:function(id,typeStr,btnType){
-                    if (btnType==='sure'){
-                        localStorage.removeItem(CFG.admin);
-                        //top.location.href=CFG.loginPage+'?v='+Math.random();
-                        location.reload();
-                    }
+                    if (btnType==='sure') EQUIPMENT.loginTimeout();
                 }
             });
         },
         loginIn: function(){
-            top.location.href=CFG.loginPage+'?v='+Math.random();
+            top.location.href=CFG.loginPage;
         }
     },
     watch: {

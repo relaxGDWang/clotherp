@@ -14,11 +14,8 @@ var CFG = {
     tokenLive: 30*60, //生存期，单位秒
     noLogin: 999,    //未登录或登录超时验证
     ajaxFormater: function (data) {  //ajax的传递参数加工(前道处理)
-        var token=localStorage.getItem(CFG.admin);
-        if (token){
-            token=JSON.parse(token);
-            data.api_token=token.token;
-        }
+        var token=USER? USER.token: '';
+        if (token) data.api_token=token;
         return data;
     },
     ajaxReturnDo: function(data){  //ajax后道处理
@@ -32,23 +29,11 @@ var CFG = {
             result.code = 420;
             result.msg = data.message;
             if (data.code+''===CFG.noLogin+''){   //判定登录超时的情况
-                //alert('AJAX获得未登录标记，即将退出');
-                //localStorage.removeItem(CFG.token);
-                localStorage.removeItem(CFG.admin);
-                top.location.href=CFG.loginPage;
+                EQUIPMENT.loginTimeout();
                 return result;
             }
         } else {
             result.data = data.data;
-            //更新本地的登录生存时间
-            //var token=localStorage.getItem(CFG.token);
-            /*
-            if (token){
-                token=JSON.parse(token);
-                token.live=getUnixTime()+CFG.tokenLive*1000;
-                localStorage.setItem(CFG.token,JSON.stringify(token));
-            }
-            */
         }
         return result;
     }
@@ -78,15 +63,6 @@ var PATH = {
     defectType: CFG.URL+'defects/types'     //疵点分类
 };
 if (CFG.DEBUG){
-    //通信路径处理
-    CFG.URL='/server/';
-    PATH.login=CFG.URL+'login.php';
-    PATH.missionCheck=CFG.URL+'examinelist.php';
-    PATH.missionCheckDetails=CFG.URL+'examinedetails.php';
-    PATH.missionCut=CFG.URL+'cutlist.php';
-    PATH.missionCutDetails=CFG.URL+'cutdetails.php';
-    PATH.missionCutFinished=CFG.URL+'cutfinish.php';
-
     //设备状态模拟
     window.register_js = {};
     window.register_js.get_syncstat = function () {

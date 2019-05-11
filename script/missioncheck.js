@@ -772,8 +772,7 @@ var vu=new Vue({
         }
     },
     beforeMount: function () {
-        var temp=JSON.parse(localStorage.getItem(CFG.admin));
-        this.username=temp.name;
+        this.username=USER.name;
     },
     watch: {
         'input.len': function(newVal){

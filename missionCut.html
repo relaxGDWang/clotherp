@@ -64,11 +64,11 @@
             <el-pagination background layout="prev, pager, next" :current-page="cutpage.page" :page-size="cutpage.pageSize" :total="cutpage.total" @current-change="changePage($event)"></el-pagination>
         </div>
         <!-- 快速裁剪 -->
-        <div class="listContent quickPart" :style="{height:UI.listHeight+'px'}" v-if="UI.view==='quick'">
+        <div class="listContent quickPart" :style="{height:UI.listHeight+52+'px'}" v-if="UI.view==='quick'">
             <div class="searchPartShow" :class="{'showList':searchResult.length>0}">
                 <div class="fillBar">
                     <span class="fa fa-search"></span>
-                    <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
+                    <span>请用扫码枪扫码或者手工输入卷号</span><br/>
                     <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
                     <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
                 </div>
@@ -217,7 +217,7 @@
                                 </li>
                                 -->
                                 <li>
-                                    <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut('order')" :disabled="UI.len===0">
+                                    <button v-if="UI.view==='quick'" class="rexButton" color="warning" @click="askCut2('order')" :disabled="UI.len===0">
                                         <span class="fa fa-cut"></span><span>订单裁剪</span>
                                     </button>
                                 </li>

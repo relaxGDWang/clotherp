@@ -90,7 +90,7 @@
             <div class="searchPartShow" :class="{'showList':searchResult.length>0}">
                 <div class="fillBar">
                     <span class="fa fa-search"></span>
-                    <span>请用扫码枪扫码或者手工输入卷号</span><br/><br/>
+                    <span>请用扫码枪扫码或者手工输入卷号</span><br/>
                     <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="search.bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()" :disabled="UI.dialogShow"/>
                     <button ref="searchButton" class="numberSearchButton" @click="changeSearchNumber()" :disabled="UI.dialogShow">查找</button>
                 </div>
