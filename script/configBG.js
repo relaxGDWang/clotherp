@@ -74,7 +74,8 @@ var PATH = {
     recordList: CFG.URL+'history',    //操作记录
     recordDetails: CFG.URL+'history/{id}',  //操作记录详细
     import: CFG.URL+'imports',        //入库操作
-    importDetails: CFG.URL+'imports/{id}'  //入库详情
+    importDetails: CFG.URL+'imports/{id}',  //入库详情
+    defectType: CFG.URL+'defects/types'     //疵点分类
 };
 if (CFG.DEBUG){
     //通信路径处理

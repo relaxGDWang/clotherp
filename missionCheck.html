@@ -248,8 +248,12 @@
                             <h3>疵点列表</h3>
                             <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.viewObj && editObject.viewObj.defects.length>0">
                                 <li v-for="(item, index) in editObject.viewObj.defects" :key="item.bolt_id">
-                                    <span class="index" :class="{'point':(item.defect_type==='dot'),'block':(item.defect_type!=='dot')}">{{index+1}}</span>
-                                    <span class="showtext"><label>位置：</label><b>{{item.position}}</b> 米<label>长度：</label><b>{{item.length || '--'}}</b> 米</span>
+                                    <span class="index" :class="{'point':(item.defect==='dot'),'block':(item.defect!=='dot')}">{{index+1}}</span>
+                                    <span class="showtext">
+                                        <label>位置：</label><b>{{item.position}}</b> 米
+                                        <label>长度：</label><b>{{item.length || '--'}}</b> 米
+                                        <label>类型：</label><b>{{item.defect_type}}</b>
+                                    </span>
                                     <span class="opButton" @click="operateFlaw(item.bolt_id)">&times;</span>
                                 </li>
                             </transition-group>
@@ -397,6 +401,11 @@
                 <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">提交新增</button>
             </div>
             <div class="dialog-content">
+                <!-- 疵点分类 -->
+                <ul class="row nohead defectType">
+                    <label>疵点分类</label>
+                    <li v-for="item in defectType" :class="{'sel':defect===item}" @click="defect=item">{{item}}</li>
+                </ul>
                 <div class="row">
                     <label>疵点开始位置</label>
                     <span class="inputShow">

@@ -4,6 +4,8 @@ var vu=new Vue({
         search:{
             bolt_no: ''
         },
+        defectType:[],  //疵点分类
+        defect:'',  //当前选择疵点分类
         cutpage2:{
             page: 1,
             page2: 1,
@@ -348,7 +350,7 @@ var vu=new Vue({
             //格式化瑕疵点列表
             function _formatFlawInfor(itemList){
                 for (var i=0; i<itemList.length; i++){
-                    if (itemList[i].defect_type==='dot'){
+                    if (itemList[i].defect==='dot'){
                         itemList[i].position=itemList[i].end;
                         itemList[i].length='';
                     }else{
@@ -517,7 +519,7 @@ var vu=new Vue({
             ajaxModify.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, defects:[vu.input.start+","+vu.input.end], cut:1},  //notice
+                data:{bolt_id: vu.editObject.viewObj.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1},  //notice
                 success: function(data){
                     vu._setDetailsData(data,'');
                     vu.flagReload=true;
@@ -570,6 +572,7 @@ var vu=new Vue({
             this.input.end='';
             this.input.step=1;
             this.input.readonly=true;
+            this.defect='';
         },
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
@@ -639,7 +642,7 @@ var vu=new Vue({
             ajaxModify.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.viewObj.bolt_id, defects:[vu.input.start+","+vu.input.end]},  //notice
+                data:{bolt_id: vu.editObject.viewObj.bolt_id, start:vu.input.start, end:vu.input.end, type:vu.defect},  //notice
                 success: function(data){
                     vu._setDetailsData(data);
                     vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功！'});
@@ -756,6 +759,16 @@ var vu=new Vue({
         //重新检验
         doRecheck: function(id){
             this.openDetails(id);
+        },
+        //获得疵点分类
+        getDefectType: function(){
+            ajax.send({
+                url: PATH.defectType,
+                success: function(data){
+                    dialog.close('loading');
+                    vu.defectType=data;
+                }
+            });
         }
     },
     beforeMount: function () {
@@ -857,6 +870,9 @@ $(function(){
             vu.changeSearchNumber();
         }
     }
+
+    //获得疵点类型
+    vu.getDefectType();
 
     function fitUI(){
         var H=body.height();
