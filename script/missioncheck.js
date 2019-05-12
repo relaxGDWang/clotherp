@@ -261,7 +261,7 @@ var vu=new Vue({
                         vu.stopEQPosition();
                     }
                     vu.UI.dialogShow=false;
-                    if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
+                    //if (vu.UI.view==='quick') setTimeout(function(){vu.$refs.searchInput.focus();},300);
                 },
                 openCallback: function(){
                     vu.UI.dialogShow=true;
@@ -523,14 +523,14 @@ var vu=new Vue({
                 success: function(data){
                     vu._setDetailsData(data,'');
                     vu.flagReload=true;
+                    //清零计米
+                    setTimeout(function(){
+                        EQUIPMENT.resetCounter(true);
+                    },200);
                     if (vu.input.start===vu.input.end){
                         vu._setMessage({flag:true, status:'ok', msg:'点状疵点裁剪成功。'});
                         //打印信息
                         vu.printDoginHistory(vu.editObject.viewObj.cutouts[0],'',4);
-                        //清零计米
-                        setTimeout(function(){
-                            EQUIPMENT.resetCounter(true);
-                        },200);
                     }else{
                         vu._setMessage({flag:true, status:'ok', msg:'块状疵点裁剪成功。'});
                     }
@@ -762,13 +762,7 @@ var vu=new Vue({
         },
         //获得疵点分类
         getDefectType: function(){
-            ajax.send({
-                url: PATH.defectType,
-                success: function(data){
-                    dialog.close('loading');
-                    vu.defectType=data;
-                }
-            });
+            ajaxElse.send();
         }
     },
     beforeMount: function () {
@@ -832,6 +826,21 @@ var ajaxModify=relaxAJAX({
     error: vu.operateError
 });
 
+//疵点类型的ajax
+var ajaxElse=relaxAJAX({
+    url: PATH.defectType,
+    type: 'get',
+    contentType: CFG.JDTYPE,
+    formater: CFG.ajaxFormater,
+    checker: CFG.ajaxReturnDo,
+    error: function(){
+        dialog.open('resultShow',{content:'疵点分类信息获取失败'});
+    },
+    success: function(data){
+        vu.defectType=data;
+    }
+});
+
 
 $(function(){
     var timeID, body=$('body');
@@ -870,7 +879,7 @@ $(function(){
         }
     }
 
-    //获得疵点类型
+    //获得疵点分类
     vu.getDefectType();
 
     function fitUI(){

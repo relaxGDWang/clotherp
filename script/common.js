@@ -192,8 +192,8 @@ var EQUIPMENT=(function(){
             return;
         }
     }
-    //如果是main.html，则调用设备连接状态刷新
-    if(location.href.indexOf(CFG.defaultPage)>=0) getEquipmentStatus();
+    //如果不是login页面，则调用设备连接状态刷新
+    if(location.href.indexOf(CFG.loginPage)<0) getEquipmentStatus();
 
     //当前版本和版本号检测
     CFG.VER='2.0';

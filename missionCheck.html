@@ -398,14 +398,16 @@
                 <button class="rexButton" :disabled="input.flag" v-if="input.step===2" @click="goStep('prev')">上一步</button>
                 <button class="rexButton" v-if="input.step===1" @click="goStep('next')">下一步</button>
                 <button class="rexButton" color="warning" @click="askCut()" v-if="input.step===2" :disabled="input.flag">疵点分裁</button>
-                <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">提交新增</button>
+                <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">疵点记录</button>
             </div>
             <div class="dialog-content">
                 <!-- 疵点分类 -->
-                <ul class="row nohead defectType">
+                <div class="row nohead defectType">
                     <label>疵点分类</label>
-                    <li v-for="item in defectType" :class="{'sel':defect===item}" @click="defect=item">{{item}}</li>
-                </ul>
+                    <div class="itemShow">
+                        <span v-for="item in defectType" :class="{'sel':defect===item}" @click="defect=item">{{item}}</span>
+                    </div>
+                </div>
                 <div class="row">
                     <label>疵点开始位置</label>
                     <span class="inputShow">

@@ -19,7 +19,7 @@ Vue.component('rex-cloth', {
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
                 '<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
-                '<span class="qualified" v-if="qualified.class" :class="qualified.class">{{qualified.name}}</span>' +
+                '<span class="qualified" v-if="qualified.class && len>0" :class="qualified.class">{{qualified.name}}</span>' +
             '</div>' +
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
