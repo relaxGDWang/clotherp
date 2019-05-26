@@ -24,12 +24,35 @@ var EQUIPMENT=(function(){
         }
     }
 
+    function getPrintType(){  //获得打印机类型
+        var typeStr;
+        try{
+            typeStr=window.register_js.getprint();  //paper,label
+        }catch(e){
+            typeStr='';
+        }
+        return typeStr;
+    }
+
     function doPrint(printStr,count){   //打印标签
+        /*
         if (count && count>1){
             count=count-0;
         }else{
             count=1;
         }
+        */
+        var typeStr=getPrintType();
+        if (typeStr){
+            if (typeStr==='label'){
+                count=4;
+            }else{
+                count=2;
+            }
+        }else{
+            count=1;
+        }
+
         var timeID=setInterval(_print,800);
         function _print(){
             console.log('print');
