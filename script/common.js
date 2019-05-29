@@ -2,6 +2,7 @@ var USER;  //用户信息公共变量
 //app设备调用方法
 var EQUIPMENT=(function(){
     var app=!!window.register_js;  //标记是否在app下运行
+    var printFlag=false;          //标记是否有打印任务正在执行
 
     function getStatus(){  //获得设备状态
         try{
@@ -42,17 +43,25 @@ var EQUIPMENT=(function(){
             count=1;
         }
         */
-        var typeStr=getPrintType();
-        if (typeStr){
-            if (typeStr==='label'){
-                count=4;
+        if (printFlag){
+            showErrorResult('有打印任务正在执行中！');
+            return;
+        }
+        if (count){
+            var typeStr=getPrintType();
+            if (typeStr){
+                if (typeStr==='label'){
+                    count=4;
+                }else{
+                    count=2;
+                }
             }else{
-                count=2;
+                count=1;
             }
         }else{
             count=1;
         }
-
+        printFlag=true;
         var timeID=setInterval(_print,800);
         function _print(){
             console.log('print');
@@ -65,6 +74,7 @@ var EQUIPMENT=(function(){
             if ((--count)<=0){
                 clearInterval(timeID);
                 timeID='';
+                printFlag=false;
             }
         }
     }
