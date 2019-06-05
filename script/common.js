@@ -47,6 +47,10 @@ var EQUIPMENT=(function(){
             showErrorResult('有打印任务正在执行中！');
             return;
         }
+        if (!printStr){
+            showErrorResult('待打印的字符为空！');
+            return;
+        }
         if (count){
             var typeStr=getPrintType();
             if (typeStr){
@@ -58,8 +62,10 @@ var EQUIPMENT=(function(){
             }else{
                 count=1;
             }
+            console.log('print count have='+ count);
         }else{
             count=1;
+            console.log('print no count='+ count);
         }
         printFlag=true;
         var timeID=setInterval(_print,800);

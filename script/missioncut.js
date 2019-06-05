@@ -801,7 +801,7 @@ var vu=new Vue({
                     printStr=dataObject.print_head;
                 }
             }else{
-                printStr=dataObject.print_data;
+                printStr=dataObject? dataObject.print_data:'';
             }
             printStr=JSON.stringify(printStr);
             console.log(printStr);
