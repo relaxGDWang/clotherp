@@ -160,12 +160,17 @@ var EQUIPMENT=(function(){
                 showErrorResult('调用跳转首页方法似乎有问题');
             }
         }else{
-            location.href=CFG.defaultPage;
+            location.href=CFG.defaultPage+'?v='+Math.random();
         }
     }
 
     //跳转页面
     function gotoPage(url){
+        if (url.indexOf('?')>=0){
+            url=url.replace('?','?v='+Math.random()+'&');
+        }else{
+            url=url+'?v='+Math.random();
+        }
         if (app){
             try{
                 window.register_js.jumpUrl(url);
