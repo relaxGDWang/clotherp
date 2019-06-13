@@ -704,6 +704,12 @@ var vu=new Vue({
         //打印历史记录的标签
         printDoginHistory: function(dataObject,opsition,count){
             var printStr;
+            if (opsition==='start' || opsition==='end'){
+                if (dataObject.current_length<=0){
+                    dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
+                    return;
+                }
+            }
             if (opsition==='start'){
                 if (dataObject.start==='start_a'){
                     printStr=dataObject.print_head;
@@ -763,6 +769,14 @@ var vu=new Vue({
         //获得疵点分类
         getDefectType: function(){
             ajaxElse.send();
+        },
+        //操作记录页面的按钮点击处理
+        gotoURLClick: function(e, obj){
+            if (obj.current_length<=0){
+                dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
+                protectEvent(e);
+                return;
+            }
         }
     },
     beforeMount: function () {

@@ -297,8 +297,8 @@
                     <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
                     <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
                     <div class="buttonBar">
-                        <a :href="'missionCheck.html?bolt_no='+recordObject.bolt_no"><button class="rexButton" color="info"><span class="fa fa-instagram"></span>&emsp;重新检验</button></a>
-                        <a :href="'missionCut.html?bolt_no='+recordObject.bolt_no"><button class="rexButton" color="warning"><span class="fa fa-cut"></span>&emsp;继续裁剪</button></a>
+                        <a :href="'missionCheck.html?bolt_no='+recordObject.bolt_no" @click="gotoURLClick($event, recordObject)"><button class="rexButton" color="info"><span class="fa fa-instagram"></span>&emsp;重新检验</button></a>
+                        <a :href="'missionCut.html?bolt_no='+recordObject.bolt_no" @click="gotoURLClick($event, recordObject)"><button class="rexButton" color="warning"><span class="fa fa-cut"></span>&emsp;继续裁剪</button></a>
                     </div>
                 </div>
                 <div class="recordListShow">
