@@ -96,15 +96,17 @@ var vu=new Vue({
             this.positionTime='';
         },
         changeView: function(itemStr){
-            if (itemStr) this.UI.view=itemStr;
             switch(itemStr){
                 case 'mission':
-                    vu.getList();
-                    break;
+                    EQUIPMENT.taskList();
+                    //vu.getList();
+                    return;
                 case 'record':
+                    this.UI.view=itemStr;
                     vu.getRecordList();
                     break;
                 case 'quick':
+                    this.UI.view=itemStr;
                     setTimeout(function(){
                         vu.$refs.searchInput.focus();
                     },200);
@@ -892,6 +894,17 @@ var vu=new Vue({
                 dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
                 protectEvent(e);
                 return;
+            }
+        },
+        //提供给APP页面调用的方法，用于展示并清除扫码窗口
+        showQuickOperate: function(){
+            this.searchResult=[];
+            this.searchResultKey={};
+            this.search.bolt_no='';
+            if (this.UI.view==='quick'){
+                vu.$refs.searchInput.focus();
+            }else{
+                this.changeView('quick');
             }
         }
     },

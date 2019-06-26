@@ -200,6 +200,19 @@ var EQUIPMENT=(function(){
         }
     }
 
+    //打开我的任务APP页面
+    function taskList(){
+        if (app){
+            try{
+                window.register_js.goTaskList();
+            }catch(e){
+                showErrorResult('调用打开APP任务列表页面方法出错了。');
+            }
+        }else{
+            showErrorResult('请在APP中使用该功能。');
+        }
+    }
+
     function showErrorResult(msg){
         if (window.dialog){
             dialog.open('resultShow',{content:msg});
@@ -218,6 +231,7 @@ var EQUIPMENT=(function(){
         getCurrentUser: getCurrentUser,
         gotoHome: gotoHome,
         gotoPage: gotoPage,
+        taskList: taskList,
         loginTimeout: loginTimeout
     };
 })();
