@@ -28,7 +28,7 @@ Vue.component('rex-cloth', {
         '</div>',
     props:{
         len:{
-            required:  true
+            required: true
         },
         perLen:{
             default: 10
@@ -116,9 +116,14 @@ Vue.component('rex-cloth', {
             if (checker.test(dis)){
                 result[this.direction]='0';
                 result['width']=dis/this.len*100+'%';
-                if (dis/this.len>1) this.exceed=true;
+                if (dis/this.len>1){
+                    this.exceed=true;
+                }else{
+                    this.exceed=false;
+                }
             }else{
                 result['display']='none';
+                this.exceed=false;
             }
             return result;
         },

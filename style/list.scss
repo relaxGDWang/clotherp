@@ -233,7 +233,7 @@
   li{ padding:3px 3px 8px 3px; overflow:hidden; font-size:12px; cursor:pointer; background-color:$color4; color:#fff; border-bottom:1px solid $color1;}
   li:hover, li:active{ background-color:#19bbbb;}
   strong{ line-height:24px; font-weight:normal; position:relative; padding-left:10px;}
-  strong:before{ color:red; position:absolute; top:0; left:0; font-size:14px;}
+  strong:before{ color:red; position:absolute; top:3px; right:-16px; font-size:14px;}
   .statusBar{ padding-left:10px;}
   .statusBar span{ display:inline-block; color:rgba(255,255,255,.8);}
   .length{ background:#f90; margin-left:5px;}

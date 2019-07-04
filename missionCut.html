@@ -155,7 +155,7 @@
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                             <li key="free" class="freeDo" :class="{'sel':'free'===UI.sel}" @click="setViewObject('free')"><p>自由裁剪</p></li>
                             <li v-for="item in editObject.viewObj.orders" :key="item.order_item_id" :class="{'sel':item.order_item_id===UI.sel}" @click="setViewObject(item.order_item_id)">
-                                <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.purchaser}}</strong>
+                                <strong class="fa" :class="{'fa-flag':item.urgent}">{{item.purchaser}}</strong>
                                 <div class="statusBar">
                                     <span>{{item.order_no}}</span>
                                     <span class="status length">{{item.quantity}}</span>

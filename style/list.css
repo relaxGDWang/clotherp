@@ -135,7 +135,7 @@
 .leftPart li { padding: 3px 3px 8px 3px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #069393; color: #fff; border-bottom: 1px solid #336666; }
 .leftPart li:hover, .leftPart li:active { background-color: #19bbbb; }
 .leftPart strong { line-height: 24px; font-weight: normal; position: relative; padding-left: 10px; }
-.leftPart strong:before { color: red; position: absolute; top: 0; left: 0; font-size: 14px; }
+.leftPart strong:before { color: red; position: absolute; top: 3px; right: -16px; font-size: 14px; }
 .leftPart .statusBar { padding-left: 10px; }
 .leftPart .statusBar span { display: inline-block; color: rgba(255, 255, 255, 0.8); }
 .leftPart .length { background: #f90; margin-left: 5px; }

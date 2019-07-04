@@ -177,7 +177,7 @@
                     <template v-if="UI.type==='cut' && editObject.viewObj.splits.length>0">
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                             <li v-for="item in editObject.viewObj.splits" :key="item.bolt_no" :class="{'sel':item.bolt_id===editObject.viewObj.sel.bolt_id}" @click="setViewObject(item.bolt_id)">
-                                <strong class="fa" :class="{'fa-fire':item.urgent}">{{item.bolt_no}}</strong>
+                                <strong class="fa" :class="{'fa-flag':item.urgent}">{{item.bolt_no}}</strong>
                                 <div class="statusBar">
                                     <span class="status" :class="getTypeString(item)"></span>
                                     <span class="status length">{{item.cut_length}}</span>
