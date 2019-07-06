@@ -98,6 +98,7 @@
 .mydetails .dialog-title .passStatus.yes { background: green; }
 .mydetails .dialog-title .passStatus.no { background: red; }
 .mydetails.extMenu .dialogFrame { height: calc(100% - 44px); }
+.appShow .mydetails.extMenu .dialogFrame { height: 100%; }
 
 .doing .dialog-title { background: #669999 linear-gradient(rgba(255, 255, 255, 0.05) 0, transparent 15px); }
 .doing .dialog-title h4 { font-size: 16px; color: rgba(255, 255, 255, 0.9); }

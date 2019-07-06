@@ -40,6 +40,7 @@
     &.off:after{ background:red;}
   }
 }
+
 /* 标题下拉菜单 */
 .dropItemShow{
   position:relative; width:50px;
@@ -177,6 +178,7 @@
     }
   }
   &.extMenu .dialogFrame{ height:calc(100% - 44px);}
+  .appShow &.extMenu .dialogFrame{ height:100%;}
 }
 
 //操作弹框
