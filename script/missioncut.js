@@ -1010,6 +1010,7 @@ $(function(){
     fitUI();
 
     //APP端样式适应
+	alert('ok');
     if (!EQUIPMENT.app) $('body').addClass('appShow');
     var boltNo=getUrlQuery('bolt_no');
     if (vu.UI.view==='mission'){
