@@ -33,7 +33,7 @@ var vu=new Vue({
         positionPer: 1000,     //读取频率
         positionCallBack: '',  //长度变更时的回调函数
         UI:{
-            view: 'quick',
+            view: '',
             type: 'cut',
             dialogShow: false,//标记是否打开了详细对话框
             listHeight: 100,   //列表高
@@ -98,6 +98,7 @@ var vu=new Vue({
         changeView: function(itemStr){
             switch(itemStr){
                 case 'mission':
+                    if (this.UI.view==='') this.UI.view='quick';
                     EQUIPMENT.taskList();
                     //vu.getList();
                     return;
@@ -889,11 +890,16 @@ var vu=new Vue({
             ajaxElse.send();
         },
         //操作记录页面的按钮点击处理
-        gotoURLClick: function(e, obj){
+        gotoURLClick: function(obj,type){
             if (obj.current_length<=0){
                 dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
-                protectEvent(e);
-                return;
+            }else{
+                var hash={bolt_no:obj.bolt_no};
+                if (type==='check'){
+                    EQUIPMENT.gotoPage('missionCheck.html',hash);
+                }else{
+                    EQUIPMENT.gotoPage('missionCut.html',hash);
+                }
             }
         },
         //提供给APP页面调用的方法，用于展示并清除扫码窗口
@@ -1010,23 +1016,40 @@ $(function(){
     fitUI();
 
     //APP端样式适应
-	alert('ok');
-    if (!EQUIPMENT.app) $('body').addClass('appShow');
-    var boltNo=getUrlQuery('bolt_no');
-    if (vu.UI.view==='mission'){
-        vu.getList();
-    }else if(vu.UI.view==='record'){
-        vu.getRecordList();
-    }else{
-        vu.$refs.searchInput.focus();
-        //是否获得卷号，是的话则直接打开改卷详细
-        if (boltNo){
-            vu.search.bolt_no=boltNo;
-            vu.changeSearchNumber();
-        }
-    }
+    if (EQUIPMENT.app) $('body').addClass('appShow');
+
+    showNowTab();
+    window.onhashchange=showNowTab;
+
     //获得疵点分类
     vu.getDefectType();
+
+    function showNowTab(){  //显示当前页面
+        var hashString=location.hash;
+        if (!hashString){
+            vu.UI.view='quick';
+        }else{
+            hashString=hashString.replace(/^#/,'');
+            hashString=decodeURIComponent(hashString);
+            var hashSet={};
+            try{
+                hashSet=JSON.parse(hashString);
+            }catch(e){
+            }
+            if (hashSet.bolt_no){
+                vu.search.bolt_no=hashSet.bolt_no;
+                vu.changeView('quick');
+                vu.changeSearchNumber();
+            }else{
+                var findArray=['quick','mission','record'];
+                if (hashSet.page && findArray.indexOf(hashSet.page)>=0){
+                    vu.changeView(hashSet.page);
+                }else{
+                    vu.changeView('quick');
+                }
+            }
+        }
+    }
 
     function fitUI(){
         var H=body.height();

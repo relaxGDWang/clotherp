@@ -771,11 +771,16 @@ var vu=new Vue({
             ajaxElse.send();
         },
         //操作记录页面的按钮点击处理
-        gotoURLClick: function(e, obj){
+        gotoURLClick: function(obj,type){
             if (obj.current_length<=0){
                 dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
-                protectEvent(e);
-                return;
+            }else{
+                var hash={bolt_no:obj.bolt_no};
+                if (type==='check'){
+                    EQUIPMENT.gotoPage('missionCheck.html',hash);
+                }else{
+                    EQUIPMENT.gotoPage('missionCut.html',hash);
+                }
             }
         }
     },
@@ -869,32 +874,41 @@ $(function(){
     });
     fitUI();
 
-    var boltNo=getUrlQuery('bolt_no');
-    var boltId=getUrlQuery('bolt_id');
+    //APP端样式适应
+    if (EQUIPMENT.app) $('body').addClass('appShow');
 
-    if (boltNo) vu.UI.view='quick';
-    if (boltId) vu.UI.view='record';
-
-    if (vu.UI.view==='mission'){
-        vu.getList();
-    }else if(vu.UI.view==='record'){
-        //是否获得布段编号，是则打开重新检验（详情）对话框，否则加载列表
-        if (boltId){
-            vu.openDetails(boltId);
-        }else{
-            vu.getRecordList();
-        }
-    }else{
-        vu.$refs.searchInput.focus();
-        //是否获得卷号，是的话则直接打开改卷详细
-        if (boltNo){
-            vu.search.bolt_no=boltNo;
-            vu.changeSearchNumber();
-        }
-    }
+    showNowTab();
+    window.onhashchange=showNowTab;
 
     //获得疵点分类
     vu.getDefectType();
+
+    function showNowTab(){  //显示当前页面
+        var hashString=location.hash;
+        if (!hashString){
+            vu.UI.view='quick';
+        }else{
+            hashString=hashString.replace(/^#/,'');
+            hashString=decodeURIComponent(hashString);
+            var hashSet={};
+            try{
+                hashSet=JSON.parse(hashString);
+            }catch(e){
+            }
+            if (hashSet.bolt_no) {
+                vu.search.bolt_no = hashSet.bolt_no;
+                vu.changeView('quick');
+                vu.changeSearchNumber();
+            }else{
+                var findArray=['quick','mission','record'];
+                if (hashSet.page && findArray.indexOf(hashSet.page)>=0){
+                    vu.changeView(hashSet.page);
+                }else{
+                    vu.changeView('quick');
+                }
+            }
+        }
+    }
 
     function fitUI(){
         var H=body.height();

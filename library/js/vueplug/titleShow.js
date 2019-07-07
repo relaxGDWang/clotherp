@@ -19,9 +19,9 @@ Vue.component('rex-title', {
                 '<li v-if="view!==\'quick\'" class="fa fa-refresh" @click="refresh()">刷新列表</li>' +
                 '<li class="fa fa-print" @click="printget" v-if="0">取货打印</li>' +
             '</ul></div>' +
-            '<div class="itemButton fa fa-plane" :class="{\'sel\': view===\'quick\'}" @click="changeView(\'quick\')">{{type===\'cut\'? \'快速裁剪\':\'快速检验\'}}</div>' +
-            '<div class="itemButton fa fa-pencil-square" :class="{\'sel\': view===\'mission\'}" @click="changeView(\'mission\')">任务列表</div>' +
-            '<div class="itemButton fa fa-calendar-o" :class="{\'sel\': view===\'record\'}" @click="changeView(\'record\')">操作记录</div>' +
+            '<div class="itemButton fa fa-plane" :class="{\'sel\': view===\'quick\'}" @click="setPage(\'quick\')">{{type===\'cut\'? \'快速裁剪\':\'快速检验\'}}</div>' +
+            '<div class="itemButton fa fa-pencil-square" :class="{\'sel\': view===\'mission\'}" @click="setPage(\'mission\')">任务列表</div>' +
+            '<div class="itemButton fa fa-calendar-o" :class="{\'sel\': view===\'record\'}" @click="setPage(\'record\')">操作记录</div>' +
             '<span class="userInfo fa fa-user">{{username}}</span>' +
             '<span class="eqStatus fa fa-print" :class="equipment.printer" @click="openSetting()"></span>' +
             '<span class="eqStatus fa fa-legal" :class="equipment.counter" @click="openSetting()"></span>' +
@@ -78,6 +78,11 @@ Vue.component('rex-title', {
         goPage: function(page){
             //location.replace(page+'?v='+Math.random());
             EQUIPMENT.gotoPage(page);
+        },
+        //更换当前页选项卡
+        setPage: function(page){
+            var hash={page:page};
+            location.hash=encodeURIComponent(JSON.stringify(hash));
         }
     }
 });

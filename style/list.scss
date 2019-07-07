@@ -39,6 +39,8 @@
     &.on:after{ background:#37e501;}
     &.off:after{ background:red;}
   }
+
+  .appShow &{ display:none;}
 }
 
 /* 标题下拉菜单 */

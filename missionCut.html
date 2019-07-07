@@ -26,7 +26,7 @@
 <div class="outFrame" id="app">
     <audio id="aduioShow" src="audio.mp3" preload="preload"></audio>
     <div class="main">
-        <rex-title type="cut" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList()" @printget="printGetCloth" @changeview="changeView"></rex-title>
+        <rex-title type="cut" :view="UI.view" :username="username" :equipment="equipment" @refresh="getViewList()" @printget="printGetCloth"></rex-title>
         <div class="listContent missionList" v-if="UI.view==='mission'">
             <el-table ref="multipleTable" tooltip-effect="dark" :data="mission" :height="UI.listHeight" @selection-change="selectGetCloth($event)" stripe>
                 <el-table-column type="selection" width="50" key="colSelect"></el-table-column>
@@ -283,8 +283,8 @@
                     <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
                     <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
                     <div class="buttonBar">
-                        <a :href="'missionCheck.html?bolt_no='+recordObject.bolt_no" @click="gotoURLClick($event, recordObject)"><button class="rexButton" color="info"><span class="fa fa-instagram"></span>&emsp;重新检验</button></a>
-                        <a :href="'missionCut.html?bolt_no='+recordObject.bolt_no" @click="gotoURLClick($event, recordObject)"><button class="rexButton" color="warning"><span class="fa fa-cut"></span>&emsp;继续裁剪</button></a>
+                        <button class="rexButton" color="info" @click="gotoURLClick(recordObject,'check')"><span class="fa fa-instagram"></span>&emsp;重新检验</button>
+                        <button class="rexButton" color="warning" @click="gotoURLClick(recordObject),'cut'"><span class="fa fa-cut"></span>&emsp;继续裁剪</button>
                     </div>
                 </div>
                 <div class="recordListShow">

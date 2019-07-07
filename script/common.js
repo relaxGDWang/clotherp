@@ -165,20 +165,40 @@ var EQUIPMENT=(function(){
     }
 
     //跳转页面
-    function gotoPage(url){
-        if (url.indexOf('?')>=0){
-            url=url.replace('?','?v='+Math.random()+'&');
+    //url 需要跳转页面的url地址，可以带get参数，如果该参数为空，则停留在当前页面，仅刷新hash
+    //hash 需要传递的hash值对象，目前结构{page:需要切换的选项卡名称，bolt_no:继续检验/裁剪的布匹编号}
+    function gotoPage(url,hash){
+        var flag=false,urlGo='';
+        if (url){
+            var nowUrl=location.href.replace(/^.+\/([a-zA-Z0-9]+\.html(\?[^#]+)?)(#.+)?/,'$1');
+            //去掉其中的随机数参数
+            nowUrl=nowUrl.replace(/v=[^&$]+&?/,'').replace(/\?$/,'');
+            if (nowUrl!==url) flag=true;
         }else{
-            url=url+'?v='+Math.random();
+            url=location.href.replace(/^.+\/([a-zA-Z0-9]+\.html(\?[^#]+)?)(#.+)?/,'$1');  //保持url不变更
         }
-        if (app){
-            try{
-                window.register_js.jumpUrl(url);
-            }catch(e){
-                showErrorResult('调用页面跳转方法似乎有问题');
+        if (hash) hash='#'+encodeURIComponent(JSON.stringify(hash));
+        if (flag){
+            var v=Math.random();
+            if (url.indexOf('?')>0){
+                url+='&v='+v;
+            }else{
+                url+='?v='+v;
+            }
+            if (!hash) hash='#'+encodeURIComponent(JSON.stringify({page:'quick'}));
+            urlGo=url+hash;
+            if (app){
+                try{
+                    window.register_js.jumpUrl(urlGo);
+                }catch(e){
+                    showErrorResult('调用app页面跳转方法似乎有问题');
+                }
+            }else{
+                location.href=urlGo;
             }
         }else{
-            location.href=url;
+            if (!hash) hash=location.hash;
+            if (hash) location.hash=hash.replace(/^#/,'');
         }
     }
 

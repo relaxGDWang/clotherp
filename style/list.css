@@ -26,6 +26,7 @@
 .titleBar .eqStatus:after { content: ''; position: absolute; top: 10px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: #aaa; }
 .titleBar .eqStatus.on:after { background: #37e501; }
 .titleBar .eqStatus.off:after { background: red; }
+.appShow .titleBar { display: none; }
 
 /* 标题下拉菜单 */
 .dropItemShow { position: relative; width: 50px; }
