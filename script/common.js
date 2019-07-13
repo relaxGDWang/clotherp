@@ -274,7 +274,7 @@ var EQUIPMENT=(function(){
     if(location.href.indexOf(CFG.loginPage)<0) getEquipmentStatus();
 
     //当前版本和版本号检测
-    CFG.VER='2.0';
+    CFG.VER='3.0';
     if (CFG.URL.indexOf('-dev')>=0){
         CFG.SERVER='dev';
         window.onload=function(){
@@ -286,8 +286,8 @@ var EQUIPMENT=(function(){
         CFG.SERVER='pd';
     }
 
+    //设备状态检测
     function getEquipmentStatus(){
-        //设备状态检测
         setInterval(EQUIPMENT.status,1000);
     }
 })();

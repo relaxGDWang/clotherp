@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>后台管理</title>
+    <title>随手e裁--后台管理</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <!-- build:css library/style/webcommon.css -->
     <link rel="stylesheet" href="library/style/font-awesome.css"/>
     <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
     <link rel="stylesheet" href="library/style/cssreset3.css"/>
     <!-- endbuild -->
-    <!-- build:css style/main.css -->
-    <link rel="stylesheet" href="style/main.css"/>
-    <!-- endbuild -->
+    <link rel="stylesheet" href="style/opFrame.css"/>
     <!-- build:js script/configBG.js -->
     <script src="script/configBG.js"></script>
     <!-- endbuild -->
@@ -23,40 +21,49 @@
 </head>
 <body>
 <div class="outFrame" id="app">
-    <div class="allPart">
-        <h1>
-            <a href="">随手e裁</a>
-            <span class="userInfo fa fa-user" v-if="username">{{username}}</span>
-        </h1>
-        <h2><span class="fa fa-hand-o-up"></span><strong>{{version}}</strong></h2>
-        <div class="iconPart">
-            <a class="fa fa-cut" @click="EQUIPMENT.gotoPage('missionCut.html')"><strong>裁剪任务</strong></a>
-            <a class="fa fa-instagram" @click="EQUIPMENT.gotoPage('missionCheck.html')"><strong>检验任务</strong></a>
-            <a class="fa fa-gears" @click="EQUIPMENT.setting()"><strong>系统设置</strong></a>
-            <a class="fa fa-power-off" @click="loginOut()" v-if="username"><strong>退出登录</strong></a>
-            <a class="fa fa-user" @click="loginIn()" v-if="!username"><strong>用户登录</strong></a>
-            <a class="fa fa-print clearLeft statusIcon">
-                <strong>标签打印机</strong>
-                <b :class="equipment.printer"></b>
-            </a>
-            <a class="fa fa-legal statusIcon">
-                <strong>计米器</strong>
-                <b :class="equipment.counter"></b>
-            </a>
-            <a class="fa fa-signal statusIcon">
-                <strong>网络连接</strong>
-                <b :class="equipment.neter"></b>
-            </a>
+    <div class="main">
+        <div class="titleBar" v-if="menu && navigator">
+            <h1 class="itemButton fa" :class="menu['icon']">{{menu['txt']}}操作</h1>
+            <div class="itemButton dropItemShow fa fa-bars">
+                <ul class="nohead">
+                    <li class="fa fa-home">返回首页</li>
+                    <li class="fa fa-instagram">检验任务</li>
+                    <li class="fa fa-cut">裁剪任务</li>
+                    <li class="fa fa-refresh">刷新列表</li>
+                    <li class="fa fa-print">取货打印</li>
+                </ul>
+            </div>
+            <div class="itemButton fa fa-plane">123</div>
+            <div class="itemButton fa fa-pencil-square">任务列表</div>
+            <div class="itemButton fa fa-calendar-o">操作记录</div>
+            <span class="userInfo fa fa-user">{{username}}</span>
+            <span class="eqStatus fa fa-print" :class="equipment.printer"></span>
+            <span class="eqStatus fa fa-legal" :class="equipment.counter"></span>
+            <span class="eqStatus fa fa-signal" :class="equipment.neter"></span>
+        </div>
+        <div class="mainContent">
+            <iframe src="http://www.relaxset.com"></iframe>
         </div>
     </div>
 
+    <!-- ajax加载提示框 -->
+    <div class="extDialog" id="loading" noclick="noclick">
+        <div class="dialogFrame">
+            <div class="dialog-content">
+                <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div> <span class="diy">正在加载数据，请稍等...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ajax出错信息提示 -->
     <div class="extDialog" id="information" noclick="noclick">
         <div class="dialogFrame">
             <div class="dialog-title">
                 <h4><span class="fa fa-info-circle"></span> 系统信息提示</h4>
             </div>
             <div class="dialog-buttonBar">
-                <button class="rexButton opBtn btn-cancel">取消</button>
+                <button class="rexButton opBtn btn-close">取消</button>
+                <button class="rexButton opBtn btn-cancel">不合格</button>
                 <button class="rexButton opBtn btn-sure">确定</button>
             </div>
             <div class="dialog-content">
@@ -81,7 +88,7 @@
 <script src="library/js/elementui2.4.11.js"></script>
 <!-- endbuild -->
 <!-- build:js script/main.js -->
-<script src="/script/main.js"></script>
+<script src="/script/opFrame.js"></script>
 <!-- endbuild -->
 </body>
 </html>
