@@ -4,19 +4,19 @@
 .main { width: 100%; height: 100%; }
 
 .titleBar { height: 44px; background: #eee; text-align: right; color: #202020; }
-.titleBar h1 { background: #999; color: rgba(255, 255, 255, 0.8); font-size: 14px; font-weight: normal; }
-.titleBar .itemButton { float: left; line-height: 44px; padding: 0 15px; font-size: 14px; text-align: center; color: #666; }
-.titleBar .itemButton.sel { background: #069393; color: #fff; }
+.titleBar .itemButton { float: left; line-height: 44px; padding: 0 15px; font-size: 14px; text-align: center; color: #666; cursor: pointer; }
+.titleBar .itemButton:hover { background: #cccc99; color: #fff; }
+.titleBar .itemButton[sel], .titleBar .itemButton:hover[sel] { background: #069393; color: #fff; }
 .titleBar .itemButton:before { font-size: 16px; vertical-align: middle; margin: 0 5px; }
-.titleBar h1.itemButton { color: #fff; }
 .titleBar .userInfo, .titleBar .eqStatus { font-size: 12px; line-height: 44px; display: inline-block; }
 .titleBar .userInfo:before, .titleBar .eqStatus:before { font-size: 16px; margin-right: 3px; vertical-align: middle; color: #999; }
-.titleBar .userInfo { margin-right: 15px; }
+.titleBar .userInfo { margin-right: 20px; }
 .titleBar .eqStatus { margin-right: 7px; position: relative; }
 .titleBar .eqStatus:after { content: ''; position: absolute; top: 10px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: #aaa; }
 .titleBar .eqStatus.on:after { background: #37e501; }
 .titleBar .eqStatus.off:after { background: red; }
-.appShow .titleBar { display: none; }
+.titleBar h1, .titleBar h1.itemButton:hover { background: #999; color: rgba(255, 255, 255, 0.8); font-size: 14px; font-weight: normal; }
+.titleBar h1.itemButton { color: #fff; cursor: default; }
 
 /* 标题下拉菜单 */
 .dropItemShow { position: relative; width: 50px; }

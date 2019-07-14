@@ -22,28 +22,26 @@
 <body>
 <div class="outFrame" id="app">
     <div class="main">
-        <div class="titleBar" v-if="menu && navigator">
-            <h1 class="itemButton fa" :class="menu['icon']">{{menu['txt']}}操作</h1>
+        <div class="titleBar" v-if="UI.menu">
+            <h1 class="itemButton fa" :class="UI.menu.icon">{{UI.menu['txt']}}操作</h1>
             <div class="itemButton dropItemShow fa fa-bars">
                 <ul class="nohead">
                     <li class="fa fa-home">返回首页</li>
-                    <li class="fa fa-instagram">检验任务</li>
-                    <li class="fa fa-cut">裁剪任务</li>
-                    <li class="fa fa-refresh">刷新列表</li>
-                    <li class="fa fa-print">取货打印</li>
+                    <li class="fa fa-instagram" v-if="UI.menu.key==='cut'" @click="setMenuView('check')">检验任务</li>
+                    <li class="fa fa-cut" v-if="UI.menu.key==='check'" @click="setMenuView('cut')">裁剪任务</li>
+                    <li class="fa fa-refresh">刷新当前</li>
+                    <li class="fa fa-print" v-if="1===0">取货打印</li>
                 </ul>
             </div>
-            <div class="itemButton fa fa-plane">123</div>
-            <div class="itemButton fa fa-pencil-square">任务列表</div>
-            <div class="itemButton fa fa-calendar-o">操作记录</div>
+            <div class="itemButton fa" :class="UI.menu.nav.quick.icon" :sel="UI.navigator==='quick'" @click="setMenuView('','quick')">快速{{UI.menu.txt}}</div>
+            <div class="itemButton fa" :class="UI.menu.nav.mission.icon" :sel="UI.navigator==='mission'" @click="setMenuView('','mission')">{{UI.menu.txt}}列表</div>
+            <div class="itemButton fa" :class="UI.menu.nav.record.icon" :sel="UI.navigator==='record'" @click="setMenuView('','record')">操作记录</div>
             <span class="userInfo fa fa-user">{{username}}</span>
             <span class="eqStatus fa fa-print" :class="equipment.printer"></span>
             <span class="eqStatus fa fa-legal" :class="equipment.counter"></span>
             <span class="eqStatus fa fa-signal" :class="equipment.neter"></span>
         </div>
-        <div class="mainContent">
-            <iframe src="http://www.relaxset.com"></iframe>
-        </div>
+        <div class="mainContent"></div>
     </div>
 
     <!-- ajax加载提示框 -->

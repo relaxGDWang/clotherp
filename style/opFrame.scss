@@ -1,38 +1,37 @@
 @charset "UTF-8";
 @import '../library/style/config2.scss';
+$topBarHeight: 44px;
 
 .outFrame { overflow: hidden; width: 100%; height: 100%;}
 .main {  width: 100%; height: 100%;}
 //标题栏
 .titleBar{
-  $height: 44px;
-  height:$height; background:#eee; text-align:right; color:#202020;
-  h1{ background:#999; color:rgba(255,255,255,.8); font-size:14px; font-weight:normal;}
+  height:$topBarHeight; background:#eee; text-align:right; color:#202020;
   .itemButton{
-    float:left; line-height:$height; padding:0 15px; font-size:14px; text-align:center; color:#666;
-    &.sel{ background:$color4; color:#fff;}
+    float:left; line-height:$topBarHeight; padding:0 15px; font-size:14px; text-align:center; color:#666; cursor:pointer;
+    &:hover{ background:$color3; color:#fff;}
+    &[sel],&:hover[sel]{ background:$color4; color:#fff;}
     &:before{ font-size:16px; vertical-align:middle; margin:0 5px;}
   }
-  h1.itemButton{ color:#fff;}
   .userInfo, .eqStatus{
-    font-size:12px; line-height:$height; display:inline-block;
+    font-size:12px; line-height:$topBarHeight; display:inline-block;
     &:before{ font-size:16px; margin-right:3px; vertical-align:middle; color:#999;}
   }
-  .userInfo{ margin-right:15px;}
+  .userInfo{ margin-right:20px;}
   .eqStatus{
     margin-right:7px; position:relative;
     &:after{ content:''; position:absolute; top:10px; right:-1px; width:6px; height:6px; border-radius:50%; background:#aaa;}
     &.on:after{ background:#37e501;}
     &.off:after{ background:red;}
   }
-
-  .appShow &{ display:none;}
+  h1,h1.itemButton:hover{ background:#999; color:rgba(255,255,255,.8); font-size:14px; font-weight:normal;}
+  h1.itemButton{ color:#fff; cursor:default;}
 }
 
 /* 标题下拉菜单 */
 .dropItemShow{
   position:relative; width:50px;
-  ul{ position:absolute; top:44px; right:0; max-height:0; z-index:10; overflow:hidden; width:162px; transition-property:max-height; transition-duration: .3s; opacity:.9;}
+  ul{ position:absolute; top:$topBarHeight; right:0; max-height:0; z-index:10; overflow:hidden; width:162px; transition-property:max-height; transition-duration: .3s; opacity:.9;}
   li{
     display:block; line-height:28px; border-bottom:1px solid #fff; background: $color1; color:#fff; text-align:center; padding:5px;
     &:before{ font-size:16px; margin-right:5px;}
