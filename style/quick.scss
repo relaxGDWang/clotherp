@@ -1,0 +1,53 @@
+@charset "UTF-8";
+@import '../library/style/config2.scss';
+
+.quickPart{ position:relative; padding-top:200px; height:100%;}
+.searchPartShow{ width:100%; height:calc(100% + 200px); margin-top:-200px; position:relative; transition-property: height; transition-duration: .5s;}
+.searchResultShow{ width:100%; height:0; overflow:hidden; transition-property: height,hidden; transition-duration: .5s;}
+.searchPartShow.showList{ height:200px;}
+.searchPartShow.showList+.searchResultShow{ height:100%; overflow:auto; padding:1px;}
+
+.numberSearch,.numberSearchButton{ width:180px; -webkit-appearance: none;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  box-sizing: border-box;
+  color: #606266;
+  display: inline-block;
+  height: 46px;
+  line-height: 46px;
+  font-size: 16px;
+  outline: none;
+  padding: 0 15px;
+  transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
+
+.fillBar{
+  position:absolute; top:35%; left:50%; transform:translateX(-50%); white-space: nowrap;
+  span.fa{ float: left; text-align:center; width:80px; font-size: 65px; margin-right: 20px; border-right: 1px solid #ccc; padding-right: 20px; color:$color4;}
+  span:nth-child(2){ display:inline-block; margin-bottom:10px;}
+  .numberSearchButton{
+    width:auto; height:auto; line-height:20px; padding:12px 20px; background:$color4; color:#fff; border-color:$color4; font-size:20px;
+    &:active{ background:#fff; color:$color4;}
+  }
+}
+
+//扩展表格样式
+.rexTable{
+  th{
+    background:#3679de; color:#fff; padding:6px 0; text-align:left;
+    &:first-child, &:last-child{ text-align:center;}
+  }
+  td{
+    padding:2px 0; text-align: left;
+    &:first-child, &:last-child{ text-align:center;}
+  }
+  tr:nth-child(odd){ background:#e3eeff;}
+  tr:nth-child(even){ background:#d1e3fe;}
+  tr:hover{ background:#ffe4ba;}
+  .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+  .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+  .opButton:before{ display:inline-block;}
+  .opButton.fa-cut:before{ transform:rotate(-90deg);}
+}

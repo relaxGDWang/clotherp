@@ -9,6 +9,7 @@ var CFG = {
     //cn: 'zh_Cn',
     loginPage: 'login.html',
     defaultPage: 'main.html',
+    framePage: 'opFrame.html',
     token: 'token',  //token信息对象{code:token的编号,live:生存到期unix时间}
     admin: 'admin',  //当前登录的管理员对象 {username:用户名,name:姓名}
     tokenLive: 30*60, //生存期，单位秒

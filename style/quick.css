@@ -1,0 +1,31 @@
+.quickPart { position: relative; padding-top: 200px; height: 100%; }
+
+.searchPartShow { width: 100%; height: calc(100% + 200px); margin-top: -200px; position: relative; transition-property: height; transition-duration: .5s; }
+
+.searchResultShow { width: 100%; height: 0; overflow: hidden; transition-property: height,hidden; transition-duration: .5s; }
+
+.searchPartShow.showList { height: 200px; }
+
+.searchPartShow.showList + .searchResultShow { height: 100%; overflow: auto; padding: 1px; }
+
+.numberSearch, .numberSearchButton { width: 180px; -webkit-appearance: none; background-color: #fff; background-image: none; border-radius: 4px; border: 1px solid #dcdfe6; box-sizing: border-box; color: #606266; display: inline-block; height: 46px; line-height: 46px; font-size: 16px; outline: none; padding: 0 15px; transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); }
+
+.fillBar { position: absolute; top: 35%; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+.fillBar span.fa { float: left; text-align: center; width: 80px; font-size: 65px; margin-right: 20px; border-right: 1px solid #ccc; padding-right: 20px; color: #069393; }
+.fillBar span:nth-child(2) { display: inline-block; margin-bottom: 10px; }
+.fillBar .numberSearchButton { width: auto; height: auto; line-height: 20px; padding: 12px 20px; background: #069393; color: #fff; border-color: #069393; font-size: 20px; }
+.fillBar .numberSearchButton:active { background: #fff; color: #069393; }
+
+.rexTable th { background: #3679de; color: #fff; padding: 6px 0; text-align: left; }
+.rexTable th:first-child, .rexTable th:last-child { text-align: center; }
+.rexTable td { padding: 2px 0; text-align: left; }
+.rexTable td:first-child, .rexTable td:last-child { text-align: center; }
+.rexTable tr:nth-child(odd) { background: #e3eeff; }
+.rexTable tr:nth-child(even) { background: #d1e3fe; }
+.rexTable tr:hover { background: #ffe4ba; }
+.rexTable .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
+.rexTable .opButton:hover, .rexTable .el-table td .opButton:active { background: #069393; color: #fff; }
+.rexTable .opButton:before { display: inline-block; }
+.rexTable .opButton.fa-cut:before { transform: rotate(-90deg); }
+
+/*# sourceMappingURL=quick.css.map */

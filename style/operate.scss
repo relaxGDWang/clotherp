@@ -1,0 +1,328 @@
+@charset "UTF-8";
+@import '../library/style/config2.scss';
+
+@keyframes focusShow{  //晃动聚焦动画
+  0% { transform: translateX(0);}
+  12% {transform: translateX(-10px);}
+  24% { transform: translateX(10px);}
+  36% { transform: translateX(-10px);}
+  48% { transform: translateX(10px);}
+  60% { transform: translateX(-10px);}
+  72% { transform: translateX(10px);}
+  84% { transform: translateX(-10);}
+  96% { transform: translateX(10);}
+  100% { transform: translateX(0);}
+}
+
+//遮盖层，用于缓解vue在初始加载中的第一视觉混乱的情况
+.occupation{
+  position:absolute; width:100%; height:100%; z-index: 30; text-align:center; background-color: #eee;
+  &:before{ display:inline-block; content:''; width:0; height:100%; vertical-align: middle;}
+  .loadingBlock{ vertical-align:middle;}
+}
+
+.main{
+  .dialog-title{
+    background:$color1; border-bottom:0;
+    .opBtn{
+      font-size:28px; color:$color3;
+      &:hover,&:active{ color:red;}
+    }
+    ul{ padding-left:20px;}
+    li{ float:left; line-height:42px; color:rgba(255,255,255,.6); margin-right:15px;}
+    label{ color:#fff;}
+    .passStatus{
+      display:block; color:#fff; line-height: 30px; margin-top: 6px; padding: 0 10px; border-radius:6px; background:#999;
+      &.yes{ background:green;}
+      &.no{ background:red;}
+    }
+  }
+  .dialog-content{ height:100%;}
+}
+
+/* 表格样式 */
+.el-table{
+  th{
+    padding:6px 0;
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  td{
+    padding:6px 0; color:#333;
+    //末尾操作按钮样式
+    .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+    .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+    .opButton:before{ display:inline-block;}
+    .opButton.fa-cut:before{ transform:rotate(-90deg);}
+    //内容列对齐
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  .missionList & th:nth-child(2){ text-align:center;}
+  .missionList & td:nth-child(2){ text-align:center;}
+
+  .cell{ padding-left:3px; padding-right:3px;}    //单元格通用
+  .el-checkbox__inner{ width:18px; height:18px;}  //多选框
+  .el-checkbox__inner::after{ left:6px; top:3px;}
+
+  .urgent{  //加急标记
+    position:relative; padding-left:15px;
+    &:before{
+      color:red; font-size:16px; position:absolute; left:-3px; top:3px;
+    }
+  }
+
+  //仓库位置
+  .positionItem{
+    white-space: nowrap; margin:0 1px;
+    &:after{ content:',';}
+    &:last-child:after{ content:'';}
+  }
+
+  //日期时间
+  .datetime{
+    word-break: break-all; line-height:1.2em; font-size:12px;
+    span{
+      white-space: nowrap; margin:0 1px;
+      &:after{ content:' ';}
+      &:last-child:after{ content:'';}
+    }
+  }
+}
+
+//分页显示
+.el-pagination{ text-align: center; margin-top:10px;}
+
+//基础信息展示
+.baseInfo{
+  background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size:100% 30px; overflow:hidden; margin-bottom:10px;
+  li{ float:left; line-height:30px; padding-right:20px;}
+  label{ color:#999;}
+  .showLength{ width:100%; background:#f2f2f2; border-bottom:1px solid #ccc; text-align:center;}
+  .showLength>div{ display:inline-block; width:20%;}
+}
+
+//布匹概览
+.clothShow{
+  margin:24px 0 32px 0; width:calc(100% - 55px); position:relative; padding-left:10px;
+  .changePosition{
+    position:absolute; right:-55px; top:0; height:100%; width:50px; border-radius:0;
+    & .fa:before{ font-size:30px;}
+  }
+}
+.cloth{
+  box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:50px; position:relative;
+  .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property:left,right; transition-duration:1s; min-width:1px;}
+  .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
+  .flaw:hover{ background:#f90; z-index:2;}
+  .flaw:hover:after{ background:#f90;}
+  .clip{ width:1px; position:absolute; top:-5px; bottom:-5px; background:red; z-index:10; transition-property: left,right; transition-duration: 1s;}
+  .clip:before, .clip:after{ content:''; position:absolute; border:9px solid transparent; width:0; height:0; overflow:hidden; left:50%; transform:translateX(-50%); opacity:.8;}
+  .clip:before{ border-top-color:red; top:-5px;}
+  .clip:after{ border-bottom-color:red; bottom:-5px;}
+  .cutBlock{
+    position:absolute; top:1px; bottom:1px; outline:1px dashed rgba(0,0,0,.3); outline-offset:-1px; max-width:100%;
+    .exceed{ position:absolute; left:-20px; width:40px; height:100%; border:1px solid $color4; background:#fff; border-right-style:dashed;}
+    .exceed:before{ content:''; position:absolute; width:100%; height:14px; top:-14px; background:#fff; border-radius:50% / 100% 100% 0 0; box-shadow:0 -1px 0 1px $color4;}
+    .exceed:after{ content:''; position:absolute; width:100%; height:14px; bottom:-2px; background:#999; border-radius:50% / 100% 100% 0 0; box-shadow:0 -1px 0 1px $color4;}
+  }
+  .cutBlock.sel{ outline-color:#f90; background:rgba(255,153,0,.2);}
+  .cutBlock.first{ outline-color:$color4; background:#fff repeating-linear-gradient(-45deg, rgba(6,147,147,.3) 0, rgba(6,147,147,.3) 10px, transparent 0, transparent 20px);}
+  .endShow{ position:absolute; z-index:3; text-shadow:0 0 2px #fff; top:50%; transform:translateY(-50%); font-weight:bold;}
+  //剩余布料
+  .leftCloth{ left:0; right:0; color:$color4; text-align:center; line-height:48px; background:repeating-linear-gradient(-45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px);}
+  //合格标记
+  .qualified{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:16px; background:rgba(255,255,255,.6); padding:3px 20px; border-radius:2px;
+    &.yes{ color:green; border:1px solid green;}
+    &.no{ color:red; border:1px solid red;}
+  }
+}
+.ruler{
+  height:2px; background:#ccc; position:relative;
+  span{ position:absolute; top:2px; height:6px; width:1px; text-align:center; background:#ccc; font-size:12px; color:#666;}
+  span:before{ content:attr(pos); position:absolute; top:10px; left:50%; transform:translateX(-50%);}
+}
+.clothShow.zero .cloth{
+  width:50%; margin:auto; text-align:center;
+  &:before{ content:'布匹长为零!'; color:red; line-height:48px;}
+}
+.clothShow.zero .ruler{ width:50%; margin:auto;}
+
+.operateShow { width: 100%; height:80px; overflow: hidden;}
+//当前裁剪信息
+.operate {
+  display:inline-block; min-width:260px; width:50%; padding-left:20px; vertical-align: middle; text-align: center;
+  .counter{
+    display:inline-block; position:relative; font-family:arial; color:#3273c3; font-size:70px;
+    &:after{ content:'米'; position:absolute; top:.6em; left:100%; font-size:14px; color:#999;}
+  }
+  .iconShow{ font-size:20px; color:#999; position:absolute; top:.6em; left:-1.2em;}
+  .nowCut{ font-size:16px; color:#666; position:absolute; bottom:.6em; left:100%;}
+  .nowCut:before{ content:'/'; margin-right:3px;}
+}
+
+//当前检验信息
+.inPart{ padding:5px;}
+.checkOperate{
+  width:100%; height: 100px; overflow: hidden;
+  .checkOverview{ border:3px solid $color4; height:100%; width:50%; float:left;}
+  .checkOverview:before{ content:''; display:inline-block; height:100%; vertical-align:middle;}
+  .inshow{
+    display:inline-block; padding:10px; vertical-align:middle;
+    &>span{ display:inline-block; vertical-align:middle; margin-right:10px; white-space:nowrap;}
+    strong{ font-size:20px; color:red; font-weight:normal;}
+  }
+  .operateButton{
+    float:right;
+  }
+}
+
+
+//操作弹框
+.doing{
+  .dialog-title{
+    background:$color2 linear-gradient(rgba(255,255,255,.05) 0, transparent 15px);
+    h4{ font-size:16px; color:rgba(255,255,255,.9);}
+    h4 .fa{ font-size:22px; vertical-align:middle; margin-right:5px;}
+  }
+  .dialog-content{ padding:15px; }
+  .row{ padding:5px; padding-left:20%; text-align:left;}
+  label{ color:#999; display:inline-block; width:120px; text-align:right; margin-right:10px;}
+  label+span{
+    display:inline-block; padding-left:5px;
+    b{ color:red; font-size:1.4em;}
+  }
+  .inputShow{
+    vertical-align: middle; position:relative; padding-left:0;
+    strong{ position:absolute; right:10px; top:10px; color:#999; font-weight:normal;}
+  }
+  .rexInput{ font-size:1.4em; width:120px;}
+  .dialog-buttonBar{
+    background:#8ed2d2 repeating-linear-gradient(45deg, rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 12px, transparent 0, transparent 24px);
+    .rexButton{ width:100px;}
+  }
+  .doingShow span{ margin:10px auto 0 auto; display:inline-block; padding:8px 5px; border:1px solid #ccc; text-align:center; min-width:60%;}
+  .doingShow .ok{ border-color:#66cc66; color:#009900; background:#f2fff2;}
+  .doingShow .warning{ border-color:#ff9900; color:#ff9900; background:#fff8e9;}
+  .doingShow .error{ border-color:#f02a2a; color:#f02a2a; background:#fff4f4;}
+  .doingShow .loading{ border-color:transparent; color:#666; background:transparent;}
+}
+#information .dialog-content strong{ color:red;}
+//疵点分类
+.defectType{
+  label{ vertical-align:middle;}
+  .itemShow{
+    display:inline-block; vertical-align:middle; max-width:calc(80% - 50px); overflow:hidden;
+    span{ float:left; margin:0 5px 5px 0; padding:8px 14px; border:1px solid #ccc; border-radius:$borderRadius;}
+    span.sel{ background:#1a59cb; color:#fff; border-color:#1a59cb;}
+  }
+}
+
+//标签打印
+#printBox{
+  .dialog-title{
+    background:$color1;
+    h4{
+      font-size:16px; color:#fff;
+      .fa:before{ font-size:22px; vertical-align:middle;}
+    }
+    .opBtn{
+      font-size:28px; color:$color3;
+      &:hover,&:active{ color:red;}
+    }
+  }
+  .dialog-content{
+    padding:15px;
+    .rexButton{
+      width:140px; height:60px; margin:10px;
+      .fa{ font-size:20px;}
+    }
+    b{ color:#f90; font-weight:normal;}
+  }
+}
+
+.leftPart{
+  width:175px; float:left; height:100%; background:$color1;
+  .viewList{ overflow:auto; height:100%;}
+  li{ padding:3px 3px 8px 3px; overflow:hidden; font-size:12px; cursor:pointer; background-color:$color4; color:#fff; border-bottom:1px solid $color1;}
+  li:hover, li:active{ background-color:#19bbbb;}
+  strong{ line-height:24px; font-weight:normal; position:relative; padding-left:10px;}
+  strong:before{ color:red; position:absolute; top:3px; right:-16px; font-size:14px;}
+  .statusBar{ padding-left:10px;}
+  .statusBar span{ display:inline-block; color:rgba(255,255,255,.8);}
+  .length{ background:#f90; margin-left:5px;}
+  .length:after{ content:'米';}
+  .finished{ background:green;}
+  li.freeDo{ font-size:16px; text-align: center; padding:12px 0;}
+  li.sel{ background-color:#fff; border-bottom:0;}
+  li.sel strong{ color:#333;}
+  li.sel span:first-child{ color:#666;}
+  li.freeDo.sel{ color:#333;}
+}
+.rightPart{ width:auto; margin-left:175px; height:100%; padding:0 10px 0 10px;}
+.leftPart.pinch{
+  width:20px;
+  & + .rightPart{ margin-left:20px;}
+}
+
+//裁剪端分类
+.status{
+  line-height:1.8em; padding:0 0.5em;
+  &:before{ color:#fff;}
+  &.customer{
+    background:#005be3;
+    &:before{ content:'客户订单';}
+  }
+  &.flaw{
+    background:#666;
+    &:before{ content:'疵点分裁';}
+  }
+  &.normal{
+    background:blue;
+    &:before{ content:'分裁入库';}
+  }
+}
+
+//裁剪操作按钮
+.buttonList{
+  display:inline-block; width:50%; height:100%; text-align:center; vertical-align: middle;
+  ul{ display:table; width:100%; height:100%;}
+  li{ display:table-cell; vertical-align: middle;}
+  .rexButton {
+    height: 100%; width:100%; padding:0; text-align: center; border-radius:0; border-left:1px solid rgba(0,0,0,.3); border-right:1px solid rgba(255,255,255,.3);
+    span {
+      display: block;  font-size: 14px; width: 100%;
+    }
+    .fa {
+      font-size: 30px; margin-bottom:10px;
+    }
+    .fa:before {
+      position: static;
+    }
+  }
+}
+.buttonList.type2 .rexButton{ width:16.5%;}
+
+.elseList{
+  margin-top:10px; width:100%; overflow:hidden; height:calc(100% - 240px);
+  h3{ border-bottom:1px solid #ddd; font-size:14px; color:$color4; line-height:24px;}
+  ul{ width:100%; overflow:auto; height:calc(100% - 30px);}
+  li{
+    border-bottom:1px dashed #ccc; position:relative; padding:12px 0; overflow:hidden;
+    .index{ float:left; background-image:linear-gradient(rgba(255,255,255,.2) 0, transparent 16px); line-height:20px; color:#fff; padding:0 10px;}
+    .block{ background-color:#3050c6;}
+    .point{ background-color:#cc1f1f; border-radius:10px;}
+    .showtext{ display:inline-block; font-size:12px;}
+    label{ color:#999; margin-left:10px;}
+    b{ font-size:14px; color:$color4; font-weight:normal;}
+    &.cutRecord{ text-align:right;}
+    .datetime{ position:absolute; left:0; top:50%; transform:translateY(-50%); width:45%; min-width:80px; text-align:left; color:#666;}
+    .op{ display:inline-block; max-width:55%; text-align:left;}
+    .opButton{ position:absolute; right:0; top:7px; font-size:30px; line-height:30px; height:30px; color:red; width:30px; border-radius:6px; text-align: center; cursor:pointer;}
+    .opButton:hover, .opButton:active{ background:red; color:#fff;}
+    .nodata{ display:block; text-align:center; padding:15px 0; color:#999;}
+  }
+}
+.flawList{ padding-right:5px; width:50%; float:left; height:100%;}
+.operateList{ padding-left:5px; width:50%; float:left; height:100%;}

@@ -1,0 +1,57 @@
+@charset "UTF-8";
+.cutPageShow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.cutPageShow:before { color: #069393; font-size: 100px; display: inline-block; transform: rotate(-90deg); vertical-align: middle; }
+.cutPageShow b { display: inline-block; vertical-align: middle; font-size: 36px; color: #999; max-width: 390px; font-weight: normal; }
+
+/* 表格样式 */
+.el-table th { padding: 6px 0; }
+.el-table th:first-child { text-align: center; }
+.el-table th:last-child { text-align: center; }
+.el-table td { padding: 6px 0; color: #333; }
+.el-table td .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
+.el-table td .opButton:hover, .el-table td .el-table td .opButton:active { background: #069393; color: #fff; }
+.el-table td .opButton:before { display: inline-block; }
+.el-table td .opButton.fa-cut:before { transform: rotate(-90deg); }
+.el-table td:first-child { text-align: center; }
+.el-table td:last-child { text-align: center; }
+.missionList .el-table th:nth-child(2) { text-align: center; }
+.missionList .el-table td:nth-child(2) { text-align: center; }
+.el-table .cell { padding-left: 3px; padding-right: 3px; }
+.el-table .el-checkbox__inner { width: 18px; height: 18px; }
+.el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
+.el-table .urgent { position: relative; padding-left: 15px; }
+.el-table .urgent:before { color: red; font-size: 16px; position: absolute; left: -3px; top: 3px; }
+.el-table .positionItem { white-space: nowrap; margin: 0 1px; }
+.el-table .positionItem:after { content: ','; }
+.el-table .positionItem:last-child:after { content: ''; }
+.el-table .datetime { word-break: break-all; line-height: 1.2em; font-size: 12px; }
+.el-table .datetime span { white-space: nowrap; margin: 0 1px; }
+.el-table .datetime span:after { content: ' '; }
+.el-table .datetime span:last-child:after { content: ''; }
+.el-table .boltNumber .cell { overflow: visible; }
+.el-table .boltNumber .fa { position: relative; }
+.el-table .boltNumber .fa:before { position: absolute; top: 0; left: -12px; }
+.el-table .boltNumber .fa.yes:before { content: '\f05d'; color: green; }
+.el-table .boltNumber .fa.no:before { content: '\f05c'; color: red; }
+.el-table .el-table__expanded-cell { padding: 0 10px 10px 10px; background-color: #aaa; }
+.el-table .el-table__expand-icon { font-size: 18px; }
+.el-table .lineHeightShow { line-height: 36px; }
+
+.rexTable th { background: #3679de; color: #fff; padding: 6px 0; text-align: left; }
+.rexTable th:first-child, .rexTable th:last-child { text-align: center; }
+.rexTable td { padding: 2px 0; text-align: left; }
+.rexTable td:first-child, .rexTable td:last-child { text-align: center; }
+.rexTable tr:nth-child(odd) { background: #e3eeff; }
+.rexTable tr:nth-child(even) { background: #d1e3fe; }
+.rexTable .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
+.rexTable .opButton:hover, .rexTable .el-table td .opButton:active { background: #069393; color: #fff; }
+.rexTable .opButton:before { display: inline-block; }
+.rexTable .opButton.fa-cut:before { transform: rotate(-90deg); }
+
+.el-table--striped .el-table__body tr.el-table__row--striped td { background: #e8f9f9; }
+.el-table--striped .el-table__body tr.el-table__row:hover td { background: #f6f6d9; }
+.el-table--striped .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff; }
+
+.el-pagination { text-align: center; margin-top: 10px; }
+
+/*# sourceMappingURL=mission.css.map */

@@ -1,0 +1,19 @@
+可能会有兼容问题
+1. 主菜单的展开/隐藏使用的是mouseover/mouseout事件，在移动端的支持性未测试，可能存在隐患
+2. hash值更改使用的是location.replace(url)直接重写整个url，并不产生新的历史记录，但不保证移动端对此的支持性，现代浏览器可能更多兼容replaceState的方法（注意，直接location.hash会产生新的历史记录）
+3. 由于某些处理放在vue的
+接口记录
+1. 按布卷编号bolt_no查询布卷（布段）信息列表  PATH.missionCheck=host/examine [GET]
+	parameter: bolt_no布卷编号
+	return: 
+	注意，在返回布卷数量为1的时候，返回值中包含detail详情信息，一般可以直接传递给详情页直接使用
+	
+
+B10000112
+
+跟APP协调要点
+1. 各页面的访问路径规整
+2. 打开详情页面webview的特有方法
+3. 关闭（隐藏）详情页面webview的特有方法
+4. 重新检验/继续裁剪对应的app方法--实际是打开操作详细webview的方法
+5. 声音播放接口

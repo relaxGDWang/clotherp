@@ -258,20 +258,26 @@ var EQUIPMENT=(function(){
 
 //登录状态的通用检测
 (function(){
+    //如在PC端执行，如果不是主框架页面，则跳转到主框架页面执行
+    var path=location.pathname.replace(/^\//,'');
+    if ([CFG.loginPage,CFG.defaultPage,CFG.framePage,'missionCheck.html','missionCut.html'].indexOf(path)<0){
+        if (!EQUIPMENT.app && window.parent===window) location.replace('/'+CFG.framePage);
+    }
+
     USER=EQUIPMENT.getCurrentUser();
     if (USER===''){  //调用出错的情况
         setTimeout(function(){
             EQUIPMENT.gotoHome();
         },2000);
         return;
-    }else if(USER.token===''){  //未登录的情况
+    }else if (USER.token===''){  //未登录的情况
         if (location.href.indexOf(CFG.defaultPage)<0 && location.href.indexOf(CFG.loginPage)<0){
             EQUIPMENT.gotoHome();
             return;
         }
     }
     //如果不是login页面，则调用设备连接状态刷新
-    if(location.href.indexOf(CFG.loginPage)<0) getEquipmentStatus();
+    if ([CFG.defaultPage,CFG.framePage].indexOf(path)>=0) getEquipmentStatus();
 
     //当前版本和版本号检测
     CFG.VER='3.0';

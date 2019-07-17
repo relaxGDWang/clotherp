@@ -52,6 +52,18 @@ gulp.task('output', function() {
 		.pipe(gulp.dest(outPath));
 });
 
+gulp.task('output2', function() {
+    gulp.src(inPath+'+(404|login|main|opFrame|pageMissioncheck|pageMissioncut|pageOperate|pageQuick|pageRecord).html')
+    //gulp.src(inPath+'login.html')
+        .pipe(useref())
+        .pipe(gulpif('*.js', uglify()))
+        .on('error', function (err) {
+            gutil.log(gutil.colors.red('[Error]'), err.toString());
+        })
+        .pipe(gulpif('*.css', cleanCSS()))
+        .pipe(gulp.dest(outPath));
+});
+
 gulp.task('fitver', function(){
 	//替换公共库
 	gulp.src(docOut+'library/**/!(*-*).{css,js}')

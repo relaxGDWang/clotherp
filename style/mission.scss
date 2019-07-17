@@ -1,0 +1,114 @@
+@charset "UTF-8";
+@import '../library/style/config2.scss';
+
+//裁剪任务列表样式
+.cutPageShow{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  &:before{ color:$color4; font-size:100px; display:inline-block; transform:rotate(-90deg); vertical-align:middle;}
+  b{ display:inline-block; vertical-align:middle; font-size:36px; color:#999; max-width:390px; font-weight:normal;}
+}
+
+/* 表格样式 */
+.el-table{
+  th{
+    padding:6px 0;
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  td{
+    padding:6px 0; color:#333;
+    //末尾操作按钮样式
+    .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+    .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+    .opButton:before{ display:inline-block;}
+    .opButton.fa-cut:before{ transform:rotate(-90deg);}
+    //内容列对齐
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  .missionList & th:nth-child(2){ text-align:center;}
+  .missionList & td:nth-child(2){ text-align:center;}
+
+  .cell{ padding-left:3px; padding-right:3px;}    //单元格通用
+  .el-checkbox__inner{ width:18px; height:18px;}  //多选框
+  .el-checkbox__inner::after{ left:6px; top:3px;}
+
+  .urgent{  //加急标记
+    position:relative; padding-left:15px;
+    &:before{
+      color:red; font-size:16px; position:absolute; left:-3px; top:3px;
+    }
+  }
+
+  //仓库位置
+  .positionItem{
+    white-space: nowrap; margin:0 1px;
+    &:after{ content:',';}
+    &:last-child:after{ content:'';}
+  }
+
+  //日期时间
+  .datetime{
+    word-break: break-all; line-height:1.2em; font-size:12px;
+    span{
+      white-space: nowrap; margin:0 1px;
+      &:after{ content:' ';}
+      &:last-child:after{ content:'';}
+    }
+  }
+
+  //检验状态
+  .boltNumber{
+    .cell{ overflow:visible;}
+    .fa {
+      position: relative;
+      &:before {
+        position: absolute;
+        top: 0;
+        left: -12px;
+      }
+      &.yes:before {
+        content: '\f05d';
+        color: green;
+      }
+      &.no:before {
+        content: '\f05c';
+        color: red;
+      }
+    }
+  }
+
+  //行扩展样式
+  .el-table__expanded-cell{ padding:0 10px 10px 10px; background-color: #aaa;}
+  .el-table__expand-icon{ font-size:18px;}
+
+  //行加高
+  .lineHeightShow{ line-height:36px;}
+}
+//扩展表格样式
+.rexTable{
+  th{
+    background:#3679de; color:#fff; padding:6px 0; text-align:left;
+    &:first-child, &:last-child{ text-align:center;}
+  }
+  td{
+    padding:2px 0; text-align: left;
+    &:first-child, &:last-child{ text-align:center;}
+  }
+  tr:nth-child(odd){ background:#e3eeff;}
+  tr:nth-child(even){ background:#d1e3fe;}
+  .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+  .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+  .opButton:before{ display:inline-block;}
+  .opButton.fa-cut:before{ transform:rotate(-90deg);}
+}
+
+.el-table--striped {
+  //表格间隔条颜色
+  .el-table__body tr.el-table__row--striped td { background: #e8f9f9;}
+  .el-table__body tr.el-table__row:hover td { background: #f6f6d9;}
+  .el-table__body tr.el-table__row.sel td { background: #f90; color: #fff;}
+}
+
+//分页显示
+.el-pagination{ text-align: center; margin-top:10px;}

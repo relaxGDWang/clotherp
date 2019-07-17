@@ -2,11 +2,15 @@
 @import '../library/style/config2.scss';
 $topBarHeight: 44px;
 
-.outFrame { overflow: hidden; width: 100%; height: 100%;}
-.main {  width: 100%; height: 100%;}
+@keyframes show{  //详情iframe的展现动画
+  0% { transform: translateY(100%);}
+  50%{ transform: translateY(50%); box-shadow:0 0 3px rgba(0,0,0,.1);}
+  100% { transform: translateY(0); box-shadow:0 0 10px rgba(0,0,0,.3);}
+}
+
 //标题栏
 .titleBar{
-  height:$topBarHeight; background:#eee; text-align:right; color:#202020;
+  height:$topBarHeight; background:#eee; text-align:right; color:#202020; z-index:20;
   .itemButton{
     float:left; line-height:$topBarHeight; padding:0 15px; font-size:14px; text-align:center; color:#666; cursor:pointer;
     &:hover{ background:$color3; color:#fff;}
@@ -26,20 +30,27 @@ $topBarHeight: 44px;
   }
   h1,h1.itemButton:hover{ background:#999; color:rgba(255,255,255,.8); font-size:14px; font-weight:normal;}
   h1.itemButton{ color:#fff; cursor:default;}
+  h1.itemButton:before{ display:inline-block; width:16px; text-align:center;}
 }
 
 /* 标题下拉菜单 */
 .dropItemShow{
   position:relative; width:50px;
-  ul{ position:absolute; top:$topBarHeight; right:0; max-height:0; z-index:10; overflow:hidden; width:162px; transition-property:max-height; transition-duration: .3s; opacity:.9;}
+  ul{ position:absolute; top:$topBarHeight; right:0; max-height:0; z-index:20; overflow:hidden; width:162px; transition-property:max-height; transition-duration: .3s; opacity:.9;}
   li{
     display:block; line-height:28px; border-bottom:1px solid #fff; background: $color1; color:#fff; text-align:center; padding:5px;
     &:before{ font-size:16px; margin-right:5px;}
     &:hover, &:active{ background:$color3; color:$color1;}
   }
-  &:hover, &:active{ background:$color1; color:#fff;}
-  &:hover ul, &:active ul{ max-height:300px; background: #3a8ee6;}
+  &.active{ background:$color1; color:#fff;}
+  &.active ul{ max-height:300px; background: #3a8ee6;}
 }
 
 /* 内容部分 */
-.mainContent{ height:calc(100% - 44px);}
+.mainContent{
+  height:calc(100% - 44px); z-index:10; position:relative;
+  &>iframe{ position:absolute; top:0; left:0;}
+  &>iframe.active{ z-index:10;}
+  iframe.details{}
+  iframe.details.active{ animation: show .5s; box-shadow:0 0 10px rgba(0,0,0,.3);}
+}

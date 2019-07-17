@@ -2,12 +2,12 @@
 //布匹分段及裁剪概览
 //外抛数据接口
 //len 当前的布长 80米，100米等等
-//perLen 刻度的最小长度，默认为10米
-//direction 当前的绘制方向，默认为right，可以设置为left，用于标记0点在右侧还是在左侧
+//*perLen 刻度的最小长度，默认为10米
+//*direction 当前的绘制方向，默认为right，可以设置为left，用于标记0点在右侧还是在左侧
 //flaws 疵点的数组列，推荐结构为 {start:起始位置,end:结束位置,width:宽度，如果为点则为0; type疵点类型，dot或者非dot}
-//cuts 裁剪的布段数组列，推荐结构为
+//*cuts 裁剪的布段数组列，推荐结构为
 //pos  当前记米器的位置坐标
-//select 当前任务长度
+//*select 当前任务长度
 //first  标记当前第一个布段
 //qualified 合格对象 {class,name}
 //原先button 项的disabled判定还有个条件 || select===''"

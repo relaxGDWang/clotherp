@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>后台管理</title>
+    <title>随手e裁</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <!-- build:css library/style/webcommon.css -->
     <link rel="stylesheet" href="library/style/font-awesome.css"/>
@@ -30,8 +30,8 @@
         </h1>
         <h2><span class="fa fa-hand-o-up"></span><strong>{{version}}</strong></h2>
         <div class="iconPart">
-            <a class="fa fa-cut" @click="EQUIPMENT.gotoPage('missionCut.html')"><strong>裁剪任务</strong></a>
-            <a class="fa fa-instagram" @click="EQUIPMENT.gotoPage('missionCheck.html')"><strong>检验任务</strong></a>
+            <a class="fa fa-cut" href="opFrame.html#%7B%22m%22%3A%22cut%22%7D"><strong>裁剪任务</strong></a>
+            <a class="fa fa-instagram" href="opFrame.html#%7B%22m%22%3A%22check%22%7D"><strong>检验任务</strong></a>
             <a class="fa fa-gears" @click="EQUIPMENT.setting()"><strong>系统设置</strong></a>
             <a class="fa fa-power-off" @click="loginOut()" v-if="username"><strong>退出登录</strong></a>
             <a class="fa fa-user" @click="loginIn()" v-if="!username"><strong>用户登录</strong></a>

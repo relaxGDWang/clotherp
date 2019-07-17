@@ -1,0 +1,100 @@
+@charset "UTF-8";
+@import '../library/style/config2.scss';
+
+.listContent{ height:100%;}
+
+/* 表格样式 */
+.el-table{
+  th{
+    padding:6px 0;
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  td{
+    padding:6px 0; color:#333;
+    //末尾操作按钮样式
+    .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+    .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
+    .opButton:before{ display:inline-block;}
+    .opButton.fa-cut:before{ transform:rotate(-90deg);}
+    //内容列对齐
+    &:first-child{ text-align:center;}
+    &:last-child{ text-align:center;}
+  }
+  .missionList & th:nth-child(2){ text-align:center;}
+  .missionList & td:nth-child(2){ text-align:center;}
+
+  .cell{ padding-left:3px; padding-right:3px;}    //单元格通用
+  .el-checkbox__inner{ width:18px; height:18px;}  //多选框
+  .el-checkbox__inner::after{ left:6px; top:3px;}
+
+  .urgent{  //加急标记
+    position:relative; padding-left:15px;
+    &:before{
+      color:red; font-size:16px; position:absolute; left:-3px; top:3px;
+    }
+  }
+
+  //仓库位置
+  .positionItem{
+    white-space: nowrap; margin:0 1px;
+    &:after{ content:',';}
+    &:last-child:after{ content:'';}
+  }
+
+  //日期时间
+  .datetime{
+    word-break: break-all; line-height:1.2em; font-size:12px;
+    span{
+      white-space: nowrap; margin:0 1px;
+      &:after{ content:' ';}
+      &:last-child:after{ content:'';}
+    }
+  }
+}
+
+//分页显示
+.el-pagination{ text-align: center; margin-top:10px;}
+
+//操作详细页面样式
+.mydetails{
+  .dialogFrame{ box-shadow:0 0 10px rgba(0,0,0,.3);}
+  .dialog-title{
+    background:$color1; border-bottom:0;
+    .opBtn{
+      font-size:28px; color:$color3;
+      &:hover,&:active{ color:red;}
+    }
+    ul{ padding-left:20px;}
+    li{ float:left; line-height:42px; color:rgba(255,255,255,.6); margin-right:15px;}
+    label{ color:#fff;}
+    .passStatus{
+      display:block; color:#fff; line-height: 30px; margin-top: 6px; padding: 0 10px; border-radius:6px; background:#999;
+      &.yes{ background:green;}
+      &.no{ background:red;}
+    }
+  }
+  &.extMenu .dialogFrame{ height:100%;}
+  .appShow &.extMenu .dialogFrame{ height:100%;}
+}
+
+.printBar{
+  padding:10px; margin:10px 0; border-bottom:1px solid #ccc;
+  b{ color:#f90;}
+}
+.buttonBar{ float:right;}
+.recordListShow{
+  padding:0 10px; margin:10px 0;
+  h3{ font-size:16px; color:$color4;}
+  ul{ display:table; width:100%;}
+  li{
+    display:table-row;
+    &:active{ background:$color3;}
+    span{ display:table-cell; border-bottom:1px dashed #ccc; padding:5px;}
+    span:nth-child(1){ width:50px; text-align:center;}
+    span:nth-child(2){ width:180px;}
+  }
+  .tr{
+    span{ border-bottom:1px solid #666; font-weight:bold;}
+  }
+}

@@ -11,8 +11,141 @@
     <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
     <link rel="stylesheet" href="library/style/cssreset3.css"/>
     <!-- endbuild -->
+    <!-- build:css style/record.css -->
+    <link rel="stylesheet" href="style/record.css"/>
+    <!-- endbuild -->
+    <!-- build:js script/configBG.js -->
+    <script src="script/configBG.js"></script>
+    <!-- endbuild -->
+    <!-- build:js script/common.js -->
+    <script src="script/common.js"></script>
+    <!-- endbuild -->
 </head>
 <body>
-record list
+    <div class="outFrame" id="app">
+        <div class="main">
+            <div class="listContent">
+                <el-table ref="multipleTable" tooltip-effect="dark" :data="record" :height="UI.listHeight" stripe>
+                    <el-table-column label="#" width="50" key="colIndex">
+                        <template slot-scope="scope">
+                            <span>{{cutpage.pageSize*(cutpage.page2-1)+scope.$index+1}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="product_code" label="商品编号" key="colProduct"></el-table-column>
+                    <el-table-column label="卷号" width="190" class-name="boltNumber" key="colBoltNo">
+                        <template slot-scope="scope">
+                            <div class="fa" :class="scope.row.qualified.class">{{scope.row.bolt_no}}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="action_type" label="操作类型" key="colOperation"></el-table-column>
+                    <el-table-column prop="content" label="操作内容" key="colOperation"></el-table-column>
+                    <el-table-column prop="user" label="操作人" key="colUser"></el-table-column>
+                    <el-table-column label="执行时间" key="colDatetime">
+                        <template slot-scope="scope">
+                            <div class="datetime">
+                                <span>{{scope.row.updated_at[0]}}</span> <span>{{scope.row.updated_at[1]}}</span>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="" key="colOpButton">
+                        <template slot-scope="scope">
+                            <span class="opButton fa fa-file-text-o" @click="openRecordDetails(scope.row.bolt_id)"></span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination background layout="prev, pager, next" :current-page="cutpage.page" :page-size="cutpage.pageSize" :total="cutpage.total" @current-change="getRecordList($event)"></el-pagination>
+            </div>
+        </div>
+
+        <!-- ajax加载提示框 -->
+        <div class="extDialog" id="loading" noclick="noclick">
+            <div class="dialogFrame">
+                <div class="dialog-content">
+                    <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div> <span class="diy">正在加载数据，请稍等...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ajax出错信息提示 -->
+        <div class="extDialog" id="information" noclick="noclick">
+            <div class="dialogFrame">
+                <div class="dialog-title">
+                    <h4><span class="fa fa-info-circle"></span> 系统信息提示</h4>
+                </div>
+                <div class="dialog-buttonBar">
+                    <button class="rexButton opBtn btn-close">取消</button>
+                    <button class="rexButton opBtn btn-cancel">不合格</button>
+                    <button class="rexButton opBtn btn-sure">确定</button>
+                </div>
+                <div class="dialog-content">
+                    <div class="diy"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 轻量信息提示 -->
+        <div class="miniDialog bottom" id="resultShow">
+            <div class="dialog-content">
+                <span class="diy"></span>
+            </div>
+        </div>
+
+        <!-- 操作记录详细页 -->
+        <div class="extMenu bottom mydetails none" id="opRecordDetails" maskfree="true">
+            <div class="dialogFrame">
+                <div class="dialog-title">
+                    <span class="right opBtn btn-close">&times;</span>
+                    <ul class="nohead" v-if="recordObject.bolt_id">
+                        <li><label>商品 </label><span>{{recordObject.product_code}}</span></li>
+                        <li><label>卷号 </label><span>{{recordObject.bolt_no}}</span></li>
+                        <li><label>流程 </label><span>{{recordObject.craft}}</span></li>
+                        <li><label>剩余布长 </label><span>{{recordObject.current_length}}米</span></li>
+                    </ul>
+                </div>
+                <div class="dialog-content">
+                    <div class="printBar">
+                        <span>布匹标签</span>
+                        <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
+                        <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                        <div class="buttonBar">
+                            <button class="rexButton" color="info" @click="gotoURLClick(recordObject,'check')"><span class="fa fa-instagram"></span>&emsp;重新检验</button>
+                            <button class="rexButton" color="warning" @click="gotoURLClick(recordObject,'cut')"><span class="fa fa-cut"></span>&emsp;继续裁剪</button>
+                        </div>
+                    </div>
+                    <div class="recordListShow">
+                        <h3>操作记录详情</h3>
+                        <ul class="nohead" v-if="recordObject.history && recordObject.history.length>0">
+                            <li class="tr">
+                                <span></span><span>时间</span><span>操作人</span><span>操作类型</span><span>操作内容</span><span>操作</span>
+                            </li>
+                            <li v-for="(item, index) in recordObject.history">
+                                <span>{{index+1}}</span>
+                                <span>{{item.updated_at}}</span>
+                                <span>{{item.user}}</span>
+                                <span>{{item.action_type}}</span>
+                                <span>{{item.content}}</span>
+                                <span>
+                                <button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button>
+                                <button class="rexButton" v-if="item.action_type==='分裁'" @click="doRecheck(item.bolt_id)">重新检验</button>
+                            </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- build:js library/js/webcommon.js -->
+    <script src="library/js/jquery.min.js"></script>
+    <script src="library/js/vue.min.js"></script>
+    <script src="library/js/rexfunction.js"></script>
+    <script src="library/js/rexajax2.js"></script>
+    <script src="library/js/rexdialog.js"></script>
+    <script src="library/js/elementui2.4.11.js"></script>
+    <!-- endbuild -->
+    <!-- build:js script/record.js -->
+    <script src="/script/record.js"></script>
+    <!-- endbuild -->
 </body>
 </html>

@@ -1,6 +1,6 @@
 body { background: #000; }
 
-.outFrame { width: 100%; height: 100%; overflow: hidden; position: relative; text-align: center; }
+.outFrame { width: 100%; height: 100%; overflow: hidden; position: relative; text-align: center; background-color: transparent; }
 .outFrame:before { content: ''; display: inline-block; width: 0; height: 100%; vertical-align: middle; overflow: hidden; }
 .outFrame:after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: url(images/loginBack.jpg) no-repeat center; background-size: cover; opacity: .9; transform-origin: 50% 50%; transition-property: transform, filter, opacity; transition-duration: 1s; }
 .outFrame.focus:after { transform: scale(1.02, 1.02); filter: blur(5px); opacity: .3; }

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>随手e裁--快速检验</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <!-- build:css library/style/webcommon.css -->
+    <link rel="stylesheet" href="library/style/font-awesome.css"/>
+    <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="library/style/cssreset3.css"/>
+    <!-- endbuild -->
+    <!-- build:css style/quick.css -->
+    <link rel="stylesheet" href="style/quick.css"/>
+    <!-- endbuild -->
+    <!-- build:js script/configBG.js -->
+    <script src="script/configBG.js"></script>
+    <!-- endbuild -->
+    <!-- build:js script/common.js -->
+    <script src="script/common.js"></script>
+    <!-- endbuild -->
+</head>
+<body>
+    <div class="outFrame" id="app">
+        <div class="main">
+            <div class="quickPart">
+                <div class="searchPartShow" :class="{'showList':searchResult.length>0}">
+                    <div class="fillBar">
+                        <span class="fa" :class="{'fa-instagram':opType==='check','fa-cut':opType==='cut'}"></span>
+                        <span>请用扫码枪扫码或手工输入卷号以查找所需布匹</span><br/>
+                        <input ref="searchInput" class="numberSearch" type="tel" placeholder="卷号查询" v-model.trim="bolt_no" @keyup="changeSearchNumber($event)" @focus="$event.target.select()"/>
+                        <button class="numberSearchButton fa fa-trash-o" @click="clearSearchNumber()"> </button>
+                        <button ref="searchButton" class="numberSearchButton fa fa-search" @click="changeSearchNumber()"> </button>
+                    </div>
+                </div>
+                <div class="searchResultShow">
+                    <table class="rexTable" v-if="opType==='check'">
+                        <thead>
+                        <tr>
+                            <th width="30">#</th>
+                            <th>商品编号</th>
+                            <th>卷号</th>
+                            <th>流程</th>
+                            <th>仓位</th>
+                            <th>样册</th>
+                            <th>检验</th>
+                            <th>检验米数</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item,index) in searchResult">
+                            <td>{{index+1}}</td>
+                            <td>{{item.product_code}}</td>
+                            <td>{{item.bolt_no}}</td>
+                            <td>{{item.craft}}</td>
+                            <td>{{item.position.join(',')}}</td>
+                            <td>{{item.book_code}}</td>
+                            <td>{{item.examine}}</td>
+                            <td>{{item.examined_quantity? item.examined_quantity+'米':'--'}}</td>
+                            <td><span class="opButton fa fa-instagram" @click="openDetails(item.bolt_id)"></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="rexTable" v-if="opType==='cut'">
+                        <thead>
+                        <tr>
+                            <th width="30">#</th>
+                            <th>商品编号</th>
+                            <th>卷号</th>
+                            <th>类型</th>
+                            <th>流程</th>
+                            <th>仓位</th>
+                            <th>裁剪概况</th>
+                            <th>布长</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item,index) in searchResult">
+                            <td>{{index+1}}</td>
+                            <td>{{item.product_code}}</td>
+                            <td>{{item.bolt_no}}</td>
+                            <td>{{item.catalog}}</td>
+                            <td>{{item.craft}}</td>
+                            <td>{{item.position.join(',')}}</td>
+                            <td>{{item.items}}</td>
+                            <td>{{item.current_length}}米</td>
+                            <td><span class="opButton fa fa-cut" @click="openDetails(item.bolt_id)"></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ajax加载提示框 -->
+        <div class="extDialog" id="loading" noclick="noclick">
+            <div class="dialogFrame">
+                <div class="dialog-content">
+                    <div class="loadingBlock"><div></div><div></div><div></div><div></div><div></div></div> <span class="diy">正在加载数据，请稍等...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ajax出错信息提示 -->
+        <div class="extDialog" id="information" noclick="noclick">
+            <div class="dialogFrame">
+                <div class="dialog-title">
+                    <h4><span class="fa fa-info-circle"></span> 系统信息提示</h4>
+                </div>
+                <div class="dialog-buttonBar">
+                    <button class="rexButton opBtn btn-close">取消</button>
+                    <button class="rexButton opBtn btn-cancel">不合格</button>
+                    <button class="rexButton opBtn btn-sure">确定</button>
+                </div>
+                <div class="dialog-content">
+                    <div class="diy"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 轻量信息提示 -->
+        <div class="miniDialog bottom" id="resultShow">
+            <div class="dialog-content">
+                <span class="diy"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- build:js library/js/webcommon.js -->
+    <script src="library/js/jquery.min.js"></script>
+    <script src="library/js/vue.min.js"></script>
+    <script src="library/js/rexfunction.js"></script>
+    <script src="library/js/rexajax2.js"></script>
+    <script src="library/js/rexdialog.js"></script>
+    <script src="library/js/elementui2.4.11.js"></script>
+    <!-- endbuild -->
+    <!-- build:js script/quick.js -->
+    <script src="/script/quick.js"></script>
+    <!-- endbuild -->
+</body>
+</html>
