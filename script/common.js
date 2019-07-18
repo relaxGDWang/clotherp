@@ -276,8 +276,13 @@ var EQUIPMENT=(function(){
             return;
         }
     }
-    //如果不是login页面，则调用设备连接状态刷新
-    if ([CFG.defaultPage,CFG.framePage].indexOf(path)>=0) getEquipmentStatus();
+    //PC端，如果是main或者opFrame，则调用设备连接状态刷新
+    if (!EQUIPMENT.app){
+        if ([CFG.defaultPage,CFG.framePage].indexOf(path)>=0) getEquipmentStatus();
+    }else{
+        //如果是移动端，目前只有两个页面会用到设备检验，一个是操作详细，一个是操作记录
+        if (['pageRecord.html','pageOperate.html'].indexOf(path)>=0) getEquipmentStatus();
+    }
 
     //当前版本和版本号检测
     CFG.VER='3.0';
