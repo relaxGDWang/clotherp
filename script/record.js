@@ -116,6 +116,7 @@ var vu=new Vue({
             }else{
                 if (EQUIPMENT.app){
                     //NOTICE 调用app对应的方法
+                    EQUIPMENT.detailsOpen(type,obj.bolt_id);
                 }else{
                     window.parent.vu.openDetails(type,obj.bolt_id);
                 }
@@ -140,12 +141,7 @@ var ajax=relaxAJAX({
             cname:'error',
             btncancel:'',
             btnclose:'',
-            btnsure:'确定',
-            /*closeCallback: function(id, dialogType, buttonType){
-                if (buttonType==='sure' && vu.UI.view==='quick'){
-                    vu.$refs.searchInput.focus();
-                }
-            }*/
+            btnsure:'确定'
         });
     }
 });

@@ -3,8 +3,7 @@
 $topBarHeight: 44px;
 
 @keyframes show{  //详情iframe的展现动画
-  0% { transform: translateY(100%);}
-  50%{ transform: translateY(50%); box-shadow:0 0 3px rgba(0,0,0,.1);}
+  0% { transform: translateY(100%); box-shadow:0 0 0 rgba(0,0,0,0);}
   100% { transform: translateY(0); box-shadow:0 0 10px rgba(0,0,0,.3);}
 }
 

@@ -53,10 +53,12 @@ var vu=new Vue({
             this.searchResult=[];
         },
         openDetails: function(bid){   //打开检验/裁剪的操作详情对话框
+            var opType=this.opType;
+            alert(opType+','+bid);
             if (EQUIPMENT.app){
                 //NOTICE 调用app对应的方法
+                EQUIPMENT.detailsOpen(opType,bid);
             }else{
-                var opType=this.opType;
                 window.parent.vu.openDetails(opType,bid);
             }
         }

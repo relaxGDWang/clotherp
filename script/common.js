@@ -233,6 +233,49 @@ var EQUIPMENT=(function(){
         }
     }
 
+    //打开操作详细webview
+    function detailsOpen(op,bid){
+        alert('show');
+        if (app){
+            try{
+                alert(JSON.stringify({op:op,bid:bid}));
+                window.register_js.detailsOpen(JSON.stringify({op:op,bid:bid}));
+                alert('doing');
+            }catch(e){
+                alert('122312');
+                showErrorResult('调用打开APP操作详细页面方法出错了。');
+            }
+        }else{
+            showErrorResult('请在APP中使用打开操作详细页面的功能。');
+        }
+    }
+
+    //关闭操作详细webview
+    function detailsClose(){
+        if (app){
+            try{
+                window.register_js.detailsClose();
+            }catch(e){
+                showErrorResult('调用关闭APP操作详细页面方法出错了。');
+            }
+        }else{
+            showErrorResult('请在APP中使用关闭操作详细页面的功能。');
+        }
+    }
+
+    //播放提示音
+    function audioPlay(){
+        if (app){
+            try{
+                window.register_js.audioPlay();
+            }catch(e){
+                console.log('调用APP的提示音播放功能出错了。');
+            }
+        }else{
+            console.log('请在APP中使用播放提示音的功能。');
+        }
+    }
+
     function showErrorResult(msg){
         if (window.dialog){
             dialog.open('resultShow',{content:msg});
@@ -252,7 +295,10 @@ var EQUIPMENT=(function(){
         gotoHome: gotoHome,
         gotoPage: gotoPage,
         taskList: taskList,
-        loginTimeout: loginTimeout
+        loginTimeout: loginTimeout,
+        detailsOpen: detailsOpen,
+        detailsClose: detailsClose,
+        audioPlay :audioPlay
     };
 })();
 

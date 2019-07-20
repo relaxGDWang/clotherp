@@ -80,6 +80,7 @@ var vu=new Vue({
         openDetails: function(bid){
             if (EQUIPMENT.app){
                 //NOTICE 调用app对应的方法
+                EQUIPMENT.detailsOpen('check',bid);
             }else{
                 window.parent.vu.openDetails('check',bid);
             }

@@ -56,6 +56,7 @@ var vu=new Vue({
         thisClose: function(){
             if (EQUIPMENT.app){
                 //NOTICE 调用app的方法
+                EQUIPMENT.detailsClose();
             }else{
                 window.parent.vu.closeDetails();
             }
@@ -527,6 +528,14 @@ var vu=new Vue({
                     vu.printDoginHistory(vu.editObject.cutouts[0],'',2);
                 }
             });
+        },
+        audioPlay: function(){
+            if (EQUIPMENT.app){
+                //NOTICE 调用app对应的方法
+                EQUIPMENT.audioPlay();
+            }else{
+                $('#aduioShow')[0].play();
+            }
         }
     },
     beforeMount: function () {
@@ -555,9 +564,17 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
-        'currentPosition': function(newVal){
+        'currentPosition': function(newVal,oldVal){
             if (this.positionCallBack){
                 this.positionCallBack(newVal);
+            }
+            if (this.editObject && this.showSelInfo.index!==''){
+                var dis=this.showSelInfo.quantity.replace('米','')-0;
+                if ((oldVal==='' || oldVal<dis) && newVal>=dis){
+                    this.audioPlay();
+                }else if(oldVal && oldVal>dis && newVal<=dis){
+                    this.audioPlay();
+                }
             }
         }
     }
