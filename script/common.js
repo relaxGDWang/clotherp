@@ -235,14 +235,10 @@ var EQUIPMENT=(function(){
 
     //打开操作详细webview
     function detailsOpen(op,bid){
-        alert('show');
         if (app){
             try{
-                alert(JSON.stringify({op:op,bid:bid}));
                 window.register_js.detailsOpen(JSON.stringify({op:op,bid:bid}));
-                alert('doing');
             }catch(e){
-                alert('122312');
                 showErrorResult('调用打开APP操作详细页面方法出错了。');
             }
         }else{
