@@ -44,7 +44,8 @@
             <span class="eqStatus fa fa-signal" :class="equipment.neter"></span>
         </div>
         <div class="mainContent" id="showContent">
-            <iframe :src="item" v-for="(item,key) in UI.iframeDom" :class="{'details':key==='operate','active':key===UI.iframeShow}"></iframe>
+            <div class="maskShow"></div>
+            <iframe :src="item" v-for="(item,key) in UI.iframeDom" :class="{'details':key==='operate' || key==='recordview','active':key===UI.iframeShow}"></iframe>
         </div>
     </div>
 

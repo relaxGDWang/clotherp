@@ -9,9 +9,15 @@
   84% { transform: translateX(-10); }
   96% { transform: translateX(10); }
   100% { transform: translateX(0); } }
-.occupation { position: absolute; width: 100%; height: 100%; z-index: 30; text-align: center; background-color: #eee; }
+.occupation { position: absolute; width: 100%; height: calc(100% - 40px); top: 40px; z-index: 30; text-align: center; background-color: #fff; }
 .occupation:before { display: inline-block; content: ''; width: 0; height: 100%; vertical-align: middle; }
-.occupation .loadingBlock { vertical-align: middle; }
+.occupation .emptyShow { display: inline-block; vertical-align: middle; position: relative; }
+
+.emptyShow > span { display: inline-block; }
+.emptyShow .logoSvg { width: 64px; height: 64px; background: url(../logo.svg) no-repeat; background-size: auto 100%; }
+.emptyShow .titleSvg { width: 240px; height: 72px; background: url(../logoWord.svg) no-repeat; background-size: auto 100%; }
+.emptyShow .ver { font-size: 26px; position: relative; top: -12px; right: -10px; font-weight: bold; }
+.emptyShow .page { position: absolute; right: -10px; top: 85px; background: #069393; color: #ffff; padding: 5px 10px; font-size: 20px; }
 
 .main .dialog-title { background: #336666; border-bottom: 0; }
 .main .dialog-title .opBtn { font-size: 28px; color: #cccc99; }

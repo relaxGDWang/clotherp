@@ -80,7 +80,15 @@ var vu=new Vue({
             });
         },
         _changeHash: function(){
+            if (!this.UI.firstLoad) dialog.close('information');
             var hash=decodeURIComponent(location.hash.replace(/^#/,''));
+            if (!hash){
+                //打开默认页面
+                this.op='';
+                this.bid='';
+                this.editObject={};
+                return false;
+            }
             try{
                 hash = JSON.parse(hash);
                 if (!hash.op || !hash.bid) throw 'Parameters were lost';
@@ -113,6 +121,7 @@ var vu=new Vue({
         _getDetails: function(start){
             //清空可能已有的数据
             this.editObject={};
+            if (!this.bid) return;
             ajax.send({
                 url: PATH.missionCheckDetails,
                 data: {bolt_id: vu.bid, start: (start || undefined)},
@@ -600,7 +609,10 @@ var ajax=relaxAJAX({
             btnsure:'确定',
             closeCallback: function(id, dialogType, buttonType){
                 if (buttonType==='sure'){
-                    if (!vu.editObject.bolt_id) vu.thisClose();
+                    if (!vu.editObject.bolt_id){
+                        vu.thisClose();
+                        return false;
+                    }
                 }
             }
         });
@@ -636,4 +648,7 @@ $(function(){
 
     //获得疵点分类
     vu.getDefectType();
+
+    //添加版本号
+    $('.emptyShow .ver').text('V'+CFG.VER);
 });

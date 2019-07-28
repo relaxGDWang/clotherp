@@ -1,0 +1,56 @@
+@charset "UTF-8";
+@import '../library/style/config2.scss';
+
+//遮盖层，用于缓解vue在初始加载中的第一视觉混乱的情况
+.occupation{
+  position:absolute; width:100%; height:calc(100% - 40px); top:40px; z-index: 30; text-align:center; background-color:#fff;
+  &:before{ display:inline-block; content:''; width:0; height:100%; vertical-align: middle;}
+  .emptyShow{ display:inline-block; vertical-align:middle; position:relative;}
+}
+.emptyShow{
+  &>span{ display:inline-block;}
+  .logoSvg{ width:64px; height:64px; background:url(../logo.svg) no-repeat; background-size: auto 100%;}
+  .titleSvg{ width:240px; height:72px; background:url(../logoWord.svg) no-repeat; background-size: auto 100%;}
+  .ver{ font-size:26px; position:relative; top:-12px; right:-10px; font-weight:bold;}
+  .page{ position:absolute; right:-10px; top:85px; background:$color4; color:#ffff; padding:5px 10px; font-size:20px; }
+}
+
+.printBar{
+  padding:10px; margin:10px 0; border-bottom:1px solid #ccc;
+  b{ color:#f90;}
+}
+.buttonBar{ float:right;}
+.recordListShow{
+  padding:0 10px; margin:10px 0;
+  h3{ font-size:16px; color:$color4;}
+  ul{ display:table; width:100%;}
+  li{
+    display:table-row;
+    &:active{ background:$color3;}
+    span{ display:table-cell; border-bottom:1px dashed #ccc; padding:5px;}
+    span:nth-child(1){ width:50px; text-align:center;}
+    span:nth-child(2){ width:180px;}
+  }
+  .tr{
+    span{ border-bottom:1px solid #666; font-weight:bold;}
+  }
+}
+
+.main{
+  .dialog-title{
+    background:$color1; border-bottom:0;
+    .opBtn{
+      font-size:28px; color:$color3;
+      &:hover,&:active{ color:red;}
+    }
+    ul{ padding-left:20px;}
+    li{ float:left; line-height:42px; color:rgba(255,255,255,.6); margin-right:15px;}
+    label{ color:#fff;}
+    .passStatus{
+      display:block; color:#fff; line-height: 30px; margin-top: 6px; padding: 0 10px; border-radius:6px; background:#999;
+      &.yes{ background:green;}
+      &.no{ background:red;}
+    }
+  }
+  .dialog-content{ height:100%;}
+}

@@ -28,7 +28,8 @@
 
 /* 内容部分 */
 .mainContent { height: calc(100% - 44px); z-index: 10; position: relative; }
-.mainContent > iframe { position: absolute; top: 0; left: 0; }
+.mainContent .maskShow { position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: #fff; z-index: 5; }
+.mainContent > iframe { position: absolute; top: 0; left: 0; z-index: 0; }
 .mainContent > iframe.active { z-index: 10; }
 .mainContent iframe.details.active { animation: show .5s; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
 

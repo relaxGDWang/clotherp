@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:#045450; stroke:#045450; stroke-miterlimit:10;}
-	.st1{fill:#FFFFFF; stroke:#045450; stroke-miterlimit:10;}
+	.st0{fill:#336666; stroke:#336666; stroke-miterlimit:10;}
+	.st1{fill:#FFFFFF; stroke:#336666; stroke-miterlimit:10;}
 </style>
 <g>
 	<polygon class="st0" points="47.273,32.683 53.173,51.783 6.073,62.483 11.523,57.917 10.173,25.183 17.273,54.183"/>

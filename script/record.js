@@ -66,60 +66,12 @@ var vu=new Vue({
             }
             return result;
         },
-        openRecordDetails: function(id){   //获得操作日志详细
-            var dialogConfig={
-                closeCallback: function(){
-                    vu.recordDetails={};
-                }
-            };
-            ajax.send({
-                url: PATH.recordDetails,
-                data: {id: id},
-                success: function(data){
-                    dialog.close('loading');
-                    vu.recordObject=data;
-                    vu.recordObject.product_code=vu.recordKey[id].product_code;
-                    dialog.open('opRecordDetails',dialogConfig);
-                }
-            });
-        },
-        printDoginHistory: function(dataObject,opsition,count){  //打印历史记录的标签
-            var printStr;
-            if (opsition==='start' || opsition==='end'){
-                if (dataObject.current_length<=0){
-                    dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
-                    return;
-                }
-            }
-            if (opsition==='start'){
-                if (dataObject.start==='start_a'){
-                    printStr=dataObject.print_head;
-                }else{
-                    printStr=dataObject.print_tail;
-                }
-            }else if(opsition==='end'){
-                if (dataObject.start==='start_a'){
-                    printStr=dataObject.print_tail;
-                }else{
-                    printStr=dataObject.print_head;
-                }
+        openRecordDetails: function(bid){   //获得操作日志详细
+            if (EQUIPMENT.app){
+                //NOTICE 调用app对应的方法
+                EQUIPMENT.detailsOpen('record',bid);
             }else{
-                printStr=dataObject? dataObject.print_data:'';
-            }
-            printStr=JSON.stringify(printStr);
-            console.log(printStr);
-            EQUIPMENT.print(printStr,count);
-        },
-        gotoURLClick: function(obj,type){ //操作记录页面的按钮点击处理
-            if (obj.current_length<=0){
-                dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
-            }else{
-                if (EQUIPMENT.app){
-                    //NOTICE 调用app对应的方法
-                    EQUIPMENT.detailsOpen(type,obj.bolt_id);
-                }else{
-                    window.parent.vu.openDetails(type,obj.bolt_id);
-                }
+                window.parent.vu.openRecordView(bid);
             }
         }
     }

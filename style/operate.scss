@@ -16,9 +16,16 @@
 
 //遮盖层，用于缓解vue在初始加载中的第一视觉混乱的情况
 .occupation{
-  position:absolute; width:100%; height:100%; z-index: 30; text-align:center; background-color: #eee;
+  position:absolute; width:100%; height:calc(100% - 40px); top:40px; z-index: 30; text-align:center; background-color:#fff;
   &:before{ display:inline-block; content:''; width:0; height:100%; vertical-align: middle;}
-  .loadingBlock{ vertical-align:middle;}
+  .emptyShow{ display:inline-block; vertical-align:middle; position:relative;}
+}
+.emptyShow{
+  &>span{ display:inline-block;}
+  .logoSvg{ width:64px; height:64px; background:url(../logo.svg) no-repeat; background-size: auto 100%;}
+  .titleSvg{ width:240px; height:72px; background:url(../logoWord.svg) no-repeat; background-size: auto 100%;}
+  .ver{ font-size:26px; position:relative; top:-12px; right:-10px; font-weight:bold;}
+  .page{ position:absolute; right:-10px; top:85px; background:$color4; color:#ffff; padding:5px 10px; font-size:20px; }
 }
 
 .main{

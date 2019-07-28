@@ -35,7 +35,8 @@ var vu=new Vue({
                 quick:'pageQuick.html?v='+Math.random(),    //快速裁剪/检验，带hash参数，用于标记是裁剪还是检验 #cut/check
                 check:'pageMissioncheck.html?v='+Math.random(), //检验任务列表，不带参数
                 cut:'pageMissioncut.html?v='+Math.random(),   //裁剪任务列表，不带参数
-                operate:'pageOperate.html?v='+Math.random()   //裁剪/检验详情页，带hash参数 #{b:布卷编号,id:布卷id号,op:cut/check}
+                operate:'pageOperate.html?v='+Math.random(),  //裁剪/检验详情页，带hash参数 #{b:布卷编号,id:布卷id号,op:cut/check}
+                recordview:'pageRecordView.html?v='+Math.random() //历史记录详情
             },
             iframeDom:{},  //用于存放当前加载的iframe对象
             iframeShow:''  //标记当前展示的是哪个iframe
@@ -127,12 +128,25 @@ var vu=new Vue({
                     this.UI.iframeShow='quick';
                     break;
                 case 'record':
-                    this.UI.iframeShow='record';
+                    this.UI.iframeShow='recordview';
                     break;
                 case 'mission':  //目前只有裁剪任务可能打开详情页面
                     this.UI.iframeShow='check';
                     break;
             }
+        },
+        openRecordView: function(bid){   //打开操作记录详情
+            var hash={op:'record',bid:bid};
+            var url=this.UI.iframeSource.recordview+'#'+encodeURIComponent(JSON.stringify(hash));
+            if ('recordview' in this.UI.iframeDom){
+                this.UI.iframeDom.recordview=url;
+            }else{
+                Vue.set(this.UI.iframeDom,'recordview',url);
+            }
+            this.UI.iframeShow='recordview';
+        },
+        closeRecordView: function(){   //关闭操作记录详情
+            this.UI.iframeShow='record';
         },
         refresh: function(){   //刷新当前的iframe，刷新原则为把v的随机数进行更改
             var nowURL=this.UI.iframeDom[this.UI.iframeShow];
