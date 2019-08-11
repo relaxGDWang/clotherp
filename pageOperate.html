@@ -21,8 +21,8 @@
     <script src="script/common.js"></script>
     <!-- endbuild -->
 </head>
-<body>
-    <div class="outFrame" id="app">
+<body class="app">
+    <div class="outFrame" :class="op==='check'? 'check':'cut'" id="app">
         <audio id="aduioShow" src="audio.mp3" preload="preload"></audio>
         <div class="main">
             <div class="occupation" v-if="!editObject.bolt_id">
@@ -30,7 +30,7 @@
                     <span class="logoSvg"></span>
                     <span class="titleSvg"></span>
                     <span class="ver"></span>
-                    <span class="page">裁剪详情操作界面</span>
+                    <!--<span class="page">裁剪详情操作界面</span>-->
                 </div>
             </div>
             <div class="dialog-title">

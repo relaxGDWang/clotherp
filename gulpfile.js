@@ -53,7 +53,7 @@ gulp.task('output', function() {
 });
 
 gulp.task('output2', function() {
-    gulp.src(inPath+'+(404|login|main|opFrame|pageMissioncheck|pageMissioncut|pageOperate|pageQuick|pageRecord).html')
+    gulp.src(inPath+'+(404|login|main|opFrame|pageMissioncheck|pageMissioncut|pageOperate|pageQuick|pageRecord|pageRecordView).html')
     //gulp.src(inPath+'login.html')
         .pipe(useref())
         .pipe(gulpif('*.js', uglify()))

@@ -16,23 +16,26 @@
 }
 
 .printBar{
-  padding:10px; margin:10px 0; border-bottom:1px solid #ccc;
+  padding:10px; margin:10px 0; background-color:#f2f2f2;
   b{ color:#f90;}
+  h3{ font-size:16px; color:$color4; float:left; margin-right:60px; line-height:40px;}
 }
 .buttonBar{ float:right;}
 .recordListShow{
-  padding:0 10px; margin:10px 0;
-  h3{ font-size:16px; color:$color4;}
-  ul{ display:table; width:100%;}
+  padding:0 10px; height:calc(100% - 93px); overflow:auto;
+  ul{ display:table; width:100%; border-collapse: collapse; border-spacing: 0;}
+  li:nth-child(odd){
+    span{ background:#e7f5ff;}
+  }
   li{
     display:table-row;
-    &:active{ background:$color3;}
     span{ display:table-cell; border-bottom:1px dashed #ccc; padding:5px;}
+    &:active span{background:$color3;}
     span:nth-child(1){ width:50px; text-align:center;}
     span:nth-child(2){ width:180px;}
   }
-  .tr{
-    span{ border-bottom:1px solid #666; font-weight:bold;}
+  .th{
+    &:active span,span{ background:#c5e8ff; color:#0c5a8d; font-size:16px; border-bottom:1px solid #2d8bc9; padding:8px 5px;}
   }
 }
 
@@ -53,4 +56,19 @@
     }
   }
   .dialog-content{ height:100%;}
+}
+
+/* app样式协调 */
+.app{
+  .main{
+    .dialog-title{
+      background:#fff; z-index:3; border-bottom:0;
+      ul{ text-align:center;}
+      li{ float:none; display:inline-block;}
+      .opBtn{ display:none;}
+      label{ color:#999;}
+      span{ color:#333;}
+    }
+    .occupation{ height:100%; top:0;}
+  }
 }

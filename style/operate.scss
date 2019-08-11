@@ -333,3 +333,33 @@
 }
 .flawList{ padding-right:5px; width:50%; float:left; height:100%;}
 .operateList{ padding-left:5px; width:50%; float:left; height:100%;}
+
+/* app样式协调 */
+.app{
+  .main{
+    .dialog-title{
+      background:#fff; z-index:3; border-bottom:0;
+      .opBtn{ display:none;}
+      label{ color:#999;}
+      span{ color:#333;}
+    }
+    .occupation{ height:100%; top:0;}
+  }
+  .cut>.main .dialog-title:before{ content:''; position:absolute; z-index:3; height:42px; width:175px; background:#3c8dbc; left:0; top:0;}
+  .cut>.main .dialog-title ul{ padding-left:185px;}
+  .check>.main .dialog-title ul{ padding-left:10px;}
+
+  .leftPart{
+    background-color:#3c8dbc;
+    li{ background-color:#0056fa; border-bottom:1px solid #0a45b6;}
+    li:hover, li:active{ background-color:#70b7e6;}
+    li.sel{ background-color:#fff; border-bottom:0;}
+    li.sel strong{ color:#333;}
+    li.sel span:first-child{ color:#666;}
+    li.freeDo.sel{ color:#333;}
+  }
+  .leftPart.pinch{
+    width:0;
+    & + .rightPart{ margin-left:0;}
+  }
+}

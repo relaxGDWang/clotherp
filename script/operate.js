@@ -103,7 +103,7 @@ var vu=new Vue({
                     content:'缺少关键参数，无法获得布匹详情',
                     btncancel:'', btnclose:'', btnsure:'确定',
                     closeCallback: function(id, dialogType, buttonType){
-                        vu.thisClose();
+                        //vu.thisClose();
                     }
                 };
                 if (this.UI.firstLoad){
@@ -462,9 +462,8 @@ var vu=new Vue({
                         closeCallback: function(){
                             vu.UI.len='';
                             vu.stopEQPosition();
-                            vu.editObject={};
                             //NOTICE 关闭operate窗口
-                            //NOTICE 设置刷新标记量
+                            vu.thisClose();
                         }
                     });
                     //胚布打印4次末尾标签
@@ -508,6 +507,42 @@ var vu=new Vue({
                     btnsure:'确定'
                 });
             }
+        },
+        askCut: function(){ //疵点分裁处理
+            this.input.start-=0;
+            this.input.end-=0;
+            if (REG.flaw.test(this.input.end)===false || this.input.end===0){
+                this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
+                return;
+            }
+            if (this.input.end<this.input.start){
+                this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
+                return;
+            }
+            ajaxModify.send({
+                url: PATH.addFlaw,
+                method: 'post',
+                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1},  //notice
+                success: function(data){
+                    vu._setDetailsData(data,'');
+                    //vu.flagReload=true;
+                    //清零计米
+                    setTimeout(function(){
+                        EQUIPMENT.resetCounter(true);
+                    },200);
+                    if (vu.input.start===vu.input.end){
+                        vu._setMessage({flag:true, status:'ok', msg:'点状疵点裁剪成功。'});
+                        //打印信息
+                        vu.printDoginHistory(vu.editObject.cutouts[0],'',4);
+                    }else{
+                        vu._setMessage({flag:true, status:'ok', msg:'块状疵点裁剪成功。'});
+                    }
+                    setTimeout(function(){
+                        dialog.close('addFlaw');
+                        vu._resetInputData();
+                    },2000);
+                }
+            });
         },
         doCut: function(status){
             var sendId=this.editObject.bolt_id;
@@ -610,8 +645,8 @@ var ajax=relaxAJAX({
             closeCallback: function(id, dialogType, buttonType){
                 if (buttonType==='sure'){
                     if (!vu.editObject.bolt_id){
-                        vu.thisClose();
-                        return false;
+                        //vu.thisClose();
+                        //return false;
                     }
                 }
             }
@@ -642,6 +677,8 @@ var ajaxElse=relaxAJAX({
     }
 });
 
+//如果是移动端访问，添加app类
+if (!EQUIPMENT.app) $('body').removeClass('app');
 $(function(){
     //获得详情
     vu._getDetails();

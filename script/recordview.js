@@ -39,7 +39,7 @@ var vu=new Vue({
                     content:'缺少关键参数，无法获得布匹的操作记录',
                     btncancel:'', btnclose:'', btnsure:'确定',
                     closeCallback: function(id, dialogType, buttonType){
-                        vu.thisClose();
+                        //vu.thisClose();
                     }
                 };
                 if (this.UI.firstLoad){
@@ -149,6 +149,7 @@ var ajax=relaxAJAX({
     }
 });
 
+if (!EQUIPMENT.app) $('body').removeClass('app');
 $(function(){
     //获得详情
     vu._getRecordDetails();

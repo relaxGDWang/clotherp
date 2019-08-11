@@ -90,50 +90,6 @@
             </div>
         </div>
 
-        <!-- 操作记录详细页 -->
-        <div class="extMenu bottom mydetails none" id="opRecordDetails" maskfree="true">
-            <div class="dialogFrame">
-                <div class="dialog-title">
-                    <span class="right opBtn btn-close">&times;</span>
-                    <ul class="nohead" v-if="recordObject.bolt_id">
-                        <li><label>商品 </label><span>{{recordObject.product_code}}</span></li>
-                        <li><label>卷号 </label><span>{{recordObject.bolt_no}}</span></li>
-                        <li><label>流程 </label><span>{{recordObject.craft}}</span></li>
-                        <li><label>剩余布长 </label><span>{{recordObject.current_length}}米</span></li>
-                    </ul>
-                </div>
-                <div class="dialog-content">
-                    <div class="printBar">
-                        <span>布匹标签</span>
-                        <button class="rexButton" @click="printDoginHistory(recordObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
-                        <button class="rexButton" @click="printDoginHistory(recordObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
-                        <div class="buttonBar">
-                            <button class="rexButton" color="info" @click="gotoURLClick(recordObject,'check')"><span class="fa fa-instagram"></span>&emsp;重新检验</button>
-                            <button class="rexButton" color="warning" @click="gotoURLClick(recordObject,'cut')"><span class="fa fa-cut"></span>&emsp;继续裁剪</button>
-                        </div>
-                    </div>
-                    <div class="recordListShow">
-                        <h3>操作记录详情</h3>
-                        <ul class="nohead" v-if="recordObject.history && recordObject.history.length>0">
-                            <li class="tr">
-                                <span></span><span>时间</span><span>操作人</span><span>操作类型</span><span>操作内容</span><span>操作</span>
-                            </li>
-                            <li v-for="(item, index) in recordObject.history">
-                                <span>{{index+1}}</span>
-                                <span>{{item.updated_at}}</span>
-                                <span>{{item.user}}</span>
-                                <span>{{item.action_type}}</span>
-                                <span>{{item.content}}</span>
-                                <span>
-                                <button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button>
-                                <button class="rexButton" v-if="item.action_type==='分裁'" @click="doRecheck(item.bolt_id)">重新检验</button>
-                            </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- build:js library/js/webcommon.js -->

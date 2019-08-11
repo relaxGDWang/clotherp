@@ -215,4 +215,23 @@
 
 .operateList { padding-left: 5px; width: 50%; float: left; height: 100%; }
 
+/* app样式协调 */
+.app .main .dialog-title { background: #fff; z-index: 3; border-bottom: 0; }
+.app .main .dialog-title .opBtn { display: none; }
+.app .main .dialog-title label { color: #999; }
+.app .main .dialog-title span { color: #333; }
+.app .main .occupation { height: 100%; top: 0; }
+.app .cut > .main .dialog-title:before { content: ''; position: absolute; z-index: 3; height: 42px; width: 175px; background: #3c8dbc; left: 0; top: 0; }
+.app .cut > .main .dialog-title ul { padding-left: 185px; }
+.app .check > .main .dialog-title ul { padding-left: 10px; }
+.app .leftPart { background-color: #3c8dbc; }
+.app .leftPart li { background-color: #0056fa; border-bottom: 1px solid #0a45b6; }
+.app .leftPart li:hover, .app .leftPart li:active { background-color: #70b7e6; }
+.app .leftPart li.sel { background-color: #fff; border-bottom: 0; }
+.app .leftPart li.sel strong { color: #333; }
+.app .leftPart li.sel span:first-child { color: #666; }
+.app .leftPart li.freeDo.sel { color: #333; }
+.app .leftPart.pinch { width: 0; }
+.app .leftPart.pinch + .rightPart { margin-left: 0; }
+
 /*# sourceMappingURL=operate.css.map */

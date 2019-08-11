@@ -29,32 +29,4 @@
 
 .el-pagination { text-align: center; margin-top: 10px; }
 
-.mydetails .dialogFrame { box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); }
-.mydetails .dialog-title { background: #336666; border-bottom: 0; }
-.mydetails .dialog-title .opBtn { font-size: 28px; color: #cccc99; }
-.mydetails .dialog-title .opBtn:hover, .mydetails .dialog-title .opBtn:active { color: red; }
-.mydetails .dialog-title ul { padding-left: 20px; }
-.mydetails .dialog-title li { float: left; line-height: 42px; color: rgba(255, 255, 255, 0.6); margin-right: 15px; }
-.mydetails .dialog-title label { color: #fff; }
-.mydetails .dialog-title .passStatus { display: block; color: #fff; line-height: 30px; margin-top: 6px; padding: 0 10px; border-radius: 6px; background: #999; }
-.mydetails .dialog-title .passStatus.yes { background: green; }
-.mydetails .dialog-title .passStatus.no { background: red; }
-.mydetails.extMenu .dialogFrame { height: 100%; }
-.appShow .mydetails.extMenu .dialogFrame { height: 100%; }
-
-.printBar { padding: 10px; margin: 10px 0; border-bottom: 1px solid #ccc; }
-.printBar b { color: #f90; }
-
-.buttonBar { float: right; }
-
-.recordListShow { padding: 0 10px; margin: 10px 0; }
-.recordListShow h3 { font-size: 16px; color: #069393; }
-.recordListShow ul { display: table; width: 100%; }
-.recordListShow li { display: table-row; }
-.recordListShow li:active { background: #cccc99; }
-.recordListShow li span { display: table-cell; border-bottom: 1px dashed #ccc; padding: 5px; }
-.recordListShow li span:nth-child(1) { width: 50px; text-align: center; }
-.recordListShow li span:nth-child(2) { width: 180px; }
-.recordListShow .tr span { border-bottom: 1px solid #666; font-weight: bold; }
-
 /*# sourceMappingURL=record.css.map */
