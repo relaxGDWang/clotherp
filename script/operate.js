@@ -580,6 +580,14 @@ var vu=new Vue({
             }else{
                 $('#aduioShow')[0].play();
             }
+        },
+        openRecordDetails: function(bid){   //获得操作日志详细
+            if (EQUIPMENT.app){
+                //NOTICE 调用app对应的方法
+                EQUIPMENT.detailsOpen('record',bid);
+            }else{
+                window.parent.vu.openRecordView(bid);
+            }
         }
     },
     beforeMount: function () {

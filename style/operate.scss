@@ -313,7 +313,9 @@
 
 .elseList{
   margin-top:10px; width:100%; overflow:hidden; height:calc(100% - 240px);
-  h3{ border-bottom:1px solid #ddd; font-size:14px; color:$color4; line-height:24px;}
+  h3{ border-bottom:1px solid #3c8dbc; font-weight:normal; font-size:16px; color:#fff; line-height:36px; width:100%; background:linear-gradient(45deg, #3c8dbc 0, #3c8dbc 105px, transparent 0, transparent 100%); position:relative;}
+  h3:before{ margin-right:8px; margin-left:10px;}
+  h3 button{ position:absolute; top:0; right:0; font-size:14px;}
   ul{ width:100%; overflow:auto; height:calc(100% - 30px);}
   li{
     border-bottom:1px dashed #ccc; position:relative; padding:12px 0; overflow:hidden;

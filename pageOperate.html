@@ -9,6 +9,7 @@
     <!-- build:css library/style/webcommon.css -->
     <link rel="stylesheet" href="library/style/font-awesome.css"/>
     <link rel="stylesheet" href="library/style/elementui2.4.11.css"/>
+    <link rel="stylesheet" href="library/style/animate.css"/>
     <link rel="stylesheet" href="library/style/cssreset3.css"/>
     <!-- endbuild -->
     <!-- build:css style/operate.css -->
@@ -37,10 +38,11 @@
                 <span class="right opBtn btn-close" @click="thisClose()">&times;</span>
                 <ul class="nohead">
                     <template v-if="editObject.bolt_id">
-                        <li><label>商品 </label><span>{{editObject.product_code}}</span></li>
-                        <li><label>卷号 </label><span>{{editObject.bolt_no}}</span></li>
-                        <li><label>仓位 </label><span>{{editObject.position.join(',') || '--'}}</span></li>
-                        <li><label>流程 </label><span>{{editObject.craft || '--'}}</span></li>
+                        <li><label>货号：</label><span>{{editObject.product_code}}</span></li>
+                        <li><label>卷号：</label><span>{{editObject.bolt_no}}</span></li>
+                        <li><label>仓位：</label><span>{{editObject.position.join(',') || '--'}}</span></li>
+                        <li><label>流程：</label><span>{{editObject.craft || '--'}}</span></li>
+                        <li><label>布长：</label><span>{{editObject.current_length}}米</span></li>
                     </template>
                 </ul>
             </div>
@@ -48,7 +50,7 @@
                 <div class="leftPart" :class="{'pinch':op==='check'}">
                     <template v-if="op==='cut' && editObject.bolt_id">
                         <transition-group name="list" class="viewList nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                            <li key="free" class="freeDo" :class="{'sel':'free'===UI.sel}" @click="setViewObject('free')"><p>自由裁剪</p></li>
+                            <li key="free" class="freeDo" :class="{'sel':'free'===UI.sel}" @click="setViewObject('free')"><p>无任务裁剪</p></li>
                             <li v-for="item in editObject.orders" :key="item.order_item_id" :class="{'sel':item.order_item_id===UI.sel}" @click="setViewObject(item.order_item_id)">
                                 <strong class="fa" :class="{'fa-flag':item.urgent}">{{item.purchaser}}</strong>
                                 <div class="statusBar">
@@ -119,7 +121,7 @@
                     </div>
                     <div class="elseList" v-if="editObject.bolt_id">
                         <div class="flawList">
-                            <h3>疵点列表</h3>
+                            <h3 class="fa fa-thumb-tack">疵点列表</h3>
                             <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.bolt_id && editObject.defects.length>0">
                                 <li v-for="(item, index) in editObject.defects" :key="item.bolt_id">
                                     <span class="index" :class="{'point':(item.defect==='dot'),'block':(item.defect!=='dot')}">{{index+1}}</span>
@@ -136,7 +138,7 @@
                             </ul>
                         </div>
                         <div class="operateList">
-                            <h3>操作记录</h3>
+                            <h3 class="fa fa-calendar">操作记录<button type="button" class="rexButton" color="info" size="M" @click="openRecordDetails(editObject.bolt_id)">布卷详情&gt;</button></h3>
                             <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.cutouts.length>0">
                                 <li v-for="(item, index) in editObject.cutouts" class="cutRecord" :key="index">
                                     <span class="datetime">{{item.date}}</span>

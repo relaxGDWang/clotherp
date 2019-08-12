@@ -228,12 +228,12 @@ ul.nohead, ol.nohead { list-style: none; }
 .extDialog .dialog-content { display: inline-block; width: 100%; max-height: 350px; overflow: auto; -webkit-overflow-scrolling: touch; white-space: normal; }
 
 /* 自隐藏对话框 */
-.miniDialog { left: 0; z-index: 1000; width: 100%; text-align: center; padding: 0 1em; opacity: 0; visibility: hidden; transition: transform,opacity .5s ease; pointer-events: none; }
-.miniDialog.top { top: 0; transform: none; }
-.miniDialog.bottom { bottom: 0; transform: none; }
-.miniDialog .dialog-content { display: inline-block; width: auto; box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); word-break: break-all; border-radius: 4px; background-color: #333; color: #fff; padding: .6em 1em; }
-.miniDialog.show.top { transform: translateY(2.5em); opacity: 1; visibility: visible; }
-.miniDialog.show.bottom { transform: translateY(-2.5em); opacity: 1; visibility: visible; }
+.miniDialog { left: 0; z-index: 1000; width: 100%; text-align: center; padding: 0 1em; visibility: hidden; pointer-events: none; }
+.miniDialog.top { top: 30px; }
+.miniDialog.bottom { bottom: 30px; }
+.miniDialog .dialog-content { font-size: 16px; display: inline-block; width: auto; box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); word-break: break-all; background-color: rgba(0, 32, 67, 0.9); color: #fff; padding: .8em 1.2em; min-width: 300px; border-radius: 4px; }
+.miniDialog.show.top { visibility: visible; -webkit-animation-duration: 0.75s; animation-duration: 0.75s; -webkit-animation-name: bounceIn; animation-name: bounceIn; }
+.miniDialog.show.bottom { visibility: visible; -webkit-animation-duration: 1s; animation-duration: 1s; -webkit-animation-name: bounceIn; animation-name: bounceIn; }
 
 /* 平移对话框 */
 .extMenu { z-index: 1000; top: 0; bottom: 0; left: 0; right: 0; visibility: hidden; opacity: 0; transition-property: visibility, opacity; transition-duration: .45s; background-color: rgba(0, 0, 0, 0.6); overflow: hidden; }

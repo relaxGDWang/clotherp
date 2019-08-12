@@ -523,37 +523,47 @@ ul.nohead, ol.nohead{ list-style:none;}
   width: 100%;
   text-align: center;
   padding: 0 1em;
-  opacity: 0;
+  //opacity: 0;
   visibility: hidden;
-  transition:transform,opacity .5s ease;
+  //transition:transform,opacity .5s ease;
   pointer-events: none;
   &.top {
-    top: 0;
-    transform: none;
+    top: 30px;
+    //transform: none;
   }
   &.bottom {
-    bottom: 0;
-    transform: none;
+    bottom: 30px;
+    //transform: none;
   }
   .dialog-content {
+    font-size:16px;
     display: inline-block;
     width: auto;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     word-break: break-all;
-    border-radius: $borderRadius;
-    background-color: #333;
+    background-color: rgba(0,32,67,.9);
     color: #fff;
-    padding: .6em 1em;
+    padding: .8em 1.2em;
+    min-width:300px;
+    border-radius: $borderRadius;
   }
   &.show.top {
-    transform: translateY(2.5em);
-    opacity: 1;
+    //transform: translateY(2.5em);
+    //opacity: 1;
     visibility: visible;
+    -webkit-animation-duration: 0.75s;
+    animation-duration: 0.75s;
+    -webkit-animation-name: bounceIn;
+    animation-name: bounceIn;
   }
   &.show.bottom {
-    transform: translateY(-2.5em);
-    opacity: 1;
+    //transform: translateY(-2.5em);
+    //opacity: 1;
     visibility: visible;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-name: bounceIn;
+    animation-name: bounceIn;
   }
 }
 

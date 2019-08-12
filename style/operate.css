@@ -195,7 +195,9 @@
 .buttonList.type2 .rexButton { width: 16.5%; }
 
 .elseList { margin-top: 10px; width: 100%; overflow: hidden; height: calc(100% - 240px); }
-.elseList h3 { border-bottom: 1px solid #ddd; font-size: 14px; color: #069393; line-height: 24px; }
+.elseList h3 { border-bottom: 1px solid #3c8dbc; font-weight: normal; font-size: 16px; color: #fff; line-height: 36px; width: 100%; background: linear-gradient(45deg, #3c8dbc 0, #3c8dbc 105px, transparent 0, transparent 100%); position: relative; }
+.elseList h3:before { margin-right: 8px; margin-left: 10px; }
+.elseList h3 button { position: absolute; top: 0; right: 0; font-size: 14px; }
 .elseList ul { width: 100%; overflow: auto; height: calc(100% - 30px); }
 .elseList li { border-bottom: 1px dashed #ccc; position: relative; padding: 12px 0; overflow: hidden; }
 .elseList li .index { float: left; background-image: linear-gradient(rgba(255, 255, 255, 0.2) 0, transparent 16px); line-height: 20px; color: #fff; padding: 0 10px; }
