@@ -75,7 +75,7 @@
                             <span>{{item.content}}</span>
                             <span>
                                 <button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button>
-                                <button class="rexButton" v-if="item.action_type==='分裁'" @click="doRecheck(item.bolt_id)">重新检验</button>
+                                <button class="rexButton" v-if="item.action_type==='分裁'" @click="gotoURLClick(item,'check')">重新检验</button>
                             </span>
                         </li>
                     </ul>
