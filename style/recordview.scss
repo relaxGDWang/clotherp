@@ -5,7 +5,9 @@
 .occupation{
   position:absolute; width:100%; height:calc(100% - 40px); top:40px; z-index: 30; text-align:center; background-color:#fff;
   &:before{ display:inline-block; content:''; width:0; height:100%; vertical-align: middle;}
-  .emptyShow{ display:inline-block; vertical-align:middle; position:relative;}
+  .emptyShow{
+    display:inline-block; vertical-align:middle; position:relative;
+  }
 }
 .emptyShow{
   &>span{ display:inline-block;}
@@ -22,7 +24,7 @@
 }
 .buttonBar{ float:right;}
 .recordListShow{
-  padding:0 10px; height:calc(100% - 93px); overflow:auto;
+  padding:0 10px; height:calc(100% - 150px); overflow:auto;
   ul{ display:table; width:100%; border-collapse: collapse; border-spacing: 0;}
   li:nth-child(odd){
     span{ background:#e7f5ff;}
@@ -33,6 +35,11 @@
     &:active span{background:$color3;}
     span:nth-child(1){ width:50px; text-align:center;}
     span:nth-child(2){ width:180px;}
+
+    span.fa:before{ width:20px; text-align:left;}
+    span.fa-instagram:before{ color:#0a45b6;}
+    span.fa-thumb-tack:before{ color:red;}
+    span.fa-cut:before{ color:green;}
   }
   .th{
     &:active span,span{ background:#c5e8ff; color:#0c5a8d; font-size:16px; border-bottom:1px solid #2d8bc9; padding:8px 5px;}
@@ -58,6 +65,23 @@
   .dialog-content{ height:100%;}
 }
 
+/* 布匹基本信息 */
+.baseInfo{
+  width:100%; padding:10px 10px; overflow:hidden;
+  .title{ float:left; margin-top:4px; margin-right:20px;  background:url(/logo.svg) no-repeat left center; background-size: auto 90%; line-height:50px; padding-left:52px; font-size:20px; color:#3c8dbc;}
+  .buttonBar{
+    float:right; margin-top:5px;
+    .fa{ margin-right:10px;}
+    b{ color:#f90;}
+  }
+  ul{
+    width:100%; clear:both; border:1px dashed #f90; padding:5px 10px; overflow:hidden; background-color:#fff1ef;
+    li{ float:left; color:#000; margin-right:20px;}
+    li>label{ color:#999;}
+    .clearLeft{ clear:left;}
+  }
+}
+h3{ text-align:center; color:#666; padding-bottom:5px;}
 /* app样式协调 */
 .app{
   .main{

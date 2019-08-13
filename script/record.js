@@ -45,6 +45,16 @@ var vu=new Vue({
                         data[i].qualified=vu._formatQualified(data[i].qualified);
                         vu.record.push(data[i]);
                         if (!vu.recordKey[data[i]['bolt_id']]) vu.recordKey[data[i]['bolt_id']] = vu.record[i];
+                        //加工裁剪类型的显示
+                        if (data[i].action_type.indexOf('检验')>=0){
+                            data[i].action_type_icon='fa-instagram';
+                        }else{
+                            if (data[i].action_type.indexOf('分裁')>=0){
+                                data[i].action_type_icon='fa-thumb-tack';
+                            }else{
+                                data[i].action_type_icon='fa-cut';
+                            }
+                        }
                     }
                 },
                 error:function(code,msg){

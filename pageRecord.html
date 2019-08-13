@@ -38,7 +38,11 @@
                             <div class="fa" :class="scope.row.qualified.class">{{scope.row.bolt_no}}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="action_type" label="操作类型" key="colOperation"></el-table-column>
+                    <el-table-column label="操作类型" key="colOperation">
+                        <template slot-scope="scope">
+                            <div class="optype fa" :class="scope.row.action_type_icon"> {{scope.row.action_type}}</div>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="content" label="操作内容" key="colOperation"></el-table-column>
                     <el-table-column prop="user" label="操作人" key="colUser"></el-table-column>
                     <el-table-column label="执行时间" key="colDatetime">
@@ -50,7 +54,7 @@
                     </el-table-column>
                     <el-table-column label="" key="colOpButton">
                         <template slot-scope="scope">
-                            <span class="opButton fa fa-file-text-o" @click="openRecordDetails(scope.row.bolt_id)"></span>
+                            <span class="opButton fa fa-file-text-o" @click="openRecordDetails(scope.row.bolt_id)"> 查看</span>
                         </template>
                     </el-table-column>
                 </el-table>

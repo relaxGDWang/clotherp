@@ -39,7 +39,8 @@ var vu=new Vue({
                 recordview:'pageRecordView.html?v='+Math.random() //历史记录详情
             },
             iframeDom:{},  //用于存放当前加载的iframe对象
-            iframeShow:''  //标记当前展示的是哪个iframe
+            iframeShow:'',  //标记当前展示的是哪个iframe
+            iframeShowPrev:''  //记录上一个操作界面
         }
     },
     methods: {
@@ -120,6 +121,7 @@ var vu=new Vue({
             }else{
                 Vue.set(this.UI.iframeDom,'operate',url);
             }
+            this.UI.iframeShowPrev=this.UI.iframeShow;
             this.UI.iframeShow='operate';
         },
         closeDetails: function(){   //关闭操作详情窗口的iframe
@@ -143,10 +145,11 @@ var vu=new Vue({
             }else{
                 Vue.set(this.UI.iframeDom,'recordview',url);
             }
+            this.UI.iframeShowPrev=this.UI.iframeShow;
             this.UI.iframeShow='recordview';
         },
         closeRecordView: function(){   //关闭操作记录详情
-            this.UI.iframeShow='record';
+            this.UI.iframeShow=this.UI.iframeShowPrev;
         },
         refresh: function(){   //刷新当前的iframe，刷新原则为把v的随机数进行更改
             var nowURL=this.UI.iframeDom[this.UI.iframeShow];

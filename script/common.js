@@ -304,7 +304,7 @@ var EQUIPMENT=(function(){
     //如在PC端执行，如果不是主框架页面，则跳转到主框架页面执行
     var path=location.pathname.replace(/^\//,'');
     if ([CFG.loginPage,CFG.defaultPage,CFG.framePage,'missionCheck.html','missionCut.html'].indexOf(path)<0){
-         //if (!EQUIPMENT.app && window.parent===window) location.replace('/'+CFG.framePage);
+         if (!EQUIPMENT.app && window.parent===window) location.replace('/'+CFG.framePage);
     }
 
     USER=EQUIPMENT.getCurrentUser();

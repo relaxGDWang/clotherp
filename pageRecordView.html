@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>随手e裁--操作记录详情</title>
+    <title>随手e裁--布卷详情</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <!-- build:css library/style/webcommon.css -->
     <link rel="stylesheet" href="library/style/font-awesome.css"/>
@@ -26,7 +26,7 @@
     <div class="outFrame" id="app">
         <div class="main">
             <div class="occupation" v-if="!editObject.bolt_id">
-                <div class="emptyShow">
+                <div class="emptyShow heartBeat">
                     <span class="logoSvg"></span>
                     <span class="titleSvg"></span>
                     <span class="ver"></span>
@@ -35,24 +35,33 @@
             </div>
             <div class="dialog-title">
                 <span class="right opBtn btn-close" @click="thisClose()">&times;</span>
-                <ul class="nohead" v-if="editObject.bolt_id">
-                   <!-- <li><label>商品 </label><span>{{editObject.product_code}}</span></li>-->
-                    <li><label>卷号 </label><span>{{editObject.bolt_no}}</span></li>
-                    <li><label>流程 </label><span>{{editObject.craft}}</span></li>
-                    <li><label>剩余布长 </label><span>{{editObject.current_length}}米</span></li>
-                </ul>
             </div>
             <div class="dialog-content">
-                <div class="printBar">
-                    <h3>操作记录详情</h3>
-                    <span>布匹标签</span>
-                    <button class="rexButton" @click="printDoginHistory(editObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
-                    <button class="rexButton" @click="printDoginHistory(editObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                <div class="baseInfo" v-if="editObject.bolt_id">
+                    <div class="title">布卷详情</div>
                     <div class="buttonBar">
-                        <button class="rexButton" color="info" @click="gotoURLClick(editObject,'check')"><span class="fa fa-instagram"></span>&emsp;重新检验</button>
-                        <button class="rexButton" color="warning" @click="gotoURLClick(editObject,'cut')"><span class="fa fa-cut"></span>&emsp;继续裁剪</button>
+                        <button class="rexButton" color="ok" @click="printDoginHistory(editObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
+                        <button class="rexButton" color="ok" @click="printDoginHistory(editObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                        <button class="rexButton" color="info" @click="gotoURLClick(editObject,'check')"><span class="fa fa-instagram"></span> 重新检验</button>
+                        <button class="rexButton" color="warning" @click="gotoURLClick(editObject,'cut')"><span class="fa fa-cut"></span> 继续裁剪</button>
                     </div>
+                    <ul class="nohead">
+                        <li><label>货号：</label><span>{{editObject.product_code}}</span></li>
+                        <li><label>卷号：</label><span>{{editObject.bolt_no}}</span></li>
+                        <li><label>仓位：</label><span>{{editObject.position.join(',') || '--'}}</span></li>
+                        <li><label>流程：</label><span>{{editObject.craft}}</span></li>
+                        <li><label>布长：</label><span>{{editObject.current_length}}米</span></li>
+                        <template v-if="editObject.examine==='已检验'">
+                            <li class="clearLeft"><label>状态：</label><span>{{editObject.examine}}</span></li>
+                            <li><label>检验人：</label><span>{{editObject.examiner}}</span></li>
+                            <li><label>日期：</label><span>{{editObject.examined_at}}</span></li>
+                        </template>
+                        <template v-if="editObject.examine!=='已检验'">
+                            <li class="clearLeft"><label>状态：</label><span>该布匹还没有经过检验</span></li>
+                        </template>
+                    </ul>
                 </div>
+                <h3><span class="fa fa-calendar"></span> 操作记录</h3>
                 <div class="recordListShow">
                     <ul class="nohead" v-if="editObject.history && editObject.history.length>0">
                         <li class="th">
@@ -62,12 +71,12 @@
                             <span>{{index+1}}</span>
                             <span>{{item.updated_at}}</span>
                             <span>{{item.user}}</span>
-                            <span>{{item.action_type}}</span>
+                            <span class="fa" :class="item.action_type_icon"> {{item.action_type}}</span>
                             <span>{{item.content}}</span>
                             <span>
-                            <button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button>
-                            <button class="rexButton" v-if="item.action_type==='分裁'" @click="doRecheck(item.bolt_id)">重新检验</button>
-                        </span>
+                                <button class="rexButton" v-if="item.print_data" @click="printDoginHistory(item)">打印标签</button>
+                                <button class="rexButton" v-if="item.action_type==='分裁'" @click="doRecheck(item.bolt_id)">重新检验</button>
+                            </span>
                         </li>
                     </ul>
                 </div>

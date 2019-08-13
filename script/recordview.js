@@ -72,6 +72,19 @@ var vu=new Vue({
                 data: {id: vu.bid},
                 success: function(data){
                     dialog.close('loading');
+                    data.position=data.position.split(REG.position);  //加工仓位信息
+                    //加工裁剪类型的显示
+                    for (var i=0; i<data.history.length; i++){
+                        if (data.history[i].action_type.indexOf('检验')>=0){
+                            data.history[i].action_type_icon='fa-instagram';
+                        }else{
+                            if (data.history[i].action_type.indexOf('分裁')>=0){
+                                data.history[i].action_type_icon='fa-thumb-tack';
+                            }else{
+                                data.history[i].action_type_icon='fa-cut';
+                            }
+                        }
+                    }
                     vu.editObject=data;
                     //vu.recordObject.product_code=vu.recordKey[id].product_code;
                 }

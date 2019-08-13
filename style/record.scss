@@ -13,13 +13,17 @@
   td{
     padding:6px 0; color:#333;
     //末尾操作按钮样式
-    .opButton{ font-size:20px; color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
+    .opButton{ color:$color4; display:inline-block; padding:5px; border-radius:6px; cursor:pointer;}
     .opButton:hover, .el-table td .opButton:active{ background:$color4; color:#fff;}
-    .opButton:before{ display:inline-block;}
+    .opButton:before{ display:inline-block; font-size:20px;}
     .opButton.fa-cut:before{ transform:rotate(-90deg);}
     //内容列对齐
     &:first-child{ text-align:center;}
     &:last-child{ text-align:center;}
+    .optype:before{ width:20px; text-align:left;}
+    .optype.fa-instagram:before{ color:#0a45b6;}
+    .optype.fa-thumb-tack:before{ color:red;}
+    .optype.fa-cut:before{ color:green;}
   }
   .missionList & th:nth-child(2){ text-align:center;}
   .missionList & td:nth-child(2){ text-align:center;}

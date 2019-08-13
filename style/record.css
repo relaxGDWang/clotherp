@@ -6,12 +6,16 @@
 .el-table th:first-child { text-align: center; }
 .el-table th:last-child { text-align: center; }
 .el-table td { padding: 6px 0; color: #333; }
-.el-table td .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
+.el-table td .opButton { color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
 .el-table td .opButton:hover, .el-table td .el-table td .opButton:active { background: #069393; color: #fff; }
-.el-table td .opButton:before { display: inline-block; }
+.el-table td .opButton:before { display: inline-block; font-size: 20px; }
 .el-table td .opButton.fa-cut:before { transform: rotate(-90deg); }
 .el-table td:first-child { text-align: center; }
 .el-table td:last-child { text-align: center; }
+.el-table td .optype:before { width: 20px; text-align: left; }
+.el-table td .optype.fa-instagram:before { color: #0a45b6; }
+.el-table td .optype.fa-thumb-tack:before { color: red; }
+.el-table td .optype.fa-cut:before { color: green; }
 .missionList .el-table th:nth-child(2) { text-align: center; }
 .missionList .el-table td:nth-child(2) { text-align: center; }
 .el-table .cell { padding-left: 3px; padding-right: 3px; }

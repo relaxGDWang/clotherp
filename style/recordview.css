@@ -15,7 +15,7 @@
 
 .buttonBar { float: right; }
 
-.recordListShow { padding: 0 10px; height: calc(100% - 93px); overflow: auto; }
+.recordListShow { padding: 0 10px; height: calc(100% - 150px); overflow: auto; }
 .recordListShow ul { display: table; width: 100%; border-collapse: collapse; border-spacing: 0; }
 .recordListShow li:nth-child(odd) span { background: #e7f5ff; }
 .recordListShow li { display: table-row; }
@@ -23,6 +23,10 @@
 .recordListShow li:active span { background: #cccc99; }
 .recordListShow li span:nth-child(1) { width: 50px; text-align: center; }
 .recordListShow li span:nth-child(2) { width: 180px; }
+.recordListShow li span.fa:before { width: 20px; text-align: left; }
+.recordListShow li span.fa-instagram:before { color: #0a45b6; }
+.recordListShow li span.fa-thumb-tack:before { color: red; }
+.recordListShow li span.fa-cut:before { color: green; }
 .recordListShow .th:active span, .recordListShow .th span { background: #c5e8ff; color: #0c5a8d; font-size: 16px; border-bottom: 1px solid #2d8bc9; padding: 8px 5px; }
 
 .main .dialog-title { background: #336666; border-bottom: 0; }
@@ -35,6 +39,19 @@
 .main .dialog-title .passStatus.yes { background: green; }
 .main .dialog-title .passStatus.no { background: red; }
 .main .dialog-content { height: 100%; }
+
+/* 布匹基本信息 */
+.baseInfo { width: 100%; padding: 10px 10px; overflow: hidden; }
+.baseInfo .title { float: left; margin-top: 4px; margin-right: 20px; background: url(/logo.svg) no-repeat left center; background-size: auto 90%; line-height: 50px; padding-left: 52px; font-size: 20px; color: #3c8dbc; }
+.baseInfo .buttonBar { float: right; margin-top: 5px; }
+.baseInfo .buttonBar .fa { margin-right: 10px; }
+.baseInfo .buttonBar b { color: #f90; }
+.baseInfo ul { width: 100%; clear: both; border: 1px dashed #f90; padding: 5px 10px; overflow: hidden; background-color: #fff1ef; }
+.baseInfo ul li { float: left; color: #000; margin-right: 20px; }
+.baseInfo ul li > label { color: #999; }
+.baseInfo ul .clearLeft { clear: left; }
+
+h3 { text-align: center; color: #666; padding-bottom: 5px; }
 
 /* app样式协调 */
 .app .main .dialog-title { background: #fff; z-index: 3; border-bottom: 0; }
