@@ -107,6 +107,11 @@
                                     </button>
                                 </li>
                                 <li v-if="op==='cut'">
+                                    <button class="rexButton" color="info" @click="printDoing('show')" :disabled="(editObject.examine===1 && editObject.splits.length>0) || UI.len===0">
+                                        <span class="fa fa-trello fa-rotate-90"></span><span>裁边操作</span>
+                                    </button>
+                                </li>
+                                <li v-if="op==='cut'">
                                     <button class="rexButton" color="warning" @click="askCut2('order')" :disabled="UI.len===0 || !UI.sel">
                                         <span class="fa fa-cut"></span><span>订单裁剪</span>
                                     </button>
@@ -226,10 +231,8 @@
                 </div>
                 <div class="dialog-buttonBar">
                     <button class="rexButton opBtn btn-close" :disabled="input.flag">取消</button>
-                    <button class="rexButton" :disabled="input.flag" v-if="input.step===2" @click="goStep('prev')">上一步</button>
-                    <button class="rexButton" v-if="input.step===1" @click="goStep('next')">下一步</button>
-                    <button class="rexButton" color="warning" @click="askCut()" v-if="input.step===2" :disabled="input.flag">疵点分裁</button>
-                    <button class="rexButton" color="info" @click="addOperateFlaw()" v-if="input.step===2" :disabled="input.flag">疵点记录</button>
+                    <button class="rexButton" color="warning" @click="askCut()" :disabled="input.flag">疵点分裁</button>
+                    <button class="rexButton" color="info" @click="addOperateFlaw()" :disabled="input.flag">疵点记录</button>
                 </div>
                 <div class="dialog-content">
                     <!-- 疵点分类 -->
@@ -248,7 +251,7 @@
                         <strong>米</strong>
                     </span>
                     </div>
-                    <div class="row" v-if="input.step===2">
+                    <div class="row">
                         <label>疵点结束位置</label>
                         <span class="inputShow">
                         <el-input type="tel" v-model.trim="input.end" maxlength="6" :disabled="input.flag" :readonly="input.readonly">

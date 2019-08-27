@@ -100,7 +100,7 @@
 
 .operateShow { width: 100%; height: 80px; overflow: hidden; }
 
-.operate { display: inline-block; min-width: 260px; width: 50%; padding-left: 20px; vertical-align: middle; text-align: center; }
+.operate { display: inline-block; min-width: 260px; width: 45%; padding-left: 20px; vertical-align: middle; text-align: center; }
 .operate .counter { display: inline-block; position: relative; font-family: arial; color: #3273c3; font-size: 70px; }
 .operate .counter:after { content: '米'; position: absolute; top: .6em; left: 100%; font-size: 14px; color: #999; }
 .operate .iconShow { font-size: 20px; color: #999; position: absolute; top: .6em; left: -1.2em; }
@@ -184,7 +184,7 @@
 .status.normal { background: blue; }
 .status.normal:before { content: '分裁入库'; }
 
-.buttonList { display: inline-block; width: 50%; height: 100%; text-align: center; vertical-align: middle; }
+.buttonList { display: inline-block; width: 55%; height: 100%; text-align: center; vertical-align: middle; }
 .buttonList ul { display: table; width: 100%; height: 100%; }
 .buttonList li { display: table-cell; vertical-align: middle; }
 .buttonList .rexButton { height: 100%; width: 100%; padding: 0; text-align: center; border-radius: 0; border-left: 1px solid rgba(0, 0, 0, 0.3); border-right: 1px solid rgba(255, 255, 255, 0.3); }
@@ -194,7 +194,7 @@
 
 .buttonList.type2 .rexButton { width: 16.5%; }
 
-.elseList { margin-top: 10px; width: 100%; overflow: hidden; height: calc(100% - 240px); }
+.elseList { margin-top: 20px; width: 100%; overflow: hidden; height: calc(100% - 250px); }
 .elseList h3 { border-bottom: 1px solid #3c8dbc; font-weight: normal; font-size: 16px; color: #fff; line-height: 36px; width: 100%; background: linear-gradient(45deg, #3c8dbc 0, #3c8dbc 105px, transparent 0, transparent 100%); position: relative; }
 .elseList h3:before { margin-right: 8px; margin-left: 10px; }
 .elseList h3 button { position: absolute; top: 0; right: 0; font-size: 14px; }
