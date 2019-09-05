@@ -153,13 +153,12 @@
 #printBox .dialog-content .rexButton .fa { font-size: 20px; }
 #printBox .dialog-content b { color: #f90; font-weight: normal; }
 
-.leftPart { width: 175px; float: left; height: 100%; background: #336666; }
+.leftPart { width: 185px; float: left; height: 100%; background: #336666; }
 .leftPart .viewList { overflow: auto; height: 100%; }
-.leftPart li { padding: 3px 3px 8px 3px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #069393; color: #fff; border-bottom: 1px solid #336666; }
+.leftPart li { padding: 3px 3px 5px 5px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #069393; color: #fff; border-top: 1px solid rgba(255, 255, 255, 0.4); border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
 .leftPart li:hover, .leftPart li:active { background-color: #19bbbb; }
-.leftPart strong { line-height: 24px; font-weight: normal; position: relative; padding-left: 10px; }
+.leftPart strong { line-height: 24px; font-weight: normal; position: relative; }
 .leftPart strong:before { color: red; position: absolute; top: 3px; right: -16px; font-size: 14px; }
-.leftPart .statusBar { padding-left: 10px; }
 .leftPart .statusBar span { display: inline-block; color: rgba(255, 255, 255, 0.8); }
 .leftPart .length { background: #f90; margin-left: 5px; }
 .leftPart .length:after { content: '米'; }
@@ -168,9 +167,10 @@
 .leftPart li.sel { background-color: #fff; border-bottom: 0; }
 .leftPart li.sel strong { color: #333; }
 .leftPart li.sel span:first-child { color: #666; }
+.leftPart li.sel .comment { color: #333; }
 .leftPart li.freeDo.sel { color: #333; }
 
-.rightPart { width: auto; margin-left: 175px; height: 100%; padding: 0 10px 0 10px; }
+.rightPart { width: auto; margin-left: 185px; height: 100%; padding: 0 10px 0 10px; }
 
 .leftPart.pinch { width: 20px; }
 .leftPart.pinch + .rightPart { margin-left: 20px; }

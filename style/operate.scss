@@ -250,13 +250,12 @@
 }
 
 .leftPart{
-  width:175px; float:left; height:100%; background:$color1;
+  width:185px; float:left; height:100%; background:$color1;
   .viewList{ overflow:auto; height:100%;}
-  li{ padding:3px 3px 8px 3px; overflow:hidden; font-size:12px; cursor:pointer; background-color:$color4; color:#fff; border-bottom:1px solid $color1;}
+  li{ padding:3px 3px 5px 5px; overflow:hidden; font-size:12px; cursor:pointer; background-color:$color4; color:#fff; border-top:1px solid rgba(255,255,255,.4); border-bottom:1px solid rgba(0,0,0,.4);}
   li:hover, li:active{ background-color:#19bbbb;}
-  strong{ line-height:24px; font-weight:normal; position:relative; padding-left:10px;}
+  strong{ line-height:24px; font-weight:normal; position:relative;}
   strong:before{ color:red; position:absolute; top:3px; right:-16px; font-size:14px;}
-  .statusBar{ padding-left:10px;}
   .statusBar span{ display:inline-block; color:rgba(255,255,255,.8);}
   .length{ background:#f90; margin-left:5px;}
   .length:after{ content:'米';}
@@ -265,9 +264,10 @@
   li.sel{ background-color:#fff; border-bottom:0;}
   li.sel strong{ color:#333;}
   li.sel span:first-child{ color:#666;}
+  li.sel .comment{ color:#333;}
   li.freeDo.sel{ color:#333;}
 }
-.rightPart{ width:auto; margin-left:175px; height:100%; padding:0 10px 0 10px;}
+.rightPart{ width:auto; margin-left:185px; height:100%; padding:0 10px 0 10px;}
 .leftPart.pinch{
   width:20px;
   & + .rightPart{ margin-left:20px;}

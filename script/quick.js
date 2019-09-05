@@ -89,7 +89,7 @@ var ajax=relaxAJAX({
             btnclose:'',
             btnsure:'确定',
             closeCallback: function(id, dialogType, buttonType){
-                if (buttonType==='sure' && vu.UI.view==='quick'){
+                if (buttonType==='sure' && vu.opType==='quick'){
                     vu.$refs.searchInput.focus();
                 }
             }

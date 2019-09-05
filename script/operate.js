@@ -275,6 +275,19 @@ var vu=new Vue({
                 });
             }
         },
+        cutBlock: function(){  //询问是否要裁剪疵块
+            dialog.open('information',{
+                content:'是否确定裁剪当前长度为'+(vu.currentPosition || 0)+'米的疵块？',
+                btncancel:'',
+                btnsure:'确定',
+                cname:'sure',
+                closeCallback: function(id, dialogType, buttonType){
+                    if (buttonType==='sure'){
+                        vu.askCut('block');
+                    }
+                }
+            });
+        },
         goStep: function(op){   //分步骤展现操作
             this.input.start-=0;
             this.input.end-=0;
@@ -305,13 +318,21 @@ var vu=new Vue({
         addOperateFlaw: function(){ //添加疵点ajax
             this.input.start-=0;
             this.input.end-=0;
-            if (REG.flaw.test(this.input.end)===false || this.input.end===0){
-                this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
-                return;
-            }
-            if (this.input.end<this.input.start){
-                this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
-                return;
+            if (this.input.step===1){
+                if (this.input.start===0){
+                    this._setMessage({status:'warning',msg:'疵点标记位置不能为0，请重新定位'});
+                    return;
+                }
+                this.input.end=this.input.start;
+            }else{
+                if (REG.flaw.test(this.input.end)===false || this.input.end===0){
+                    this._setMessage({status:'warning',msg:'疵块结束位置填写有误'});
+                    return;
+                }
+                if (this.input.end<this.input.start){
+                    this._setMessage({status:'warning',msg:'疵块结束位置不能小于开始位置，请重新输入'});
+                    return;
+                }
             }
             ajaxModify.send({
                 url: PATH.addFlaw,
@@ -341,6 +362,7 @@ var vu=new Vue({
             });
         },
         _setMessage: function(config){   //设置弹出对话框中的提示信息
+            if (!config) config={};
             this.input.flag=config.flag || false;
             this.input.status=config.status || '';
             this.input.msg=config.msg || '';
@@ -508,22 +530,32 @@ var vu=new Vue({
                 });
             }
         },
-        askCut: function(){ //疵点分裁处理
+        askCut: function(op){ //疵点分裁处理
             this.input.start-=0;
             this.input.end-=0;
-            if (REG.flaw.test(this.input.end)===false || this.input.end===0){
-                this._setMessage({status:'warning',msg:'疵点结束位置填写有误'});
-                return;
+            var ajaxObject;
+            if (op==='dot'){  //疵点分裁处理
+                if (this.input.start===0){
+                    this._setMessage({status:'warning',msg:'疵点标记位置不能为0，请重新定位'});
+                    return;
+                }
+                this.input.end=this.input.start;
+                ajaxObject=ajaxModify;
+            }else{  //疵块分裁
+                this.input.start=0;
+                this.input.end=this.currentPosition-0;
+                if (this.input.end===0){
+                    dialog.open('resultShow',{content:'疵块结束标记位置不能为0，请重新定位'});
+                    return;
+                }
+                ajaxObject=ajax;
             }
-            if (this.input.end<this.input.start){
-                this._setMessage({status:'warning',msg:'疵点结束位置不能小于开始位置，请重新输入'});
-                return;
-            }
-            ajaxModify.send({
+            ajaxObject.send({
                 url: PATH.addFlaw,
                 method: 'post',
                 data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1},  //notice
                 success: function(data){
+                    dialog.close('loading');
                     vu._setDetailsData(data,'');
                     //vu.flagReload=true;
                     //清零计米
@@ -531,16 +563,19 @@ var vu=new Vue({
                         EQUIPMENT.resetCounter(true);
                     },200);
                     if (vu.input.start===vu.input.end){
-                        vu._setMessage({flag:true, status:'ok', msg:'点状疵点裁剪成功。'});
+                        vu._setMessage({flag:true, status:'ok', msg:'疵点裁剪成功!'});
                         //打印信息
                         vu.printDoginHistory(vu.editObject.cutouts[0],'',4);
+                        setTimeout(function(){
+                            dialog.close('addFlaw');
+                            vu._resetInputData();
+                        },2000);
                     }else{
-                        vu._setMessage({flag:true, status:'ok', msg:'块状疵点裁剪成功。'});
+                        vu._setMessage();
+                        vu.input.start=0;
+                        vu.input.end=0;
+                        dialog.open('resultShow',{content:'疵块裁剪成功!'});
                     }
-                    setTimeout(function(){
-                        dialog.close('addFlaw');
-                        vu._resetInputData();
-                    },2000);
                 }
             });
         },
@@ -604,11 +639,13 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
-        'input.start': function(newVal){
+        'input.start': function(newVal,oldVal){
+            if (oldVal==newVal) return;
             this.input.status='';
             this.input.msg='';
         },
-        'input.end': function(newVal){
+        'input.end': function(newVal,oldVal){
+            if (oldVal==newVal) return;
             this.input.status='';
             this.input.msg='';
         },
