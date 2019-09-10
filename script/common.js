@@ -56,6 +56,11 @@ var EQUIPMENT=(function(){
             if (typeStr){
                 if (typeStr==='label'){
                     count=4;
+                    //如果是标签布打印，则多加空行 2019/09/08
+                    var tempObj=JSON.parse(printStr);
+                    tempObj.info.items.push({text:''});
+                    tempObj.info.items.unshift({text:''});
+                    printStr=JSON.stringify(tempObj);
                 }else{
                     count=2;
                 }
@@ -273,6 +278,27 @@ var EQUIPMENT=(function(){
         }
     }
 
+    //获取常规配置参数
+    function getGeneralSetting(type,obj){
+        if (app){
+            if (!obj) obj={};
+            try{
+                var temp=window.register_js.getGeneralSetting(type,JSON.stringify(obj));
+                return temp;
+            }catch(e){
+                showErrorResult('常规设置参数获取调用错误，请技术人员核查。');
+                return [];
+            }
+        }else{
+            if (type==='flaw'){
+                return ["\u65ad\u7ecf","\u65ad\u7eac","\u6c61\u70b9","\u7834\u635f","\u7599\u7629","\u7c97\u7ebf","\u8272\u6591"];  //临时应对本地调试
+            }else{
+                showErrorResult('请在APP中使用，否则常规设置参数无法获取。');
+                return [];
+            }
+        }
+    }
+
     function showErrorResult(msg){
         if (window.dialog){
             dialog.open('resultShow',{content:msg});
@@ -295,17 +321,21 @@ var EQUIPMENT=(function(){
         loginTimeout: loginTimeout,
         detailsOpen: detailsOpen,
         detailsClose: detailsClose,
-        audioPlay :audioPlay
+        audioPlay :audioPlay,
+        getGeneralSetting: getGeneralSetting
     };
 })();
 
 //登录状态的通用检测
 (function(){
     //如在PC端执行，如果不是主框架页面，则跳转到主框架页面执行
+    //目前详情页面进行修改优化，不在协调PC端访问，故不做此判定 2019/09/10
     var path=location.pathname.replace(/^\//,'');
+    /*
     if ([CFG.loginPage,CFG.defaultPage,CFG.framePage,'missionCheck.html','missionCut.html'].indexOf(path)<0){
-         //if (!EQUIPMENT.app && window.parent===window) location.replace('/'+CFG.framePage);
+         if (!EQUIPMENT.app && window.parent===window) location.replace('/'+CFG.framePage);
     }
+    */
 
     USER=EQUIPMENT.getCurrentUser();
     if (USER===''){  //调用出错的情况

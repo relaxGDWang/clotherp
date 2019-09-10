@@ -1,10 +1,10 @@
-if (!EQUIPMENT.app && window.parent && window.parent!==window) EQUIPMENT=window.parent.EQUIPMENT;  //如果是PC端访问，把EQUIPMENT重制为父框架的EQUIPMENT对象
+if (!EQUIPMENT.app) EQUIPMENT=window.parent.EQUIPMENT;  //如果是PC端访问，把EQUIPMENT重制为父框架的EQUIPMENT对象
 var vu=new Vue({
     el: '#app',
     data: {
         op:'',  //区分裁剪还是检验
-        bid:'',  //当前操作布段的id编号或者布卷号
-        defectType: [],  //疵点分类
+        bid:'',  //当前操作布段的id编号
+        defectType:[],  //疵点分类
         defect:'',      //当前选择疵点分类
         UI:{
             firstLoad: true,
@@ -28,11 +28,9 @@ var vu=new Vue({
         editObject:{}
     },
     computed:{
-        /*
         isDisabled: function(){   //判断完成裁剪是否可用
             return !(this.editObject.sel && (this.editObject.sel.bolt_id===this.editObject.splits[0].bolt_id));
         },
-        */
         showSelInfo: function(){   //显示当前选中的订单信息
             var result={index:'', id:'', purchaser:'', quantity:'',comment:''};
             if (!this.UI.sel){
@@ -94,9 +92,9 @@ var vu=new Vue({
             }
             try{
                 hash = JSON.parse(hash);
-                if (!hash.op || (!hash.bid && !hash.bno)) throw 'Parameters were lost';
+                if (!hash.op || !hash.bid) throw 'Parameters were lost';
                 this.op=hash.op;
-                this.bid=hash.bid || hash.bno;
+                this.bid=hash.bid;
                 if (!this.UI.firstLoad) this._getDetails();
                 return true;
             }catch(e){
@@ -125,23 +123,9 @@ var vu=new Vue({
             //清空可能已有的数据
             this.editObject={};
             if (!this.bid) return;
-            var url,sendData;
-            if (typeof(this.bid)==='number'){  //NOTICE
-                url=PATH.delFlaw;
-                sendData={
-                    bolt_id: vu.bid,
-                    start: (start || undefined)
-                };
-            }else{
-                url=PATH.quickCutting;
-                sendData={
-                    bolt_no: vu.bid,
-                    start: (start || undefined)
-                };
-            }
             ajax.send({
-                url: url,
-                data: sendData,
+                url: PATH.missionCheckDetails,
+                data: {bolt_id: vu.bid, start: (start || undefined)},
                 success:function(data){
                     dialog.close('loading');
                     vu._setDetailsData(data);
@@ -167,9 +151,6 @@ var vu=new Vue({
             data.qualified=this._formatQualified(data.qualified);
             data.list={};  //新增list属性，用于关联id编号和数组序号的对象
             this.UI.sel='free';
-            if (data.orders.length>0){
-                this.UI.sel=data.orders[0].order_item_id;
-            }
             for (i=0; i<data.splits.length; i++){
                 data.list[data.splits[i].bolt_id]=i;
             }
@@ -276,8 +257,6 @@ var vu=new Vue({
         },
         operateFlaw: function(bolt_id){
             if (bolt_id===undefined){ //添加疵点操作
-                //获得疵点分类信息 2019/09/10
-                //Vue.set(this,'defectType',EQUIPMENT.getGeneralSetting('flaw'));
                 dialog.open('addFlaw',{closeCallback: vu._resetInputData});
                 this.input.start=this.currentPosition===''? 0: this.currentPosition; //notice
                 this.positionCallBack=function(newVal){
@@ -598,22 +577,6 @@ var vu=new Vue({
                         vu.input.end=0;
                         dialog.open('resultShow',{content:'疵块裁剪成功!'});
                     }
-                },
-                error: function(code, msg){
-                    dialog.close('loading');
-                    dialog.open('information',{
-                        content:msg,
-                        cname:'error',
-                        btncancel:'',
-                        btnclose:'',
-                        btnsure:'确定',
-                        closeCallback: function(id, dialogType, buttonType){
-                            if (buttonType==='sure' && code===408){
-                                //如果关键操作超时，重新加载页面
-                                location.reload();
-                            }
-                        }
-                    });
                 }
             });
         },
@@ -643,22 +606,6 @@ var vu=new Vue({
                     vu._setDetailsData(data);
                     //自动打印标签
                     vu.printDoginHistory(vu.editObject.cutouts[0],'',2);
-                },
-                error: function(code, msg){
-                    dialog.close('loading');
-                    dialog.open('information',{
-                        content:msg,
-                        cname:'error',
-                        btncancel:'',
-                        btnclose:'',
-                        btnsure:'确定',
-                        closeCallback: function(id, dialogType, buttonType){
-                            if (buttonType==='sure' && code===408){
-                                //如果关键操作超时，重新加载页面
-                                location.reload();
-                            }
-                        }
-                    });
                 }
             });
         },
@@ -743,12 +690,10 @@ var ajax=relaxAJAX({
             btnsure:'确定',
             closeCallback: function(id, dialogType, buttonType){
                 if (buttonType==='sure'){
-                    /*
                     if (!vu.editObject.bolt_id){
                         //vu.thisClose();
                         //return false;
                     }
-                    */
                 }
             }
         });
@@ -779,6 +724,7 @@ var ajaxElse=relaxAJAX({
 });
 
 //如果是移动端访问，添加app类
+if (!EQUIPMENT.app) $('body').removeClass('app');
 $(function(){
     //获得详情
     vu._getDetails();

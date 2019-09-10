@@ -1,15 +1,5 @@
 @charset "UTF-8";
-@keyframes focusShow { 0% { transform: translateX(0); }
-  12% { transform: translateX(-10px); }
-  24% { transform: translateX(10px); }
-  36% { transform: translateX(-10px); }
-  48% { transform: translateX(10px); }
-  60% { transform: translateX(-10px); }
-  72% { transform: translateX(10px); }
-  84% { transform: translateX(-10); }
-  96% { transform: translateX(10); }
-  100% { transform: translateX(0); } }
-.occupation { position: absolute; width: 100%; height: calc(100% - 40px); top: 40px; z-index: 30; text-align: center; background-color: #fff; }
+.occupation { position: absolute; width: 100%; height: 100%; top: 0; z-index: 30; text-align: center; background-color: #fff; }
 .occupation:before { display: inline-block; content: ''; width: 0; height: 100%; vertical-align: middle; }
 .occupation .emptyShow { display: inline-block; vertical-align: middle; position: relative; }
 
@@ -30,39 +20,34 @@
 .main .dialog-title .passStatus.no { background: red; }
 .main .dialog-content { height: 100%; }
 
-/* 表格样式 */
-.el-table th { padding: 6px 0; }
-.el-table th:first-child { text-align: center; }
-.el-table th:last-child { text-align: center; }
-.el-table td { padding: 6px 0; color: #333; }
-.el-table td .opButton { font-size: 20px; color: #069393; display: inline-block; padding: 5px; border-radius: 6px; cursor: pointer; }
-.el-table td .opButton:hover, .el-table td .el-table td .opButton:active { background: #069393; color: #fff; }
-.el-table td .opButton:before { display: inline-block; }
-.el-table td .opButton.fa-cut:before { transform: rotate(-90deg); }
-.el-table td:first-child { text-align: center; }
-.el-table td:last-child { text-align: center; }
-.missionList .el-table th:nth-child(2) { text-align: center; }
-.missionList .el-table td:nth-child(2) { text-align: center; }
-.el-table .cell { padding-left: 3px; padding-right: 3px; }
-.el-table .el-checkbox__inner { width: 18px; height: 18px; }
-.el-table .el-checkbox__inner::after { left: 6px; top: 3px; }
-.el-table .urgent { position: relative; padding-left: 15px; }
-.el-table .urgent:before { color: red; font-size: 16px; position: absolute; left: -3px; top: 3px; }
-.el-table .positionItem { white-space: nowrap; margin: 0 1px; }
-.el-table .positionItem:after { content: ','; }
-.el-table .positionItem:last-child:after { content: ''; }
-.el-table .datetime { word-break: break-all; line-height: 1.2em; font-size: 12px; }
-.el-table .datetime span { white-space: nowrap; margin: 0 1px; }
-.el-table .datetime span:after { content: ' '; }
-.el-table .datetime span:last-child:after { content: ''; }
+.leftPart { width: 225px; float: left; height: 100%; background: #3c8dbc; position: relative; }
+.leftPart .count { position: absolute; padding: .5em; background: #085989; color: #fff; left: calc(100% - 5px); bottom: 20px; white-space: nowrap; opacity: .5; }
+.leftPart .count:active { opacity: 1; }
+.leftPart .viewList { overflow: auto; height: 100%; }
+.leftPart li { position: relative; height: 50px; overflow: hidden; font-size: 16px; cursor: pointer; background-color: #0056fa; color: #fff; background: linear-gradient(rgba(255, 255, 255, 0.2), transparent); background-color: #0056fa; border-bottom: 1px solid rgba(0, 0, 0, 0.3); }
+.leftPart li:hover, .leftPart li:active { background-color: #19bbbb; }
+.leftPart .customer { line-height: 24px; font-weight: normal; position: absolute; left: 5px; top: 4px; }
+.leftPart .orderNumber { position: absolute; top: 26px; left: 5px; color: rgba(255, 255, 255, 0.7); font-size: 14px; }
+.leftPart .cutLength { position: absolute; top: 20px; right: 3px; color: #ffba53; }
+.leftPart .cutLength:after { content: '米'; color: rgba(255, 255, 255, 0.7); font-size: 12px; padding-left: 2px; }
+.leftPart li .fa { position: absolute; color: rgba(255, 255, 255, 0.2); font-size: 50px; top: 0px; left: 70%; transform: rotate(-20deg); }
+.leftPart li.freeDo { text-align: center; padding: 0; line-height: 50px; background-color: transparent; }
+.leftPart li.sel { background-color: #fff; border-bottom: 0; color: #3c8dbc; }
+.leftPart li.sel .customer { color: #3c8dbc; }
+.leftPart li.sel .orderNumber { color: #666; }
+.leftPart li.sel .cutLength { color: red; }
+.leftPart li.sel .cutLength:after { color: #666; }
+.leftPart li.sel .fa { color: #ffcda9; }
 
-.el-pagination { text-align: center; margin-top: 10px; }
+.rightPart { width: auto; margin-left: 225px; height: 100%; padding: 0 10px 0 10px; }
 
-.baseInfo { background: linear-gradient(transparent 29px, #ccc 0, #ccc 30px); background-size: 100% 30px; overflow: hidden; margin-bottom: 10px; }
-.baseInfo li { float: left; line-height: 30px; padding-right: 20px; }
-.baseInfo label { color: #999; }
-.baseInfo .showLength { width: 100%; background: #f2f2f2; border-bottom: 1px solid #ccc; text-align: center; }
-.baseInfo .showLength > div { display: inline-block; width: 20%; }
+.leftPart.pinch { width: 0; }
+.leftPart.pinch + .rightPart { margin-left: 0px; }
+
+.baseInfo { background: linear-gradient(transparent 33px, #ccc 0, #ccc 34px); background-size: 100% 34px; overflow: hidden; margin-bottom: 10px; }
+.baseInfo li { float: left; line-height: 34px; padding-right: 20px; width: 100%; }
+.baseInfo label { color: #999; padding-right: 3px; }
+.baseInfo li.important > span { color: red; }
 
 .clothShow { margin: 24px 0 32px 0; width: calc(100% - 55px); position: relative; padding-left: 10px; }
 .clothShow .changePosition { position: absolute; right: -55px; top: 0; height: 100%; width: 50px; border-radius: 0; }
@@ -78,7 +63,7 @@
 .cloth .clip:before { border-top-color: red; top: -5px; }
 .cloth .clip:after { border-bottom-color: red; bottom: -5px; }
 .cloth .cutBlock { position: absolute; top: 1px; bottom: 1px; outline: 1px dashed rgba(0, 0, 0, 0.3); outline-offset: -1px; max-width: 100%; }
-.cloth .cutBlock .exceed { position: absolute; left: -20px; width: 40px; height: 100%; border: 1px solid #069393; background: #fff; border-right-style: dashed; }
+.cloth .cutBlock .exceed { position: absolute; left: -10px; width: 40px; height: 100%; border: 1px solid #069393; background: #fff; border-right-style: dashed; }
 .cloth .cutBlock .exceed:before { content: ''; position: absolute; width: 100%; height: 14px; top: -14px; background: #fff; border-radius: 50% / 100% 100% 0 0; box-shadow: 0 -1px 0 1px #069393; }
 .cloth .cutBlock .exceed:after { content: ''; position: absolute; width: 100%; height: 14px; bottom: -2px; background: #999; border-radius: 50% / 100% 100% 0 0; box-shadow: 0 -1px 0 1px #069393; }
 .cloth .cutBlock.sel { outline-color: #f90; background: rgba(255, 153, 0, 0.2); }
@@ -153,28 +138,6 @@
 #printBox .dialog-content .rexButton .fa { font-size: 20px; }
 #printBox .dialog-content b { color: #f90; font-weight: normal; }
 
-.leftPart { width: 185px; float: left; height: 100%; background: #336666; }
-.leftPart .viewList { overflow: auto; height: 100%; }
-.leftPart li { padding: 3px 3px 5px 5px; overflow: hidden; font-size: 12px; cursor: pointer; background-color: #069393; color: #fff; border-top: 1px solid rgba(255, 255, 255, 0.4); border-bottom: 1px solid rgba(0, 0, 0, 0.4); }
-.leftPart li:hover, .leftPart li:active { background-color: #19bbbb; }
-.leftPart strong { line-height: 24px; font-weight: normal; position: relative; }
-.leftPart strong:before { color: red; position: absolute; top: 3px; right: -16px; font-size: 14px; }
-.leftPart .statusBar span { display: inline-block; color: rgba(255, 255, 255, 0.8); }
-.leftPart .length { background: #f90; margin-left: 5px; }
-.leftPart .length:after { content: '米'; }
-.leftPart .finished { background: green; }
-.leftPart li.freeDo { font-size: 16px; text-align: center; padding: 12px 0; }
-.leftPart li.sel { background-color: #fff; border-bottom: 0; }
-.leftPart li.sel strong { color: #333; }
-.leftPart li.sel span:first-child { color: #666; }
-.leftPart li.sel .comment { color: #333; }
-.leftPart li.freeDo.sel { color: #333; }
-
-.rightPart { width: auto; margin-left: 185px; height: 100%; padding: 0 10px 0 10px; }
-
-.leftPart.pinch { width: 20px; }
-.leftPart.pinch + .rightPart { margin-left: 20px; }
-
 .status { line-height: 1.8em; padding: 0 0.5em; }
 .status:before { color: #fff; }
 .status.customer { background: #005be3; }
@@ -194,7 +157,7 @@
 
 .buttonList.type2 .rexButton { width: 16.5%; }
 
-.elseList { margin-top: 20px; width: 100%; overflow: hidden; height: calc(100% - 250px); }
+.elseList { margin-top: 20px; width: 100%; overflow: hidden; height: calc(100% - 320px); }
 .elseList h3 { border-bottom: 1px solid #3c8dbc; font-weight: normal; font-size: 16px; color: #fff; line-height: 36px; width: 100%; background: linear-gradient(45deg, #3c8dbc 0, #3c8dbc 105px, transparent 0, transparent 100%); position: relative; }
 .elseList h3:before { margin-right: 8px; margin-left: 10px; }
 .elseList h3 button { position: absolute; top: 0; right: 0; font-size: 14px; }
@@ -216,24 +179,5 @@
 .flawList { padding-right: 5px; width: 50%; float: left; height: 100%; }
 
 .operateList { padding-left: 5px; width: 50%; float: left; height: 100%; }
-
-/* app样式协调 */
-.app .main .dialog-title { background: #fff; z-index: 3; border-bottom: 0; }
-.app .main .dialog-title .opBtn { display: none; }
-.app .main .dialog-title label { color: #999; }
-.app .main .dialog-title span { color: #333; }
-.app .main .occupation { height: 100%; top: 0; }
-.app .cut > .main .dialog-title:before { content: ''; position: absolute; z-index: 3; height: 42px; width: 175px; background: #3c8dbc; left: 0; top: 0; }
-.app .cut > .main .dialog-title ul { padding-left: 185px; }
-.app .check > .main .dialog-title ul { padding-left: 10px; }
-.app .leftPart { background-color: #3c8dbc; }
-.app .leftPart li { background-color: #0056fa; border-bottom: 1px solid #0a45b6; }
-.app .leftPart li:hover, .app .leftPart li:active { background-color: #70b7e6; }
-.app .leftPart li.sel { background-color: #fff; border-bottom: 0; }
-.app .leftPart li.sel strong { color: #333; }
-.app .leftPart li.sel span:first-child { color: #666; }
-.app .leftPart li.freeDo.sel { color: #333; }
-.app .leftPart.pinch { width: 0; }
-.app .leftPart.pinch + .rightPart { margin-left: 0; }
 
 /*# sourceMappingURL=operate.css.map */
