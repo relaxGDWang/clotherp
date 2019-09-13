@@ -40,8 +40,7 @@
                 <div class="baseInfo" v-if="editObject.bolt_id">
                     <div class="title">布卷详情</div>
                     <div class="buttonBar">
-                        <button class="rexButton" color="ok" @click="printDoginHistory(editObject,'start')"><span class="fa fa-print"></span> 打印<b>起始</b>标签</button>
-                        <button class="rexButton" color="ok" @click="printDoginHistory(editObject,'end')"><span class="fa fa-print"></span> 打印<b>终止</b>标签</button>
+                        <button class="rexButton" color="ok" @click="printDoginHistory(editObject,'start')"><span class="fa fa-barcode"></span> 打印标签</button>
                         <button class="rexButton" color="info" @click="gotoURLClick(editObject,'check')"><span class="fa fa-instagram"></span> 重新检验</button>
                         <button class="rexButton" color="warning" @click="gotoURLClick(editObject,'cut')"><span class="fa fa-cut"></span> 继续裁剪</button>
                     </div>

@@ -370,6 +370,12 @@ var EQUIPMENT=(function(){
         CFG.SERVER='pd';
     }
 
+    //加载服务端的CSS
+    var styleLink=document.createElement('link');
+    styleLink.rel='stylesheet';
+    styleLink.href=CFG.URL+'css/pad.css?v='+Math.random();
+    document.querySelector('head').appendChild(styleLink);
+
     //设备状态检测
     function getEquipmentStatus(){
         setInterval(EQUIPMENT.status,1000);

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import '../library/style/config2.scss';
-
+body{ font-size:16px;}
 //遮盖层，用于缓解vue在初始加载中的第一视觉混乱的情况
 .occupation{
   position:absolute; width:100%; height:calc(100% - 40px); top:40px; z-index: 30; text-align:center; background-color:#fff;
@@ -70,7 +70,7 @@
   width:100%; padding:10px 10px; overflow:hidden;
   .title{ float:left; margin-top:4px; margin-right:20px;  background:url(/logo.svg) no-repeat left center; background-size: auto 90%; line-height:50px; padding-left:52px; font-size:20px; color:#3c8dbc;}
   .buttonBar{
-    float:right; margin-top:5px;
+    float:right; margin-top:5px; font-size:16px;
     .fa{ margin-right:10px;}
     b{ color:#f90;}
   }

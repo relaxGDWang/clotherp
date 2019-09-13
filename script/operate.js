@@ -6,12 +6,16 @@ var vu=new Vue({
         bid:'',  //当前操作布段的id编号或者布卷号
         defectType: [],  //疵点分类
         defect:'',      //当前选择疵点分类
+        cutTypeList:['入库','废弃','版本布','返修'],
+        cutType:'',
         UI:{
             firstLoad: true,
             len:'',   //详细页布匹长度
             sel:''    //标注当前选择的布段编号，如果是自由裁剪为free
         },
         currentPosition: '',
+        assistPosition: '',
+        assistCount:0,
         positionTime:'',  //计米器读数时间函数
         positionPer: 1000, //读取频率
         positionCallBack: '',  //长度变更时的回调函数
@@ -72,13 +76,33 @@ var vu=new Vue({
             this.positionTime='';
         },
         resetCounter: function(){   //清零计米器
+            if (!this.currentPosition) return;
             dialog.open('information',{
                 content:'是否清零当前计米器的计数？',
                 btncancel:'',
                 btnsure:'确定',
                 cname:'sure',
                 closeCallback: function(id, dialogType, buttonType){
-                    if (buttonType==='sure') EQUIPMENT.resetCounter();
+                    if (buttonType==='sure'){
+                        EQUIPMENT.resetCounter();
+                        vu.assistPosition=0;
+                        vu.assistCount=0;
+                    }
+                }
+            });
+        },
+        resetCounter2: function(){  //辅助计米器清零
+            if (!this.assistPosition) return;
+            dialog.open('information',{
+                content:'是否清零当前 <strong>辅助</strong> 计米器？',
+                btncancel:'',
+                btnsure:'确定',
+                cname:'sure',
+                closeCallback: function(id, dialogType, buttonType){
+                    if (buttonType==='sure'){
+                        vu.assistCount+=vu.assistPosition;
+                        vu.assistPosition=0;
+                    }
                 }
             });
         },
@@ -166,10 +190,6 @@ var vu=new Vue({
             data.defects=_formatFlawInfor(data.defects);  //瑕疵列表
             data.qualified=this._formatQualified(data.qualified);
             data.list={};  //新增list属性，用于关联id编号和数组序号的对象
-            this.UI.sel='free';
-            if (data.orders.length>0){
-                this.UI.sel=data.orders[0].order_item_id;
-            }
             for (i=0; i<data.splits.length; i++){
                 data.list[data.splits[i].bolt_id]=i;
             }
@@ -298,11 +318,7 @@ var vu=new Vue({
             }
         },
         cutBlock: function(){  //询问是否要裁剪疵块
-            dialog.open('information',{
-                content:'是否确定裁剪当前长度为'+(vu.currentPosition || 0)+'米的疵块？',
-                btncancel:'',
-                btnsure:'确定',
-                cname:'sure',
+            dialog.open('cutCloth',{
                 closeCallback: function(id, dialogType, buttonType){
                     if (buttonType==='sure'){
                         vu.askCut('block');
@@ -495,6 +511,8 @@ var vu=new Vue({
                 data:{bolt_id: vu.editObject.bolt_id, qualified: pass, length: nowCurrentPosition},
                 success:function(data){
                     EQUIPMENT.resetCounter(true);
+                    vu.assistPosition=0;
+                    vu.assistCount=0;
                     vu._setDetailsData(data);
                     dialog.close('loading');
                     dialog.open('information', {
@@ -583,6 +601,8 @@ var vu=new Vue({
                     //清零计米
                     setTimeout(function(){
                         EQUIPMENT.resetCounter(true);
+                        vu.assistPosition=0;
+                        vu.assistCount=0;
                     },200);
                     if (vu.input.start===vu.input.end){
                         vu._setMessage({flag:true, status:'ok', msg:'疵点裁剪成功!'});
@@ -600,6 +620,7 @@ var vu=new Vue({
                     }
                 },
                 error: function(code, msg){
+                    console.log(msg);
                     dialog.close('loading');
                     dialog.open('information',{
                         content:msg,
@@ -634,6 +655,8 @@ var vu=new Vue({
                     dialog.close('loading');
                     setTimeout(function(){
                         EQUIPMENT.resetCounter(true);
+                        vu.assistPosition=0;
+                        vu.assistCount=0;
                     },200);
                     if (vu.showSelInfo.index!==''){
                         dialog.open('resultShow',{content:'订单布段裁剪完成！'});
@@ -708,9 +731,13 @@ var vu=new Vue({
             this.input.msg='';
         },
         'currentPosition': function(newVal,oldVal){
+            //协调辅助计米
+            this.assistPosition=newVal-this.assistCount;
+            //调用长度写入函数
             if (this.positionCallBack){
                 this.positionCallBack(newVal);
             }
+            //播放音频
             if (this.editObject && this.showSelInfo.index!==''){
                 var dis=this.showSelInfo.quantity.replace('米','')-0;
                 if ((oldVal==='' || oldVal<dis) && newVal>=dis){

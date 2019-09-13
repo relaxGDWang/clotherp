@@ -54,10 +54,10 @@
             <div class="rightPart">
                 <ul class="baseInfo nohead" v-if="editObject.bolt_id">
                     <template v-if="editObject.bolt_id">
-                        <li style="width:20%;"><label>货号:</label><span>{{editObject.product_code}}</span></li>
+                        <li style="width:18%;"><label>货号:</label><span>{{editObject.product_code}}</span></li>
                         <li style="width:24%;"><label>卷号:</label><span>{{editObject.bolt_no}}</span></li>
                         <li style="width:15%;"><label>布长:</label><span>{{editObject.current_length}}米</span></li>
-                        <li style="width:13%;"><label>门幅:</label><span>{{editObject.spec}}米</span></li>
+                        <li style="width:15%;"><label>门幅:</label><span>{{editObject.spec}}米</span></li>
                         <li style="width:28%;"><label>仓位:</label><span>{{editObject.position.join(',') || '--'}}</span></li>
                         <li style="width:20%;"><label>流程:</label><span>{{editObject.craft || '--'}}</span></li>
                     </template>
@@ -69,27 +69,22 @@
                     <template v-if="editObject.examine!=='已检验'">
                         <li style="width:80%;"><label>状态:</label><span>该布匹还没有经过检验</span></li>
                     </template>
-                    <template v-if="op==='cut' && showSelInfo.purchaser">
-                        <li style="width:30%;"><label>客户:</label><span>{{showSelInfo.purchaser}}</span></li>
-                        <li style="width:15%;"><label>订货:</label><span>{{showSelInfo.quantity}}</span></li>
-                        <li style="width:55%;" class="important"><label>备注:</label><span>{{showSelInfo.comment || '--'}}</span></li>
-                    </template>
+                    <li style="width:35%;" class="important"><label>当前裁剪</label><span>{{showSelInfo.quantity || '--'}}</span></li>
+                    <li style="width:65%;" class="important"><label>备注</label><span>{{showSelInfo.comment || '--'}}</span></li>
                 </ul>
+
                 <rex-cloth :len="UI.len" :flaws="editObject.defects" :pos="currentPosition" :cuts="editObject.splits" :select="showSelInfo.quantity" :fromwhere="editObject.start" :qualified="editObject.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
+
                 <div class="operateShow" v-if="editObject.bolt_id">
                     <div class="operate">
-                        <div class="counter">
-                            <span class="iconShow fa fa-legal"></span>
-                            <span class="nowCut">{{showSelInfo.index!==''? (showSelInfo.quantity.replace('米','')-0).toFixed(2) : '0.00'}}</span>
-                            {{currentPosition===''? '---.--': currentPosition.toFixed(2)}}
+                        <span class="fa fa-legal"></span>
+                        <div class="textShow">
+                            <strong class="real" @click="resetCounter()">{{currentPosition===''? '---.--': currentPosition.toFixed(2)}}</strong>
+                            <strong class="assist" @click="resetCounter2()">/{{assistPosition===''? '---.--': assistPosition.toFixed(2)}}</strong>
                         </div>
-                    </div><div class="buttonList">
+                    </div>
+                    <div class="buttonList">
                         <ul class="nohead">
-                            <li>
-                                <button class="rexButton" color="info" @click="resetCounter()">
-                                    <span class="fa fa-rotate-left"></span><span>计米清零</span>
-                                </button>
-                            </li>
                             <li>
                                 <button class="rexButton" color="info" @click="operateFlaw()" :disabled="UI.len===0">
                                     <span class="fa fa-tag"></span><span>新增疵点</span>
@@ -107,12 +102,12 @@
                             </li>
                             <li>
                                 <button class="rexButton" color="warning" @click="cutBlock()" :disabled="UI.len===0">
-                                    <span class="fa fa-trello fa-rotate-90"></span><span>裁边操作</span>
+                                    <span class="fa fa-trello fa-rotate-90"></span><span>布段分裁</span>
                                 </button>
                             </li>
                             <li v-if="op==='cut'">
                                 <button class="rexButton" color="warning" @click="askCut2('order')" :disabled="UI.len===0 || !UI.sel">
-                                    <span class="fa fa-cut"></span><span>订单裁剪</span>
+                                    <span class="fa fa-cut"></span><span>完成裁剪</span>
                                 </button>
                             </li>
                             <li v-if="op==='check'">
@@ -130,9 +125,8 @@
                             <li v-for="(item, index) in editObject.defects" :key="item.bolt_id">
                                 <span class="index" :class="{'point':(item.defect==='dot'),'block':(item.defect!=='dot')}">{{index+1}}</span>
                                 <span class="showtext">
-                                    <label>位置：</label><b>{{item.position}}</b> 米
-                                    <label>长度：</label><b>{{item.length || '--'}}</b> 米
-                                    <label>类型：</label><b>{{item.defect_type}}</b>
+                                    <label>位置:</label><b>{{item.position}}</b> 米
+                                    <label>类型:</label><b>{{item.defect_type}}</b>
                                 </span>
                                 <span class="opButton" @click="operateFlaw(item.bolt_id)">&times;</span>
                             </li>
@@ -142,11 +136,12 @@
                         </ul>
                     </div>
                     <div class="operateList">
-                        <h3 class="fa fa-calendar">操作记录<button type="button" class="rexButton" color="info" size="M" @click="openRecordDetails(editObject.bolt_id)">布卷详情&gt;</button></h3>
+                        <h3 class="fa fa-calendar">操作记录<button type="button" class="rexButton" color="info" size="S" @click="openRecordDetails(editObject.bolt_id)">查看更多 &gt;</button></h3>
                         <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.cutouts.length>0">
                             <li v-for="(item, index) in editObject.cutouts" class="cutRecord" :key="index">
                                 <span class="datetime">{{item.date}}</span>
                                 <span class="op"><span class="name">{{item.name}}</span> 裁剪布段 <b>{{item.length}}</b> 米</span>
+                                <button class="rexButton" color="info" size="M" @click="printDoginHistory(item,'',2)"><span class="fa fa-barcode"></span></button>
                             </li>
                         </transition-group>
                         <ul class="nohead" v-if="editObject.cutouts.length===0">
@@ -229,10 +224,13 @@
                 </div>
                 <div class="dialog-buttonBar">
                     <button class="rexButton opBtn btn-close" :disabled="input.flag">取消</button>
+                    <!--
                     <button class="rexButton" :disabled="input.flag" v-if="input.step===2" @click="goStep('prev')">上一步</button>
                     <button class="rexButton" :disabled="input.flag" v-if="input.step===1" @click="goStep('next')">下一步</button>
                     <button class="rexButton" color="warning" @click="askCut('dot')" :disabled="input.flag" v-if="input.step===1">疵点分裁</button>
                     <button class="rexButton" color="info" @click="addOperateFlaw()" :disabled="input.flag">{{input.step===1? '疵点记录':'疵块记录'}}</button>
+                    -->
+                    <button class="rexButton" color="info" @click="addOperateFlaw()" :disabled="input.flag">确定</button>
                 </div>
                 <div class="dialog-content">
                     <!-- 疵点分类 -->
@@ -284,6 +282,27 @@
             </div>
         </div>
         -->
+
+        <div class="extDialog" id="cutCloth">
+            <div class="dialogFrame">
+                <div class="dialog-title">
+                    <h4><span class="fa fa-trello fa-rotate-90"></span> 布段分裁</h4>
+                </div>
+                <div class="dialog-buttonBar">
+                    <button class="rexButton opBtn btn-close">取消</button>
+                    <button class="rexButton opBtn btn-sure" color="info">确定</button>
+                </div>
+                <div class="dialog-content">
+                    <p>即将于当前位置 <strong>{{currentPosition}}米</strong> 进行布段的分裁<br/><br/></p>
+                    <ul class="row nohead defectType">
+                        <label>处理方式&emsp;</label>
+                        <div class="itemShow">
+                            <span v-for="item in cutTypeList" @click="cutType=item" :class="{'sel':cutType===item}">{{item}}</span>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
     </div>
 

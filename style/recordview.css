@@ -1,4 +1,6 @@
 @charset "UTF-8";
+body { font-size: 16px; }
+
 .occupation { position: absolute; width: 100%; height: calc(100% - 40px); top: 40px; z-index: 30; text-align: center; background-color: #fff; }
 .occupation:before { display: inline-block; content: ''; width: 0; height: 100%; vertical-align: middle; }
 .occupation .emptyShow { display: inline-block; vertical-align: middle; position: relative; }
@@ -43,7 +45,7 @@
 /* 布匹基本信息 */
 .baseInfo { width: 100%; padding: 10px 10px; overflow: hidden; }
 .baseInfo .title { float: left; margin-top: 4px; margin-right: 20px; background: url(/logo.svg) no-repeat left center; background-size: auto 90%; line-height: 50px; padding-left: 52px; font-size: 20px; color: #3c8dbc; }
-.baseInfo .buttonBar { float: right; margin-top: 5px; }
+.baseInfo .buttonBar { float: right; margin-top: 5px; font-size: 16px; }
 .baseInfo .buttonBar .fa { margin-right: 10px; }
 .baseInfo .buttonBar b { color: #f90; }
 .baseInfo ul { width: 100%; clear: both; border: 1px dashed #f90; padding: 5px 10px; overflow: hidden; background-color: #fff1ef; }
