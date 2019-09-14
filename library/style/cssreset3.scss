@@ -85,6 +85,11 @@ input::-ms-clear, input::-ms-reveal {
 
 ul.nohead, ol.nohead{ list-style:none;}
 
+//禁止文本被选中
+.unselect{
+  user-select:none;
+}
+
 .rexTable {
   border-collapse: collapse;
   border-spacing: 0;

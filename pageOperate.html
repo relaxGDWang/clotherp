@@ -22,7 +22,7 @@
     <script src="script/common.js"></script>
     <!-- endbuild -->
 </head>
-<body class="app">
+<body class="app" id="pageOperate">
     <div class="outFrame" :class="op==='check'? 'check':'cut'" id="app">
         <audio id="aduioShow" src="audio.mp3" preload="preload"></audio>
         <div class="main">
@@ -59,7 +59,7 @@
                         <li style="width:15%;"><label>布长:</label><span>{{editObject.current_length}}米</span></li>
                         <li style="width:15%;"><label>门幅:</label><span>{{editObject.spec}}米</span></li>
                         <li style="width:28%;"><label>仓位:</label><span>{{editObject.position.join(',') || '--'}}</span></li>
-                        <li style="width:20%;"><label>流程:</label><span>{{editObject.craft || '--'}}</span></li>
+                        <li style="width:20%;"><label>工艺:</label><span>{{editObject.craft || '--'}}</span></li>
                     </template>
                     <template v-if="editObject.examine==='已检验'">
                         <li style="width:20%;"><label>状态:</label><span>{{editObject.examine}}</span></li>
@@ -78,7 +78,7 @@
                 <div class="operateShow" v-if="editObject.bolt_id">
                     <div class="operate">
                         <span class="fa fa-legal"></span>
-                        <div class="textShow">
+                        <div class="textShow unselect">
                             <strong class="real" @click="resetCounter()">{{currentPosition===''? '---.--': currentPosition.toFixed(2)}}</strong>
                             <strong class="assist" @click="resetCounter2()">/{{assistPosition===''? '---.--': assistPosition.toFixed(2)}}</strong>
                         </div>
@@ -140,8 +140,8 @@
                         <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.cutouts.length>0">
                             <li v-for="(item, index) in editObject.cutouts" class="cutRecord" :key="index">
                                 <span class="datetime">{{item.date}}</span>
-                                <span class="op"><span class="name">{{item.name}}</span> 裁剪布段 <b>{{item.length}}</b> 米</span>
-                                <button class="rexButton" color="info" size="M" @click="printDoginHistory(item,'',2)"><span class="fa fa-barcode"></span></button>
+                                <span class="op"><span class="name">{{item.name}}</span> 裁剪 <b>{{item.length}}</b> 米</span>
+                                <button class="rexButton" color="info" size="M" @click="printDoginHistory(item,'',2)">打印</button>
                             </li>
                         </transition-group>
                         <ul class="nohead" v-if="editObject.cutouts.length===0">

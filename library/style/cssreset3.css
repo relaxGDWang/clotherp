@@ -31,6 +31,8 @@ input::-ms-clear, input::-ms-reveal { display: none; }
 
 ul.nohead, ol.nohead { list-style: none; }
 
+.unselect { user-select: none; }
+
 .rexTable { border-collapse: collapse; border-spacing: 0; width: 100%; }
 
 .rexButton, .rexInput, .rexIconInput input, .rexCheck input, .rexBlockCheck input { -webkit-appearance: none; -moz-appearance: none; appearance: none; margin: 0; padding: 0; white-space: nowrap; }

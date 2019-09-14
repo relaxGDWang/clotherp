@@ -318,6 +318,17 @@ var vu=new Vue({
             }
         },
         cutBlock: function(){  //询问是否要裁剪疵块
+            //判断当前计米器读数
+            if (!this.currentPosition){
+                dialog.open('information',{
+                    content:'由于计米器读数无法获取或者为0，当前操作无法继续！',
+                    btncancel:'',
+                    btnclose:'',
+                    btnsure:'确定',
+                    cname:'warning',
+                });
+                return;
+            }
             dialog.open('cutCloth',{
                 closeCallback: function(id, dialogType, buttonType){
                     if (buttonType==='sure'){
@@ -571,8 +582,9 @@ var vu=new Vue({
             }
         },
         askCut: function(op){ //疵点分裁处理
-            this.input.start-=0;
-            this.input.end-=0;
+            this.input.start=0;
+            this.input.end=this.currentPosition-0;
+            /*
             var ajaxObject;
             if (op==='dot'){  //疵点分裁处理
                 if (this.input.start===0){
@@ -590,13 +602,17 @@ var vu=new Vue({
                 }
                 ajaxObject=ajax;
             }
-            ajaxObject.send({
+            */
+            ajax.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1},  //notice
+                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1, type:vu.cutType},  //notice
                 success: function(data){
                     dialog.close('loading');
                     vu._setDetailsData(data,'');
+                    vu.cutType='';
+                    vu.input.start=0;
+                    vu.input.end=0;
                     //vu.flagReload=true;
                     //清零计米
                     setTimeout(function(){
@@ -604,6 +620,11 @@ var vu=new Vue({
                         vu.assistPosition=0;
                         vu.assistCount=0;
                     },200);
+                    dialog.open('resultShow',{content:'布段分裁成功!'});
+                    if (vu.editObject.cutouts[0].print_data){
+                        vu.printDoginHistory(vu.editObject.cutouts[0],'');
+                    }
+                    /*
                     if (vu.input.start===vu.input.end){
                         vu._setMessage({flag:true, status:'ok', msg:'疵点裁剪成功!'});
                         //打印信息
@@ -618,9 +639,9 @@ var vu=new Vue({
                         vu.input.end=0;
                         dialog.open('resultShow',{content:'疵块裁剪成功!'});
                     }
+                    */
                 },
                 error: function(code, msg){
-                    console.log(msg);
                     dialog.close('loading');
                     dialog.open('information',{
                         content:msg,
