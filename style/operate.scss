@@ -3,7 +3,7 @@
 
 $color5:#3c8dbc;
 $color6:#0056fa;
-$leftSide:225px;
+$leftSide:290px;
 
 body{ font-size:16px;}
 //遮盖层，用于缓解vue在初始加载中的第一视觉混乱的情况
@@ -45,17 +45,21 @@ body{ font-size:16px;}
   .count{ position:absolute; padding:.5em; background:#085989; color:#fff; left:calc(100% - 5px); bottom:20px; white-space: nowrap; opacity:.5;}
   .count:active{ opacity:1;}
   .viewList{ overflow:auto; height:100%;}
-  li{ position:relative; height:50px; overflow:hidden; font-size:16px; cursor:pointer; background-color:$color6; color:#fff; background:linear-gradient(rgba(255,255,255,.2),transparent); background-color:$color6; border-bottom:1px solid rgba(0,0,0,.3);}
+  li{ position:relative; height:60px; overflow:hidden; font-size:16px; cursor:pointer; background-color:$color6; color:#fff; background:linear-gradient(rgba(255,255,255,.2),transparent); background-color:$color6; border-bottom:1px solid rgba(0,0,0,.3);}
   li:hover, li:active{ background-color:#19bbbb;}
-  .customer{ line-height:24px; font-weight:normal; position:absolute; left:5px; top:4px;}
-  .orderNumber{ position:absolute; top:26px; left:5px; color:rgba(255,255,255,.9); font-size:14px; text-shadow:0 0 1px rgba(0,0,0,1);}
-  .cutLength{ font-size:1.1em; font-weight:bold; position:absolute; top:20px; right:3px; color:#ffae35; text-shadow:0 0 1px rgba(0,0,0,1);}
-  li .fa{ position:absolute; color:rgba(255,255,255,.35); font-size:50px; top:0; left:50%; transform:rotate(-20deg);}
-  li.freeDo{ text-align:center; padding:0; line-height:50px; background-color:transparent;}
+  .customer{ line-height:24px; font-weight:normal; position:absolute; left:5px; top:6px;}
+  .customer strong{ font-size:14px; font-weight:normal; margin-left:5px; background-color:#0e3e9a; padding:1px 2px;}
+  .orderNumber{ position:absolute; top:31px; left:5px; color:rgba(255,255,255,.8); font-size:16px; text-shadow:0 0 1px rgba(0,0,0,1);}
+  .orderNumber strong{ font-weight:normal; color:#fff;}
+  .cutLength{ font-size:1.2em; font-weight:bold; position:absolute; top:26px; right:6px; color:#ffae35; text-shadow:0 0 1px rgba(0,0,0,1);}
+  li .fa{ position:absolute; color:rgba(255,255,255,.35); font-size:50px; top:4px; left:68%; transform:rotate(-20deg);}
+  li.freeDo{ text-align:center; height:50px; padding:0; line-height:50px; background-color:transparent;}
   li.sel{
     background-color:#fff; border-bottom:0; color:$color5;
     .customer{ color:$color5; font-weight:bold;}
+    .customer strong{ background-color:#eee;}
     .orderNumber{ color:#666; text-shadow:none;}
+    .orderNumber strong{ color:#000;}
     .cutLength{ color:red; font-weight:normal; text-shadow:none;}
     .cutLength:after{ color:#666;}
     .fa{ color:#ffcda9;}
@@ -80,7 +84,8 @@ body{ font-size:16px;}
 
 //布匹概览
 .clothShow{
-  margin:24px 0 32px 0; width:calc(100% - 55px); position:relative; padding-left:10px;
+  /*margin:24px 0 32px 0; width:calc(100% - 55px); position:relative; padding-left:10px;*/
+  margin:24px 0 32px 0; width:100%; position:relative; padding-left:10px;
   .changePosition{
     position:absolute; right:-55px; top:0; height:100%; width:50px; border-radius:0;
     & .fa:before{ font-size:30px;}

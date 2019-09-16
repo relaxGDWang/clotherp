@@ -18,13 +18,13 @@ Vue.component('rex-cloth', {
                 '<span class="cutBlock sel first" :style="getCutStyle()"><span class="exceed" v-if="exceed"></span></span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
-                '<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
+                //'<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
                 '<span class="qualified" v-if="qualified.class && len>0" :class="qualified.class">{{qualified.name}}</span>' +
             '</div>' +
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
             '</div>' +
-            '<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse || len===0"><span class="fa fa-retweet"></span></button>' +
+            //'<button class="rexButton changePosition" color="info" @click="eventChangePosition" :disabled="!canreverse || len===0"><span class="fa fa-retweet"></span></button>' +
         '</div>',
     props:{
         len:{

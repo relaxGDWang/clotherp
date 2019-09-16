@@ -22,25 +22,29 @@ body { font-size: 16px; }
 .main .dialog-title .passStatus.no { background: red; }
 .main .dialog-content { height: 100%; }
 
-.leftPart { width: 225px; float: left; height: 100%; background: #3c8dbc; position: relative; }
+.leftPart { width: 290px; float: left; height: 100%; background: #3c8dbc; position: relative; }
 .leftPart .count { position: absolute; padding: .5em; background: #085989; color: #fff; left: calc(100% - 5px); bottom: 20px; white-space: nowrap; opacity: .5; }
 .leftPart .count:active { opacity: 1; }
 .leftPart .viewList { overflow: auto; height: 100%; }
-.leftPart li { position: relative; height: 50px; overflow: hidden; font-size: 16px; cursor: pointer; background-color: #0056fa; color: #fff; background: linear-gradient(rgba(255, 255, 255, 0.2), transparent); background-color: #0056fa; border-bottom: 1px solid rgba(0, 0, 0, 0.3); }
+.leftPart li { position: relative; height: 60px; overflow: hidden; font-size: 16px; cursor: pointer; background-color: #0056fa; color: #fff; background: linear-gradient(rgba(255, 255, 255, 0.2), transparent); background-color: #0056fa; border-bottom: 1px solid rgba(0, 0, 0, 0.3); }
 .leftPart li:hover, .leftPart li:active { background-color: #19bbbb; }
-.leftPart .customer { line-height: 24px; font-weight: normal; position: absolute; left: 5px; top: 4px; }
-.leftPart .orderNumber { position: absolute; top: 26px; left: 5px; color: rgba(255, 255, 255, 0.9); font-size: 14px; text-shadow: 0 0 1px black; }
-.leftPart .cutLength { font-size: 1.1em; font-weight: bold; position: absolute; top: 20px; right: 3px; color: #ffae35; text-shadow: 0 0 1px black; }
-.leftPart li .fa { position: absolute; color: rgba(255, 255, 255, 0.35); font-size: 50px; top: 0; left: 50%; transform: rotate(-20deg); }
-.leftPart li.freeDo { text-align: center; padding: 0; line-height: 50px; background-color: transparent; }
+.leftPart .customer { line-height: 24px; font-weight: normal; position: absolute; left: 5px; top: 6px; }
+.leftPart .customer strong { font-size: 14px; font-weight: normal; margin-left: 5px; background-color: #0e3e9a; padding: 1px 2px; }
+.leftPart .orderNumber { position: absolute; top: 31px; left: 5px; color: rgba(255, 255, 255, 0.8); font-size: 16px; text-shadow: 0 0 1px black; }
+.leftPart .orderNumber strong { font-weight: normal; color: #fff; }
+.leftPart .cutLength { font-size: 1.2em; font-weight: bold; position: absolute; top: 26px; right: 6px; color: #ffae35; text-shadow: 0 0 1px black; }
+.leftPart li .fa { position: absolute; color: rgba(255, 255, 255, 0.35); font-size: 50px; top: 4px; left: 68%; transform: rotate(-20deg); }
+.leftPart li.freeDo { text-align: center; height: 50px; padding: 0; line-height: 50px; background-color: transparent; }
 .leftPart li.sel { background-color: #fff; border-bottom: 0; color: #3c8dbc; }
 .leftPart li.sel .customer { color: #3c8dbc; font-weight: bold; }
+.leftPart li.sel .customer strong { background-color: #eee; }
 .leftPart li.sel .orderNumber { color: #666; text-shadow: none; }
+.leftPart li.sel .orderNumber strong { color: #000; }
 .leftPart li.sel .cutLength { color: red; font-weight: normal; text-shadow: none; }
 .leftPart li.sel .cutLength:after { color: #666; }
 .leftPart li.sel .fa { color: #ffcda9; }
 
-.rightPart { width: auto; margin-left: 225px; height: 100%; padding: 0 10px 0 10px; }
+.rightPart { width: auto; margin-left: 290px; height: 100%; padding: 0 10px 0 10px; }
 
 .leftPart.pinch { width: 0; }
 .leftPart.pinch + .rightPart { margin-left: 0px; }
@@ -51,7 +55,7 @@ body { font-size: 16px; }
 .baseInfo li.important label { display: inline-block; line-height: 1; padding: 5px 5px; border-radius: 4px; background-color: red; color: #fff; margin-right: 8px; }
 .baseInfo li.important span { color: black; font-weight: bold; }
 
-.clothShow { margin: 24px 0 32px 0; width: calc(100% - 55px); position: relative; padding-left: 10px; }
+.clothShow { /*margin:24px 0 32px 0; width:calc(100% - 55px); position:relative; padding-left:10px;*/ margin: 24px 0 32px 0; width: 100%; position: relative; padding-left: 10px; }
 .clothShow .changePosition { position: absolute; right: -55px; top: 0; height: 100%; width: 50px; border-radius: 0; }
 .clothShow .changePosition .fa:before { font-size: 30px; }
 

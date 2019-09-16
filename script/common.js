@@ -373,7 +373,7 @@ var EQUIPMENT=(function(){
     //加载服务端的CSS
     var styleLink=document.createElement('link');
     styleLink.rel='stylesheet';
-    styleLink.href=CFG.URL+'css/pad.css?v='+Math.random();
+    styleLink.href=CFG.URL.replace('v1/','')+'css/pad.css?v='+Math.random();
     document.querySelector('head').appendChild(styleLink);
 
     //设备状态检测

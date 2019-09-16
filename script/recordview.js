@@ -3,7 +3,7 @@ var vu=new Vue({
     el: '#app',
     data: {
         bid:'',  //当前操作布段的id编号
-        UI: {
+        UI:{
             firstLoad: true
         },
         editObject: {}  //操作记录详情
@@ -99,17 +99,23 @@ var vu=new Vue({
                 }
             }
             if (opsition==='start'){
+                /*
                 if (dataObject.start==='start_a'){
                     printStr=dataObject.print_head;
                 }else{
                     printStr=dataObject.print_tail;
                 }
+                */
+                printStr=dataObject.print_head;
             }else if(opsition==='end'){
+                /*
                 if (dataObject.start==='start_a'){
                     printStr=dataObject.print_tail;
                 }else{
                     printStr=dataObject.print_head;
                 }
+                */
+                printStr=dataObject.print_head;
             }else{
                 printStr=dataObject? dataObject.print_data:'';
             }

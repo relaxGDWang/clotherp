@@ -42,8 +42,8 @@
                         <li key="free" class="freeDo" :class="{'sel':'free'===UI.sel}" @click="setViewObject('free')"><p>无任务裁剪</p></li>
                         <li v-for="item in editObject.orders" :key="item.order_item_id" :class="{'sel':item.order_item_id===UI.sel}" @click="setViewObject(item.order_item_id)">
                             <span class="fa fa-flag" v-if="item.urgent"></span>
-                            <strong class="customer">{{item.purchaser}}</strong>
-                            <span class="orderNumber">{{item.order_no}}</span>
+                            <span class="customer">{{item.purchaser}}<strong>{{item.order_no.substr(-6,6)}}</strong></span>
+                            <span class="orderNumber">门幅:<strong>{{item.spec}}</strong>米&emsp;&emsp;订单:<strong>{{item.created_at}}</strong></span>
                             <span class="cutLength">{{item.quantity}}</span>
                             <!--<div class="comment">{{item.comment}}</div>-->
                         </li>
@@ -54,23 +54,21 @@
             <div class="rightPart">
                 <ul class="baseInfo nohead" v-if="editObject.bolt_id">
                     <template v-if="editObject.bolt_id">
-                        <li style="width:18%;"><label>货号:</label><span>{{editObject.product_code}}</span></li>
-                        <li style="width:24%;"><label>卷号:</label><span>{{editObject.bolt_no}}</span></li>
+                        <li style="width:22%;"><label>货号:</label><span>{{editObject.product_code}}</span></li>
                         <li style="width:15%;"><label>布长:</label><span>{{editObject.current_length}}米</span></li>
+                        <li style="width:15%;"><label>工艺:</label><span>{{editObject.craft || '--'}}</span></li>
+                        <li style="width:22%;"><label>检验人:</label><span>{{editObject.examiner || '--'}}</span></li>
+                        <li style="width:26%;"><label>日期:</label><span>{{editObject.examined_at  || '--'}}</span></li>
+
+                        <li style="width:22%;"><label>卷号:</label><span>{{editObject.bolt_no}}</span></li>
                         <li style="width:15%;"><label>门幅:</label><span>{{editObject.spec}}米</span></li>
-                        <li style="width:28%;"><label>仓位:</label><span>{{editObject.position.join(',') || '--'}}</span></li>
-                        <li style="width:20%;"><label>工艺:</label><span>{{editObject.craft || '--'}}</span></li>
+                        <li style="width:15%;"><label>状态:</label><span>{{editObject.examine==='-'? '--':editObject.examine}}</span></li>
+                        <li style="width:22%;"><label>供应商:</label><span>{{editObject.supplier}}</span></li>
+                        <li style="width:26%;"><label>仓位:</label><span>{{editObject.position.join(',') || '--'}}</span></li>
+
+                        <li style="width:35%;" class="important"><label>当前裁剪</label><span>{{showSelInfo.quantity || '--'}}</span></li>
+                        <li style="width:65%;" class="important"><label>备注</label><span>{{showSelInfo.comment || '--'}}</span></li>
                     </template>
-                    <template v-if="editObject.examine==='已检验'">
-                        <li style="width:20%;"><label>状态:</label><span>{{editObject.examine}}</span></li>
-                        <li style="width:25%;"><label>检验人:</label><span>{{editObject.examiner}}</span></li>
-                        <li style="width:35%;"><label>日期:</label><span>{{editObject.examined_at}}</span></li>
-                    </template>
-                    <template v-if="editObject.examine!=='已检验'">
-                        <li style="width:80%;"><label>状态:</label><span>该布匹还没有经过检验</span></li>
-                    </template>
-                    <li style="width:35%;" class="important"><label>当前裁剪</label><span>{{showSelInfo.quantity || '--'}}</span></li>
-                    <li style="width:65%;" class="important"><label>备注</label><span>{{showSelInfo.comment || '--'}}</span></li>
                 </ul>
 
                 <rex-cloth :len="UI.len" :flaws="editObject.defects" :pos="currentPosition" :cuts="editObject.splits" :select="showSelInfo.quantity" :fromwhere="editObject.start" :qualified="editObject.qualified" @changeposition="goChangePosition" v-if="editObject.bolt_id"></rex-cloth>
@@ -195,6 +193,7 @@
                 <div class="dialog-buttonBar">
                     <button class="rexButton opBtn btn-close" :disabled="input.flag">取消</button>
                     <button class="rexButton" color="info" @click="doResetLength()" :disabled="input.flag">提交修改</button>
+                    <button class="rexButton" color="warning" @click="doResetLength(0)" :disabled="input.flag">布卷用尽</button>
                 </div>
                 <div class="dialog-content">
                     <div class="row" v-if="editObject.bolt_id">
@@ -241,7 +240,7 @@
                         </div>
                     </ul>
                     <div class="row">
-                        <label>疵点开始位置</label>
+                        <label>疵点位置</label>
                         <span class="inputShow">
                         <el-input type="tel" v-model.trim="input.start" maxlength="6" :disabled="input.flag || input.step===2" :readonly="input.readonly">
                             <el-button slot="prepend" class="fa" :class="{'fa-pencil':input.readonly,'fa-legal':!input.readonly}" @click="input.readonly=!input.readonly" :disabled="input.flag || input.step===2"></el-button>

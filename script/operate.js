@@ -252,7 +252,12 @@ var vu=new Vue({
                 this.input.len=newVal;
             };
         },
-        doResetLength: function(){ //重写布匹长度ajax
+        doResetLength: function(setLen){ //重写布匹长度ajax
+            if (setLen!==undefined && !isNaN(setLen-0)){
+                vu.input.len=setLen;
+                _tempDo();
+                return;
+            }
             if (REG.flaw.test(this.input.len)===false){
                 this._setMessage({status:'warning',msg:'布长填写错误，请重新输入'});
                 return;
@@ -434,18 +439,24 @@ var vu=new Vue({
             }else{
                 switch (index){
                     case 'start':
+                        /*
                         if (this.editObject.start==='start_a'){
                             printStr=this.editObject.print_head;
                         }else{
                             printStr=this.editObject.print_tail;
                         }
+                        */
+                        printStr=this.editObject.print_head;
                         break;
                     case 'end':
+                        /*
                         if (this.editObject.start==='start_a'){
                             printStr=this.editObject.print_tail;
                         }else{
                             printStr=this.editObject.print_head;
                         }
+                        */
+                        printStr=this.editObject.print_head;
                         break;
                     default:
                         printStr=this.editObject.cutouts[0].print_data;
@@ -464,17 +475,23 @@ var vu=new Vue({
                 }
             }
             if (opsition==='start'){
+                /*
                 if (dataObject.start==='start_a'){
                     printStr=dataObject.print_head;
                 }else{
                     printStr=dataObject.print_tail;
                 }
+                */
+                printStr=dataObject.print_head;
             }else if(opsition==='end'){
+                /*
                 if (dataObject.start==='start_a'){
                     printStr=dataObject.print_tail;
                 }else{
                     printStr=dataObject.print_head;
                 }
+                */
+                printStr=dataObject.print_head;
             }else{
                 printStr=dataObject? dataObject.print_data:'';
             }
@@ -582,8 +599,8 @@ var vu=new Vue({
             }
         },
         askCut: function(op){ //疵点分裁处理
-            this.input.start=0;
             this.input.end=this.currentPosition-0;
+            this.input.start=this.input.end;
             /*
             var ajaxObject;
             if (op==='dot'){  //疵点分裁处理
@@ -606,7 +623,7 @@ var vu=new Vue({
             ajax.send({
                 url: PATH.addFlaw,
                 method: 'post',
-                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1, type:vu.cutType},  //notice
+                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1, type:'',comment:vu.cutType},  //notice
                 success: function(data){
                     dialog.close('loading');
                     vu._setDetailsData(data,'');
@@ -622,7 +639,7 @@ var vu=new Vue({
                     },200);
                     dialog.open('resultShow',{content:'布段分裁成功!'});
                     if (vu.editObject.cutouts[0].print_data){
-                        vu.printDoginHistory(vu.editObject.cutouts[0],'');
+                        vu.printDoginHistory(vu.editObject.cutouts[0],2);
                     }
                     /*
                     if (vu.input.start===vu.input.end){
@@ -719,7 +736,11 @@ var vu=new Vue({
                 //NOTICE 调用app对应的方法
                 EQUIPMENT.detailsOpen('record',bid);
             }else{
-                window.parent.vu.openRecordView(bid);
+                if (window.parent===window){
+                    location.href='pageRecordView.html#'+ encodeURIComponent('{"op":"record","bid":'+bid+'}');
+                }else{
+                    window.parent.vu.openRecordView(bid);
+                }
             }
         }
     },
