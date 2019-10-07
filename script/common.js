@@ -35,45 +35,44 @@ var EQUIPMENT=(function(){
         return typeStr;
     }
 
-    function doPrint(printStr,count){   //打印标签
-        /*
-        if (count && count>1){
-            count=count-0;
-        }else{
-            count=1;
-        }
-        */
+    /*
+    printStr 需要打印的字符串
+    count 打印次数，如果为空则按打印机类型自行判定，标签布4，贴纸2，未获取1，否则按要求次数打印，不超过10
+    */
+    function doPrint(printObject,count){   //打印标签
+        count=count-0;
         if (printFlag){
             showErrorResult('有打印任务正在执行中！');
             return;
         }
-        if (!printStr){
-            showErrorResult('待打印的字符为空！');
+        if (!(printObject && printObject.items)){
+            showErrorResult('待打印的字符错误或者为空！');
             return;
         }
-        if (count){
-            var typeStr=getPrintType();
+        var printStr=JSON.stringify(printObject);
+        if (isNaN(count)){
+            //var typeStr=getPrintType();
+            /*
             if (typeStr){
                 if (typeStr==='label'){
                     count=4;
-                    //如果是标签布打印，则多加空行 2019/09/08
-                    var tempObj=JSON.parse(printStr);
-                    tempObj.info.items.push({text:''});
-                    tempObj.info.items.unshift({text:''});
-                    printStr=JSON.stringify(tempObj);
+                    printStr=JSON.stringify(printObject);
                 }else{
                     count=2;
                 }
             }else{
                 count=1;
             }
-            console.log('print count have='+ count);
+            */
+            count=2;
+            console.log('print fit printer ='+ count);
         }else{
-            count=1;
-            console.log('print no count='+ count);
+            if (count<=0 || count>10) count=1;
+            console.log('print with number='+ count);
         }
         printFlag=true;
         var timeID=setInterval(_print,800);
+
         function _print(){
             console.log('print');
             try {
@@ -373,7 +372,7 @@ var EQUIPMENT=(function(){
     //加载服务端的CSS
     var styleLink=document.createElement('link');
     styleLink.rel='stylesheet';
-    styleLink.href=CFG.URL.replace('v1/','')+'css/pad.css?v='+Math.random();
+    styleLink.href=CFG.URL.replace('api/v1/','')+'css/pad.css?v='+Math.random();
     document.querySelector('head').appendChild(styleLink);
 
     //设备状态检测

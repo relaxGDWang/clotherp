@@ -1,10 +1,12 @@
 @charset "UTF-8";
 @import '../library/style/config2.scss';
 
+body{ font-size:16px;}
 .listContent{ height:100%;}
 
 /* 表格样式 */
 .el-table{
+  font-size:1em;
   th{
     padding:6px 0;
     &:first-child{ text-align:center;}
@@ -48,7 +50,7 @@
 
   //日期时间
   .datetime{
-    word-break: break-all; line-height:1.2em; font-size:12px;
+    word-break: break-all; line-height:1.2em;
     span{
       white-space: nowrap; margin:0 1px;
       &:after{ content:' ';}

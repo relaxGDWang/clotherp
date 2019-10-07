@@ -1,7 +1,10 @@
 @charset "UTF-8";
+body { font-size: 16px; }
+
 .listContent { height: 100%; }
 
 /* 表格样式 */
+.el-table { font-size: 1em; }
 .el-table th { padding: 6px 0; }
 .el-table th:first-child { text-align: center; }
 .el-table th:last-child { text-align: center; }
@@ -26,7 +29,7 @@
 .el-table .positionItem { white-space: nowrap; margin: 0 1px; }
 .el-table .positionItem:after { content: ','; }
 .el-table .positionItem:last-child:after { content: ''; }
-.el-table .datetime { word-break: break-all; line-height: 1.2em; font-size: 12px; }
+.el-table .datetime { word-break: break-all; line-height: 1.2em; }
 .el-table .datetime span { white-space: nowrap; margin: 0 1px; }
 .el-table .datetime span:after { content: ' '; }
 .el-table .datetime span:last-child:after { content: ''; }

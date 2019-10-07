@@ -58,6 +58,7 @@ gulp.task('output2', function() {
         .pipe(useref())
         .pipe(gulpif('*.js', uglify()))
         .on('error', function (err) {
+			console.log(err);
             gutil.log(gutil.colors.red('[Error]'), err.toString());
         })
         .pipe(gulpif('*.css', cleanCSS()))

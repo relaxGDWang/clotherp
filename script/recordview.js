@@ -36,7 +36,7 @@ var vu=new Vue({
                 this.editObject={};
                 var showObject={
                     cname:'error',
-                    content:'缺少关键参数，无法获得布匹的操作记录',
+                    content:'缺少关键参数，无法获得布卷的操作记录',
                     btncancel:'', btnclose:'', btnsure:'确定',
                     closeCallback: function(id, dialogType, buttonType){
                         //vu.thisClose();
@@ -78,7 +78,7 @@ var vu=new Vue({
                         if (data.history[i].action_type.indexOf('检验')>=0){
                             data.history[i].action_type_icon='fa-instagram';
                         }else{
-                            if (data.history[i].action_type.indexOf('分裁')>=0){
+                            if (data.history[i].action_type.indexOf('疵点')>=0){
                                 data.history[i].action_type_icon='fa-thumb-tack';
                             }else{
                                 data.history[i].action_type_icon='fa-cut';
@@ -90,6 +90,10 @@ var vu=new Vue({
                 }
             });
         },
+        printRequest: function(printObject,count){
+            EQUIPMENT.print(printObject,count);
+        },
+        /*
         printDoginHistory: function(dataObject,opsition,count){  //打印历史记录的标签
             var printStr;
             if (opsition==='start' || opsition==='end'){
@@ -99,22 +103,8 @@ var vu=new Vue({
                 }
             }
             if (opsition==='start'){
-                /*
-                if (dataObject.start==='start_a'){
-                    printStr=dataObject.print_head;
-                }else{
-                    printStr=dataObject.print_tail;
-                }
-                */
                 printStr=dataObject.print_head;
             }else if(opsition==='end'){
-                /*
-                if (dataObject.start==='start_a'){
-                    printStr=dataObject.print_tail;
-                }else{
-                    printStr=dataObject.print_head;
-                }
-                */
                 printStr=dataObject.print_head;
             }else{
                 printStr=dataObject? dataObject.print_data:'';
@@ -123,9 +113,10 @@ var vu=new Vue({
             console.log(printStr);
             EQUIPMENT.print(printStr,count);
         },
+        */
         gotoURLClick: function(obj,type){ //操作记录页面的按钮点击处理
             if (obj.current_length<=0){
-                dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
+                dialog.open('resultShow',{content:'布卷剩余长度为0，无法响应该操作'});
             }else{
                 if (EQUIPMENT.app){
                     //NOTICE 调用app对应的方法

@@ -21,7 +21,7 @@ var vu=new Vue({
                     if (e) e.target.blur();
                     ajax.send({
                         url: PATH.missionCheck,
-                        data: {bolt_no: this.bolt_no},
+                        data: {bolt_no: this.bolt_no, action:'cut'},
                         success:function(data){
                             dialog.close('loading');
                             data=data.items;

@@ -32,7 +32,6 @@
                             <span>{{cutpage.pageSize*(cutpage.page2-1)+scope.$index+1}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="product_code" label="货号" key="colProduct"></el-table-column>
                     <el-table-column label="卷号" width="190" class-name="boltNumber" key="colBoltNo">
                         <template slot-scope="scope">
                             <div class="fa" :class="scope.row.qualified.class">{{scope.row.bolt_no}}</div>

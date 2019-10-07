@@ -13,13 +13,14 @@
 //原先button 项的disabled判定还有个条件 || select===''"
 Vue.component('rex-cloth', {
     template: ''+
-        '<div class="clothShow" :class="{\'zero\':len===0}">'+
-            '<div class="cloth" ref="cloth">' +
-                '<span class="cutBlock sel first" :style="getCutStyle()"><span class="exceed" v-if="exceed"></span></span>' +
+        '<div class="clothShow" :class="{\'zero\':len===0,\'locked\':locked}">'+
+            '<div class="disabled" v-if="!!disabled">{{disabled}}</div>'+
+            '<div class="cloth" ref="cloth" :afterStr="lockedInfo">' +
+                '<span class="cutBlock sel first" :style="getCutStyle()" v-if="len!==0 && !locked"><span class="exceed" v-if="exceed"></span></span>' +
                 '<span class="clip" :style="getPositionStyle()"></span>' +
                 '<span class="flaw" v-for="(item,index) in flaws" :index="index+1" :style="getFlawStyle(item)"></span>' +
                 //'<span class="endShow A" :style="getFromStyle(0)">A</span><span class="endShow B" :style="getFromStyle(1)">B</span>' +
-                '<span class="qualified" v-if="qualified.class && len>0" :class="qualified.class">{{qualified.name}}</span>' +
+                '<span class="qualified" v-if="qualified.class && len>0 && !locked" :class="qualified.class">{{qualified.name}}</span>' +
             '</div>' +
             '<div class="ruler" ref="ruler">' +
                 '<span v-for="item in getMark" :pos="item" :style="getRulerStyle(item)"></span>' +
@@ -29,6 +30,15 @@ Vue.component('rex-cloth', {
     props:{
         len:{
             required: true
+        },
+        status:{
+            default: ''
+        },
+        status_code:{
+            default: 'imported'
+        },
+        disabled:{
+            default: ''
         },
         perLen:{
             default: 10
@@ -74,6 +84,13 @@ Vue.component('rex-cloth', {
                 result[result.length-1]=this.len;
             }
             return result;
+        },
+        locked: function(){   //计算布卷是否能操作 不能返回true
+            return !(this.status_code==='imported');
+        },
+        lockedInfo: function(){  //返回锁定的说辞
+            var tempStr=this.status || '布卷不在库';
+            return ' '+tempStr+',无法操作';
         }
     },
     methods:{

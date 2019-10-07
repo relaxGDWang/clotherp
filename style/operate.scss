@@ -3,7 +3,7 @@
 
 $color5:#3c8dbc;
 $color6:#0056fa;
-$leftSide:290px;
+$leftSide:300px;
 
 body{ font-size:16px;}
 //遮盖层，用于缓解vue在初始加载中的第一视觉混乱的情况
@@ -40,32 +40,54 @@ body{ font-size:16px;}
 }
 
 
-.leftPart{
-  width:$leftSide; float:left; height:100%; background:$color5; position:relative;
+.leftPart {
+  width: $leftSide; float: left; height: 100%; background: $color5; position: relative;
   .count{ position:absolute; padding:.5em; background:#085989; color:#fff; left:calc(100% - 5px); bottom:20px; white-space: nowrap; opacity:.5;}
   .count:active{ opacity:1;}
   .viewList{ overflow:auto; height:100%;}
-  li{ position:relative; height:60px; overflow:hidden; font-size:16px; cursor:pointer; background-color:$color6; color:#fff; background:linear-gradient(rgba(255,255,255,.2),transparent); background-color:$color6; border-bottom:1px solid rgba(0,0,0,.3);}
+  li{ font-size:16px; cursor:pointer; background-color:$color6; color:#fff; border-bottom:1px solid rgba(0,0,0,.4); position:relative;}
+  //li.doing .baseList{ padding-left:20px;}
   li:hover, li:active{ background-color:#19bbbb;}
-  .customer{ line-height:24px; font-weight:normal; position:absolute; left:5px; top:6px;}
+  li[disabled]{ background-color:#666;}
+  .customer{ line-height:24px; padding:5px 0 2px 5px;}
   .customer strong{ font-size:14px; font-weight:normal; margin-left:5px; background-color:#0e3e9a; padding:1px 2px;}
-  .orderNumber{ position:absolute; top:31px; left:5px; color:rgba(255,255,255,.8); font-size:16px; text-shadow:0 0 1px rgba(0,0,0,1);}
-  .orderNumber strong{ font-weight:normal; color:#fff;}
-  .cutLength{ font-size:1.2em; font-weight:bold; position:absolute; top:26px; right:6px; color:#ffae35; text-shadow:0 0 1px rgba(0,0,0,1);}
-  li .fa{ position:absolute; color:rgba(255,255,255,.35); font-size:50px; top:4px; left:68%; transform:rotate(-20deg);}
+  .extInfo{ padding:0 0 2px 5px; color:rgba(255,255,255,.8); font-size:16px; text-shadow:0 0 1px rgba(0,0,0,1);}
+  .extInfo strong{ font-weight:normal; color:#fff;}
+  .cutLength{ font-size:1.2em; font-weight:bold; position:absolute; top:31px; right:10px; color:#ffae35; text-shadow:0 0 1px rgba(0,0,0,1); z-index: 10;}
+  //.cutLength:before{ position:absolute; right:-20px; text-shadow:none; top:50%; transform:translateY(-55%); font-weight:normal;}
+  .comment{ font-size:14px; padding:0 0 2px 5px; width:100%; text-overflow:ellipsis; white-space:nowrap; opacity:0.8; overflow:hidden;}
+  //.cutFirst{ position:absolute; left:-.8em; top:50%; transform:translateY(-50%); color:#fff; background:rgba(255,255,255,.5); padding:.5em .3em .5em 0; border-radius:0 50% 50% 0; background-clip:padding-box; border:1px dashed #fff;}
+  //.cutFirst:before{ display:inline-block; transform:rotate(-55deg); font-size:1.5em; color:#0e3e9a;}
+  //li .flag{ position:absolute; color:rgba(255,255,255,.35); font-size:50px; bottom:-3px; left:68%; transform:rotate(-20deg); z-index:0;}
   li.freeDo{ text-align:center; height:50px; padding:0; line-height:50px; background-color:transparent;}
   li.sel{
     background-color:#fff; border-bottom:0; color:$color5;
     .customer{ color:$color5; font-weight:bold;}
     .customer strong{ background-color:#eee;}
-    .orderNumber{ color:#666; text-shadow:none;}
-    .orderNumber strong{ color:#000;}
+    .extInfo{ color:#666; text-shadow:none;}
+    .extInfo strong{ color:#000;}
     .cutLength{ color:red; font-weight:normal; text-shadow:none;}
-    .cutLength:after{ color:#666;}
-    .fa{ color:#ffcda9;}
+    //.cutLength:after{ color:#666;}
+    //.flag{ color:#ffcda9;}
+    .comment{ color:#000;}
+    .comment:before{ color:#f90;}
+    //.cutFirst{ background:rgba(255,0,0,.1); border-color:red;}
+    //.cutFirst:before{ color:red;}
   }
 }
+.baseList{
+  position:relative; padding-bottom:3px; min-height:50px; overflow:hidden; background:linear-gradient(rgba(255,255,255,.2),transparent);
+  &>span{ display:block; position:relative; z-index:5;}
+}
+.statusList{
+  /*padding:.3em; background-color:#003cae; line-height:1; box-shadow: 0 2px 3px rgba(0,0,0,.1) inset; text-align:right;*/
+  line-height:1; position:absolute; right:10px; top:5px;
+  &>span{ display:inline-block; margin-left:.2em; padding:.1em; border-radius:$borderRadius; background-color:#fff; color:#003cae;}
+  li.sel &>span{ background-color:#003cae; color:#fff;}
+}
+
 .rightPart{ width:auto; margin-left:$leftSide; height:100%; padding:0 10px 0 10px;}
+.rightPart.freeStyle{ background:linear-gradient(0deg, #89cef5 0, transparent 45%);}
 .leftPart.pinch{
   width:0;
   & + .rightPart{ margin-left:0px;}
@@ -80,6 +102,7 @@ body{ font-size:16px;}
     label{ display:inline-block; line-height:1; padding:5px 5px; border-radius:$borderRadius; background-color:red; color:#fff; margin-right:8px;}
     span{ color:black; font-weight:bold;}
   }
+  .important .outLength{ margin-left:10px; background-color:#f90; color:#fff; border-radius: $borderRadius; font-weight:normal; font-size:.9em; line-height:1.5; padding:0 0.4em;}  //超长标记
 }
 
 //布匹概览
@@ -90,9 +113,10 @@ body{ font-size:16px;}
     position:absolute; right:-55px; top:0; height:100%; width:50px; border-radius:0;
     & .fa:before{ font-size:30px;}
   }
+  .disabled{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:10; padding:.5em; background:#fff; border:1px solid #999; color:red; }
 }
 .cloth{
-  box-shadow:0 0 0 1px #ccc inset; background:#eee; background:#eee repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); width:100%; height:50px; position:relative;
+  box-shadow:0 0 0 1px #ccc inset; background:repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0, rgba(255,255,255,.6) 10px, transparent 0, transparent 20px); background-color:#eee; width:100%; height:50px; position:relative;
   .flaw{ position:absolute; background:#000; top:0; bottom:0; transition-property:left,right; transition-duration:1s; min-width:1px;}
   .flaw:after{ content:attr(index); position:absolute; height:20px; line-height:20px; padding:0 3px; background:#000; color:#fff; top:-21px; left:50%; transform: translateX(-50%); font-size:12px; border-radius:2px; cursor:pointer;}
   .flaw:hover{ background:#f90; z-index:2;}
@@ -121,14 +145,19 @@ body{ font-size:16px;}
 }
 .ruler{
   height:2px; background:#ccc; position:relative;
-  span{ position:absolute; top:2px; height:6px; width:1px; text-align:center; background:#ccc; font-size:12px; color:#666;}
+  span{ position:absolute; top:2px; height:6px; width:1px; text-align:center; background:#ccc; font-size:14px; color:#666;}
   span:before{ content:attr(pos); position:absolute; top:10px; left:50%; transform:translateX(-50%);}
 }
 .clothShow.zero .cloth{
   width:50%; margin:auto; text-align:center;
-  &:before{ content:'布匹长为零!'; color:red; line-height:48px;}
+  &:before{ content:'布卷长为零!'; color:red; line-height:48px;}
+}
+.clothShow.locked .cloth{
+  width:50%; margin:auto; text-align:center;
+  &:after{ content:attr(afterStr); color:#000; line-height:48px;}
 }
 .clothShow.zero .ruler{ width:50%; margin:auto;}
+.clothShow.locked .ruler{ width:50%; margin:auto;}
 
 //米数显示及操作行
 .operateShow { width: 100%; height:100px; overflow: hidden;}
@@ -170,7 +199,7 @@ body{ font-size:16px;}
     h4 .fa{ font-size:22px; vertical-align:middle; margin-right:5px;}
   }
   .dialog-content{ padding:15px; }
-  .row{ padding:5px; padding-left:20%; text-align:left;}
+  .row{ padding:5px; padding-left:10%; text-align:left;}
   label{ color:#999; display:inline-block; width:120px; text-align:right; margin-right:10px;}
   label+span{
     display:inline-block; padding-left:5px;

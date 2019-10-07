@@ -6,7 +6,7 @@ var vu=new Vue({
         bid:'',  //当前操作布段的id编号或者布卷号
         defectType: [],  //疵点分类
         defect:'',      //当前选择疵点分类
-        cutTypeList:['入库','废弃','版本布','返修'],
+        cutTypeList:{'import':'入库','discard':'废弃','book_cloth':'版本布','return_repair':'退货/返修'},
         cutType:'',
         UI:{
             firstLoad: true,
@@ -15,7 +15,7 @@ var vu=new Vue({
         },
         currentPosition: '',
         assistPosition: '',
-        assistCount:0,
+        assistCount: localStorage.getItem('assistCount')-0 || 0,
         positionTime:'',  //计米器读数时间函数
         positionPer: 1000, //读取频率
         positionCallBack: '',  //长度变更时的回调函数
@@ -38,7 +38,7 @@ var vu=new Vue({
         },
         */
         showSelInfo: function(){   //显示当前选中的订单信息
-            var result={index:'', id:'', purchaser:'', quantity:'',comment:''};
+            var result={index:'', id:'', purchaser:'', quantity:'',comment:'',whole_sale:'',disabled:''};
             if (!this.UI.sel){
             }else if (this.UI.sel==='free'){
                 result.purchaser=result.quantity='--';
@@ -52,11 +52,16 @@ var vu=new Vue({
                         result.purchaser=temp.purchaser;
                         result.quantity=temp.quantity+'米';
                         result.comment=temp.comment;
+                        result.whole_sale=temp.whole_sale;   //是否超长裁剪
+                        result.disabled=temp.disabled;
                         break;
                     }
                 }
             }
             return result;
+        },
+        locked: function(){   //计算布卷是否能操作 不能返回true
+            return !(this.editObject.status_code==='imported');
         }
     },
     methods: {
@@ -75,24 +80,8 @@ var vu=new Vue({
             clearInterval(vu.positionTime);
             this.positionTime='';
         },
-        resetCounter: function(){   //清零计米器
+        resetCounter: function(){   //辅助计米器清零
             if (!this.currentPosition) return;
-            dialog.open('information',{
-                content:'是否清零当前计米器的计数？',
-                btncancel:'',
-                btnsure:'确定',
-                cname:'sure',
-                closeCallback: function(id, dialogType, buttonType){
-                    if (buttonType==='sure'){
-                        EQUIPMENT.resetCounter();
-                        vu.assistPosition=0;
-                        vu.assistCount=0;
-                    }
-                }
-            });
-        },
-        resetCounter2: function(){  //辅助计米器清零
-            if (!this.assistPosition) return;
             dialog.open('information',{
                 content:'是否清零当前 <strong>辅助</strong> 计米器？',
                 btncancel:'',
@@ -100,14 +89,34 @@ var vu=new Vue({
                 cname:'sure',
                 closeCallback: function(id, dialogType, buttonType){
                     if (buttonType==='sure'){
-                        vu.assistCount+=vu.assistPosition;
+                        vu.assistCount+=vu.currentPosition;
+                        //vu.currentPosition=0;
+                        vu.assistPosition=vu.assistCount;
+                        //保存当前计米器累加值到本地存储
+                        EQUIPMENT.resetCounter();
+                    }
+                }
+            });
+        },
+        resetCounter2: function(){  //总计米器清零
+            if (!this.assistPosition) return;
+            dialog.open('information',{
+                content:'是否清零当前 总计米 的数据？',
+                btncancel:'',
+                btnsure:'确定',
+                cname:'sure',
+                closeCallback: function(id, dialogType, buttonType){
+                    if (buttonType==='sure'){
                         vu.assistPosition=0;
+                        vu.assistCount=0;
+                        //vu.currentPosition=0;
+                        EQUIPMENT.resetCounter();
                     }
                 }
             });
         },
         _changeHash: function(){
-            if (!this.UI.firstLoad) dialog.close('information');
+            if (!this.UI.firstLoad) dialog.close();
             var hash=decodeURIComponent(location.hash.replace(/^#/,''));
             if (!hash){
                 //打开默认页面
@@ -127,7 +136,7 @@ var vu=new Vue({
                 this.editObject={};
                 var showObject={
                     cname:'error',
-                    content:'缺少关键参数，无法获得布匹详情',
+                    content:'缺少关键参数，无法获得布卷详情',
                     btncancel:'', btnclose:'', btnsure:'确定',
                     closeCallback: function(id, dialogType, buttonType){
                         //vu.thisClose();
@@ -151,16 +160,14 @@ var vu=new Vue({
             if (!this.bid) return;
             var url,sendData;
             if (typeof(this.bid)==='number'){  //NOTICE
-                url=PATH.delFlaw;
+                url=PATHNEW.clothDetailsById;
                 sendData={
-                    bolt_id: vu.bid,
-                    start: (start || undefined)
+                    id: vu.bid
                 };
             }else{
-                url=PATH.quickCutting;
+                url=PATHNEW.clothDetailsByNo;
                 sendData={
-                    bolt_no: vu.bid,
-                    start: (start || undefined)
+                    no: vu.bid
                 };
             }
             ajax.send({
@@ -185,28 +192,69 @@ var vu=new Vue({
             }
             return result;
         },
-        _setDetailsData: function(data){  //把原始的布卷详情进行加工
-            data.position=data.position.split(REG.position);
-            data.defects=_formatFlawInfor(data.defects);  //瑕疵列表
-            data.qualified=this._formatQualified(data.qualified);
-            data.list={};  //新增list属性，用于关联id编号和数组序号的对象
-            for (i=0; i<data.splits.length; i++){
-                data.list[data.splits[i].bolt_id]=i;
+        _setDetailsData: function(data,flag){  //把原始的布卷详情进行加工
+            /*
+            data 布卷详情 / 疵点列表
+            flag 添加疵点返回的是添加成功的疵点信息，删除疵点返回的是整体疵点信息
+            */
+            if (flag){
+                data=_formatFlawInfor(data);  //瑕疵列表
+                if (flag==='object'){
+                    this.editObject.defects.push(data);
+                }else{
+                    Vue.set(this.editObject,'defects',data);
+                }
+            }else{
+                data.position=data.position.split(REG.position);
+                data.defects=_formatFlawInfor(data.defects);  //瑕疵列表
+                data.qualified=this._formatQualified(data.qualified);
+                //处理历史记录
+                for (var i=0; i<data.history.length; i++){
+                    if (data.history[i].action_type.indexOf('检验')>=0){
+                        data.history[i].action_type_icon='fa-instagram';
+                    }else{
+                        if (data.history[i].action_type.indexOf('疵点')>=0){
+                            data.history[i].action_type_icon='fa-thumb-tack';
+                        }else{
+                            data.history[i].action_type_icon='fa-cut';
+                        }
+                    }
+                }
+                //处理订单状态
+                for (var i=0; i<data.orders.length; i++){
+                    if (!data.orders[i].disabled) data.orders[i].disabled='';
+                }
+                Vue.set(this,'editObject',data);
+                this._setColthLen();
             }
-            Vue.set(this,'editObject',data);
-            this._setColthLen();
 
             //格式化瑕疵点列表
             function _formatFlawInfor(itemList){
-                for (var i=0; i<itemList.length; i++){
+                var tempList=[],flag=false;
+                if (itemList.length){
+                    tempList=itemList;
+                }else{
+                    tempList.push(itemList);
+                    flag=true;
+                }
+                for (var i=0; i<tempList.length; i++){
+                    /*
                     if (itemList[i].defect==='dot'){
                         itemList[i].position=itemList[i].end;
                         itemList[i].length='';
                     }else{
                         itemList[i].position=itemList[i].start+'~'+itemList[i].end;
                     }
+                    */
+                    tempList[i].defect='dot';
+                    tempList[i].position=tempList[i].start;
+                    tempList[i].length='';
                 }
-                return itemList;
+                if (flag){
+                    return tempList[0];
+                }else{
+                    return tempList;
+                }
             }
         },
         setViewObject: function(bid){  //设置当前裁剪布段
@@ -247,7 +295,8 @@ var vu=new Vue({
         },
         resetLength: function(){  //重写布匹长度操作
             dialog.open('reLength',{closeCallback: vu._resetInputData});
-            this.input.len=this.currentPosition===''? this.UI.len : this.currentPosition;
+            //this.input.len=this.currentPosition===''? this.UI.len : this.currentPosition;  //notice
+            this.input.len=this.assistPosition===''? this.UI.len : this.assistPosition;
             this.positionCallBack=function(newVal){
                 this.input.len=newVal;
             };
@@ -304,10 +353,11 @@ var vu=new Vue({
                 //获得疵点分类信息 2019/09/10
                 //Vue.set(this,'defectType',EQUIPMENT.getGeneralSetting('flaw'));
                 dialog.open('addFlaw',{closeCallback: vu._resetInputData});
-                this.input.start=this.currentPosition===''? 0: this.currentPosition; //notice
-                this.positionCallBack=function(newVal){
-                    this.input.start=newVal;
-                };
+                //this.input.start=this.currentPosition===''? 0: this.currentPosition; //notice
+                this.input.start=this.assistPosition===''? 0: this.assistPosition;
+                //this.positionCallBack=function(newVal){
+                    //this.input.start=newVal;
+                //};
             }else{   //删除疵点操作
                 dialog.open('information',{
                     content:'是否确定删除当前疵点？',
@@ -322,9 +372,10 @@ var vu=new Vue({
                 });
             }
         },
-        cutBlock: function(){  //询问是否要裁剪疵块
+        cutBlock: function(){  //询问是否进行分段裁剪
             //判断当前计米器读数
-            if (!this.currentPosition){
+            //if (!this.currentPosition){ notice
+            if (!this.assistPosition){
                 dialog.open('information',{
                     content:'由于计米器读数无法获取或者为0，当前操作无法继续！',
                     btncancel:'',
@@ -334,6 +385,7 @@ var vu=new Vue({
                 });
                 return;
             }
+            this.input.len=this.assistPosition;
             dialog.open('cutCloth',{
                 closeCallback: function(id, dialogType, buttonType){
                     if (buttonType==='sure'){
@@ -389,13 +441,16 @@ var vu=new Vue({
                 }
             }
             ajaxModify.send({
-                url: PATH.addFlaw,
+                //url: PATH.addFlaw,
+                url: PATHNEW.flawAdd,
                 method: 'post',
-                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, type:vu.defect},  //notice
+                //data:{id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, type:vu.defect},
+                data:{id: vu.editObject.init_bolt_id, start:vu.input.start, type:vu.defect},
                 success: function(data){
                     vu._setMessage({flag:true, status:'ok', msg:'新增疵点已经成功，裁剪任务已经刷新！'});
                     vu.positionCallBack='';
-                    vu._setDetailsData(data);
+                    //vu._setDetailsData(data);
+                    vu._setDetailsData(data,'object');
                     setTimeout(function(){
                         dialog.close('addFlaw');
                         vu._resetInputData();
@@ -403,15 +458,19 @@ var vu=new Vue({
                 }
             });
         },
-        delOperateFlaw: function(bolt_id){   //删除疵点ajax
+        delOperateFlaw: function(defect_id){   //删除疵点ajax
+            var sendData={
+                id: vu.editObject.bolt_id,
+                defect_id: defect_id
+            };
             ajax.send({
-                url: PATH.delFlaw,
+                url: PATHNEW.flawDel,
                 method: 'delete',
-                data:{bolt_id: bolt_id},
+                data: sendData,
                 success: function(data){
                     dialog.close('loading');
                     dialog.open('information',{content:'疵点已经成功删除！',btncancel:'',btnclose:'',btnsure:'确定',cname:'ok'});
-                    vu._setDetailsData(data);
+                    vu._setDetailsData(data,'array');
                 }
             });
         },
@@ -427,84 +486,16 @@ var vu=new Vue({
         operateError: function(code, msg){  //设置弹出对话框中ajax error事件
             this._setMessage({status:'error', msg:msg});
         },
-        //打印标签
-        printDoing: function(index,count){
-            var printStr='';
-            if (index==='show'){
-                dialog.open('printBox');
-                return;
-            }
-            if (this.editObject.sel && !index){
-                printStr=this.editObject.sel.print_data;
-            }else{
-                switch (index){
-                    case 'start':
-                        /*
-                        if (this.editObject.start==='start_a'){
-                            printStr=this.editObject.print_head;
-                        }else{
-                            printStr=this.editObject.print_tail;
-                        }
-                        */
-                        printStr=this.editObject.print_head;
-                        break;
-                    case 'end':
-                        /*
-                        if (this.editObject.start==='start_a'){
-                            printStr=this.editObject.print_tail;
-                        }else{
-                            printStr=this.editObject.print_head;
-                        }
-                        */
-                        printStr=this.editObject.print_head;
-                        break;
-                    default:
-                        printStr=this.editObject.cutouts[0].print_data;
-                }
-            }
-            printStr=JSON.stringify(printStr);
-            console.log(printStr);
-            EQUIPMENT.print(printStr,count);
-        },
-        printDoginHistory: function(dataObject,opsition,count){   //打印历史记录的标签
-            var printStr;
-            if (opsition==='start' || opsition==='end'){
-                if (dataObject.current_length<=0){
-                    dialog.open('resultShow',{content:'布匹剩余长度为0，无法响应该操作'});
-                    return;
-                }
-            }
-            if (opsition==='start'){
-                /*
-                if (dataObject.start==='start_a'){
-                    printStr=dataObject.print_head;
-                }else{
-                    printStr=dataObject.print_tail;
-                }
-                */
-                printStr=dataObject.print_head;
-            }else if(opsition==='end'){
-                /*
-                if (dataObject.start==='start_a'){
-                    printStr=dataObject.print_tail;
-                }else{
-                    printStr=dataObject.print_head;
-                }
-                */
-                printStr=dataObject.print_head;
-            }else{
-                printStr=dataObject? dataObject.print_data:'';
-            }
-            printStr=JSON.stringify(printStr);
-            console.log(printStr);
-            EQUIPMENT.print(printStr,count);
+        printRequest: function(printObject,count){
+            EQUIPMENT.print(printObject,count);
         },
         getDefectType: function(){  //获得疵点分类
             ajaxElse.send();
         },
         askFinish: function(){
             //检测当前计米和需裁剪的是否匹配
-            if (!this.currentPosition) {
+            //if (!this.currentPosition) { notice
+            if (!this.assistPosition) {
                 dialog.open('information', {
                     cname: 'warning',
                     btncancel: '',
@@ -515,10 +506,12 @@ var vu=new Vue({
                 return;
             }
             var msg;
-            if (this.currentPosition===this.editObject.current_length){
-                msg='请选择该布匹的检验结果为';
+            //if (this.currentPosition===this.editObject.current_length){ notice
+            if (this.assistPosition===this.editObject.current_length){
+                msg='请选择该布卷的检验结果为';
             }else{
-                msg='布匹的长度将更新为 <strong>'+ this.currentPosition +'</strong>米 ，请选择该布匹的检验结果为';
+                //msg='布匹的长度将更新为 <strong>'+ this.currentPosition +'</strong>米 ，请选择该布匹的检验结果为'; notice
+                msg='布卷的长度将更新为 <strong>'+ this.assistPosition +'</strong>米 ，请选择该布卷的检验结果为';
             }
             dialog.open('information',{
                 content: msg,
@@ -531,8 +524,9 @@ var vu=new Vue({
                 }
             });
         },
-        doFinish: function(pass){
-            var nowCurrentPosition=this.currentPosition;
+        doFinish: function(pass){  //检验的提交
+            //var nowCurrentPosition=this.currentPosition; notice
+            var nowCurrentPosition=this.assistPosition;
             ajax.send({
                 url: PATH.missionCheckFinished,
                 method: 'post',
@@ -544,7 +538,7 @@ var vu=new Vue({
                     vu._setDetailsData(data);
                     dialog.close('loading');
                     dialog.open('information', {
-                        content: '布匹检验已完成！',
+                        content: '布卷检验已完成！',
                         btnclose:'',
                         btncancel: '',
                         btnsure:'确定',
@@ -557,24 +551,23 @@ var vu=new Vue({
                         }
                     });
                     //胚布打印4次末尾标签
-                    if (vu.editObject.craft_val===1){
-                        vu.printDoing('end',4);
-                    }else{
-                        vu.printDoing('end',2);
-                    }
+                    vu.printRequest(vu.editObject.print_data);
                 }
             });
         },
         askCut2: function(status){  //自由裁剪，任务裁剪处理
             var msg,className,doFlag=false;
-            if (!this.currentPosition){
+            //if (!this.currentPosition){  //notice
+            if (!this.assistPosition){
                 msg='没有准确获得计米器当前的读数！';
                 className='warning';
-            }else if(this.currentPosition===0){
+            //}else if(this.currentPosition===0){  //notice
+            }else if(this.assistPosition===0){
                 msg='计米器读数为0，无法在该位置裁剪！';
                 className='warning';
             }else{
-                msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行裁剪操作？';
+                //msg='是否确定在当前位置 <strong>'+ this.currentPosition +'</strong>米 进行裁剪操作？'; notice
+                msg='是否确定在当前位置 <strong>'+ this.assistPosition +'</strong>米 进行裁剪操作？';
                 className='sure';
                 doFlag=true;
             }
@@ -598,38 +591,22 @@ var vu=new Vue({
                 });
             }
         },
-        askCut: function(op){ //疵点分裁处理
-            this.input.end=this.currentPosition-0;
+        askCut: function(op){ //布卷分裁处理
+            //this.input.end=this.currentPosition-0; //notice
+            this.input.end=this.input.len-0;
             this.input.start=this.input.end;
-            /*
-            var ajaxObject;
-            if (op==='dot'){  //疵点分裁处理
-                if (this.input.start===0){
-                    this._setMessage({status:'warning',msg:'疵点标记位置不能为0，请重新定位'});
-                    return;
-                }
-                this.input.end=this.input.start;
-                ajaxObject=ajaxModify;
-            }else{  //疵块分裁
-                this.input.start=0;
-                this.input.end=this.currentPosition-0;
-                if (this.input.end===0){
-                    dialog.open('resultShow',{content:'疵块结束标记位置不能为0，请重新定位'});
-                    return;
-                }
-                ajaxObject=ajax;
-            }
-            */
             ajax.send({
-                url: PATH.addFlaw,
+                url: PATHNEW.clothCut,
                 method: 'post',
-                data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1, type:'',comment:vu.cutType},  //notice
+                //data:{bolt_id: vu.editObject.init_bolt_id, start:vu.input.start, end:vu.input.end, cut:1, type:'',comment:vu.cutType},
+                data:{id: vu.editObject.bolt_id, length:vu.input.start, split_type:vu.cutType},
                 success: function(data){
                     dialog.close('loading');
                     vu._setDetailsData(data,'');
                     vu.cutType='';
                     vu.input.start=0;
                     vu.input.end=0;
+                    vu.input.len=0;
                     //vu.flagReload=true;
                     //清零计米
                     setTimeout(function(){
@@ -638,25 +615,9 @@ var vu=new Vue({
                         vu.assistCount=0;
                     },200);
                     dialog.open('resultShow',{content:'布段分裁成功!'});
-                    if (vu.editObject.cutouts[0].print_data){
-                        vu.printDoginHistory(vu.editObject.cutouts[0],2);
+                    if (vu.editObject.history[0].print_data){  //如果是废弃，应该不包含打印信息，其他情况需要打印
+                        vu.printRequest(vu.editObject.history[0].print_data,1);
                     }
-                    /*
-                    if (vu.input.start===vu.input.end){
-                        vu._setMessage({flag:true, status:'ok', msg:'疵点裁剪成功!'});
-                        //打印信息
-                        vu.printDoginHistory(vu.editObject.cutouts[0],'',4);
-                        setTimeout(function(){
-                            dialog.close('addFlaw');
-                            vu._resetInputData();
-                        },2000);
-                    }else{
-                        vu._setMessage();
-                        vu.input.start=0;
-                        vu.input.end=0;
-                        dialog.open('resultShow',{content:'疵块裁剪成功!'});
-                    }
-                    */
                 },
                 error: function(code, msg){
                     dialog.close('loading');
@@ -676,17 +637,15 @@ var vu=new Vue({
                 }
             });
         },
-        doCut: function(status){
-            var sendId=this.editObject.bolt_id;
-            var sendData={bolt_id: sendId, length: vu.currentPosition};
+        doCut: function(status){  //自由裁剪 任务裁剪的提交
+            var sendData={id: vu.editObject.bolt_id, length: vu.assistPosition};
             if (this.showSelInfo.index!=='' && status){   //订单裁剪并且选中的订单
                 sendData.order_item_id=this.showSelInfo.id;
-                sendData.status='cut';
-            }else if(status){  //订单裁剪，但未选中订单（自由裁剪）
-                sendData.status='cut';
+                //sendData.status='cut';
             }
             ajax.send({
-                url: PATH.missionCutQuick,
+                //url: PATH.missionCutQuick,
+                url: PATHNEW.clothCut,
                 method: 'post',
                 data: sendData,
                 success:function(data){
@@ -699,11 +658,13 @@ var vu=new Vue({
                     if (vu.showSelInfo.index!==''){
                         dialog.open('resultShow',{content:'订单布段裁剪完成！'});
                     }else{
-                        dialog.open('resultShow',{content:'当前布匹的分裁操作已成功！'});
+                        dialog.open('resultShow',{content:'当前布卷的自由裁剪操作已完成！'});
                     }
                     vu._setDetailsData(data);
+                    //还原左侧未选中状态
+                    if (vu.UI.sel!=='free') vu.UI.sel='';
                     //自动打印标签
-                    vu.printDoginHistory(vu.editObject.cutouts[0],'',2);
+                    vu.printRequest(vu.editObject.history[0].print_data);
                 },
                 error: function(code, msg){
                     dialog.close('loading');
@@ -763,6 +724,7 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
+        /*
         'input.end': function(newVal,oldVal){
             if (oldVal==newVal) return;
             this.input.status='';
@@ -772,22 +734,26 @@ var vu=new Vue({
             this.input.status='';
             this.input.msg='';
         },
+        */
         'currentPosition': function(newVal,oldVal){
-            //协调辅助计米
-            this.assistPosition=newVal-this.assistCount;
+            this.assistPosition=newVal+this.assistCount;
             //调用长度写入函数
             if (this.positionCallBack){
-                this.positionCallBack(newVal);
+                this.positionCallBack(this.assistPosition);
             }
             //播放音频
+            var start=oldVal+this.assistCount, end=newVal+this.assistCount;
             if (this.editObject && this.showSelInfo.index!==''){
                 var dis=this.showSelInfo.quantity.replace('米','')-0;
-                if ((oldVal==='' || oldVal<dis) && newVal>=dis){
+                if ((start==='' || start<dis) && end>=dis){
                     this.audioPlay();
-                }else if(oldVal && oldVal>dis && newVal<=dis){
+                }else if(start && start>dis && end<=dis){
                     this.audioPlay();
                 }
             }
+        },
+        'assistCount': function(newVal, oldVal){
+            localStorage.setItem('assistCount',newVal);
         }
     }
 });

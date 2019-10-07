@@ -63,6 +63,13 @@ var PATH = {
     importDetails: CFG.URL+'imports/{id}',  //入库详情
     defectType: CFG.URL+'defects/types'     //疵点分类
 };
+var PATHNEW={
+    clothDetailsById: CFG.URL+'bolts/{id}',  //GET 按布卷id编号获得布卷详情
+    clothDetailsByNo: CFG.URL+'bolts/{no}/detail', //GET 按布卷卷号获得布卷详情
+    flawAdd: CFG.URL+'bolts/{id}/defects',  //POST 新增布卷的疵点
+    flawDel: CFG.URL+'bolts/{id}/defects/{defect_id}',  //DELETE 删除疵点
+    clothCut: CFG.URL+'bolts/{id}/cut'      //布段分裁和完成裁剪
+};
 if (CFG.DEBUG){
     //设备状态模拟
     window.register_js = {};
