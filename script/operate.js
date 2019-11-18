@@ -38,7 +38,7 @@ var vu=new Vue({
         },
         */
         showSelInfo: function(){   //显示当前选中的订单信息
-            var result={index:'', id:'', purchaser:'', quantity:'',comment:'',whole_sale:'',disabled:''};
+            var result={index:'', id:'', purchaser:'', quantity:'--', comment:'',whole_sale:'',disabled:''};
             if (!this.UI.sel){
             }else if (this.UI.sel==='free'){
                 result.purchaser=result.quantity='--';
@@ -50,7 +50,8 @@ var vu=new Vue({
                         result.index=i;
                         result.id=temp.order_item_id;
                         result.purchaser=temp.purchaser;
-                        result.quantity=temp.quantity+'米';
+                        result.unit=temp.unit;
+                        result.quantity=temp.quantity+temp.unit;
                         result.comment=temp.comment;
                         result.whole_sale=temp.whole_sale;   //是否超长裁剪
                         result.disabled=temp.disabled;
@@ -70,7 +71,7 @@ var vu=new Vue({
                 //NOTICE 调用app的方法
                 EQUIPMENT.detailsClose();
             }else{
-                window.parent.vu.closeDetails();
+                if (window.parent!==window) window.parent.vu.closeDetails();
             }
         },
         startEQPosition: function(){  //开始计米器读数
@@ -486,7 +487,7 @@ var vu=new Vue({
         operateError: function(code, msg){  //设置弹出对话框中ajax error事件
             this._setMessage({status:'error', msg:msg});
         },
-        printRequest: function(printObject,count){
+        printRequest: function(printObject,count){  //调用打印指令
             EQUIPMENT.print(printObject,count);
         },
         getDefectType: function(){  //获得疵点分类
@@ -663,8 +664,14 @@ var vu=new Vue({
                     vu._setDetailsData(data);
                     //还原左侧未选中状态
                     if (vu.UI.sel!=='free') vu.UI.sel='';
-                    //自动打印标签
-                    vu.printRequest(vu.editObject.history[0].print_data);
+                    //modify by relax 2019/10/25 按服务端返回打印
+                    if (vu.editObject.history[0].print_data.auto_prints!==0){
+                        if (vu.editObject.history[0].print_data.auto_prints===-1){
+                            vu.printRequest(vu.editObject.history[0].print_data);
+                        }else{
+                            vu.printRequest(vu.editObject.history[0].print_data, vu.editObject.history[0].print_data.auto_prints);
+                        }
+                    }
                 },
                 error: function(code, msg){
                     dialog.close('loading');

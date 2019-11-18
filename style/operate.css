@@ -34,6 +34,7 @@ body { font-size: 16px; }
 .leftPart .extInfo { padding: 0 0 2px 5px; color: rgba(255, 255, 255, 0.8); font-size: 16px; text-shadow: 0 0 1px black; }
 .leftPart .extInfo strong { font-weight: normal; color: #fff; }
 .leftPart .cutLength { font-size: 1.2em; font-weight: bold; position: absolute; top: 31px; right: 10px; color: #ffae35; text-shadow: 0 0 1px black; z-index: 10; }
+.leftPart .cutLength b { font-weight: normal; font-size: .7em; color: rgba(255, 255, 255, 0.8); }
 .leftPart .comment { font-size: 14px; padding: 0 0 2px 5px; width: 100%; text-overflow: ellipsis; white-space: nowrap; opacity: 0.8; overflow: hidden; }
 .leftPart li.freeDo { text-align: center; height: 50px; padding: 0; line-height: 50px; background-color: transparent; }
 .leftPart li.sel { background-color: #fff; border-bottom: 0; color: #3c8dbc; }
@@ -42,6 +43,7 @@ body { font-size: 16px; }
 .leftPart li.sel .extInfo { color: #666; text-shadow: none; }
 .leftPart li.sel .extInfo strong { color: #000; }
 .leftPart li.sel .cutLength { color: red; font-weight: normal; text-shadow: none; }
+.leftPart li.sel .cutLength b { color: rgba(255, 0, 0, 0.7); }
 .leftPart li.sel .comment { color: #000; }
 .leftPart li.sel .comment:before { color: #f90; }
 

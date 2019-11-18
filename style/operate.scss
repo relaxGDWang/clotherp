@@ -54,6 +54,7 @@ body{ font-size:16px;}
   .extInfo{ padding:0 0 2px 5px; color:rgba(255,255,255,.8); font-size:16px; text-shadow:0 0 1px rgba(0,0,0,1);}
   .extInfo strong{ font-weight:normal; color:#fff;}
   .cutLength{ font-size:1.2em; font-weight:bold; position:absolute; top:31px; right:10px; color:#ffae35; text-shadow:0 0 1px rgba(0,0,0,1); z-index: 10;}
+  .cutLength b{ font-weight:normal; font-size:.7em; color:rgba(255,255,255,.8);}
   //.cutLength:before{ position:absolute; right:-20px; text-shadow:none; top:50%; transform:translateY(-55%); font-weight:normal;}
   .comment{ font-size:14px; padding:0 0 2px 5px; width:100%; text-overflow:ellipsis; white-space:nowrap; opacity:0.8; overflow:hidden;}
   //.cutFirst{ position:absolute; left:-.8em; top:50%; transform:translateY(-50%); color:#fff; background:rgba(255,255,255,.5); padding:.5em .3em .5em 0; border-radius:0 50% 50% 0; background-clip:padding-box; border:1px dashed #fff;}
@@ -67,6 +68,7 @@ body{ font-size:16px;}
     .extInfo{ color:#666; text-shadow:none;}
     .extInfo strong{ color:#000;}
     .cutLength{ color:red; font-weight:normal; text-shadow:none;}
+    .cutLength b{ color:rgba(255,0,0,.7);}
     //.cutLength:after{ color:#666;}
     //.flag{ color:#ffcda9;}
     .comment{ color:#000;}

@@ -46,10 +46,10 @@
                                 <!--<span class="flag fa fa-flag" v-if="item.urgent"></span>-->
                                 <span class="customer">{{item.purchaser}}<strong>{{item.order_no.substr(-6,6)}}</strong></span>
                                 <span class="extInfo"><strong>{{item.created_at}}</strong>&emsp;&emsp;门幅:<strong>{{item.spec}}</strong>米</span>
-                                <span class="cutLength">{{item.quantity}}</span>
+                                <span class="cutLength">{{item.quantity}}<b>{{item.unit}}</b></span>
                                 <span class="comment fa fa-bookmark" v-if="item.comment"> {{item.comment}}</span>
                             </div>
-                            <div class="statusList" v-if="item.icons.length"><span v-for="item2 in item.icons" class="fa" :class="item2"></span></div>
+                            <div class="statusList" v-if="item.icons.length"><span v-for="item2 in item.icons" :class="item2"></span></div>
                         </li>
                     </transition-group>
                 </template>
@@ -70,7 +70,7 @@
                         <li style="width:22%;"><label>供应商:</label><span>{{editObject.supplier}}</span></li>
                         <li style="width:26%;"><label>仓位:</label><span>{{editObject.position.join(',') || '--'}}</span></li>
 
-                        <li style="width:35%;" class="important"><label>当前裁剪</label><span>{{showSelInfo.quantity || '--'}}</span><span class="outLength fa fa-sign-out" v-if="showSelInfo.whole_sale">超长</span></li>
+                        <li style="width:35%;" class="important"><label>当前裁剪</label><span>{{showSelInfo.quantity}}</span><span class="outLength fa fa-sign-out" v-if="showSelInfo.whole_sale">超长</span></li>
                         <li style="width:65%;" class="important"><label>备注</label><span>{{showSelInfo.comment || '--'}}</span></li>
                     </template>
                 </ul>
@@ -148,7 +148,7 @@
                             <li v-for="(item, index) in editObject.history" class="cutRecord" :key="index">
                                 <span class="datetime">{{item.created_at}}</span>
                                 <span class="op"><span class="name">{{item.user}}</span> <span class="fa" :class="item.action_type_icon"> {{item.action_type}}</span> <b>{{item.content}}</b></span>
-                                <button class="rexButton" color="info" size="M" @click="printRequest(item.print_data,1)" v-if="item.print_data.items">打印</button>
+                                <button class="rexButton" color="info" size="M" @click="printRequest(item.print_data,1)" v-if="item.print_data">打印</button>
                             </li>
                         </transition-group>
                         <ul class="nohead" v-if="editObject.history.length===0">

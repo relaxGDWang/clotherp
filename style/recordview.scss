@@ -24,7 +24,7 @@ body{ font-size:16px;}
 }
 .buttonBar{ float:right;}
 .recordListShow{
-  padding:0 10px; height:calc(100% - 150px); overflow:auto;
+  padding:0 10px; height:calc(100% - 160px); overflow:auto;
   ul{ display:table; width:100%; border-collapse: collapse; border-spacing: 0;}
   li:nth-child(odd){
     span{ background:#e7f5ff;}

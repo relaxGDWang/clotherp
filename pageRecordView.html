@@ -73,7 +73,7 @@
                             <span class="fa" :class="item.action_type_icon"> {{item.action_type}}</span>
                             <span>{{item.content}}</span>
                             <span>
-                                <button class="rexButton" v-if="item.print_data.items" @click="printRequest(item.print_data,1)">打印标签</button>
+                                <button class="rexButton" v-if="item.print_data" @click="printRequest(item.print_data,1)">打印标签</button>
                                 <button class="rexButton" v-if="item.action_type==='分裁'" @click="gotoURLClick(item,'check')">重新检验</button>
                             </span>
                         </li>
