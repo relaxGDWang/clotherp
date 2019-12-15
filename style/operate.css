@@ -204,4 +204,14 @@ li.sel .statusList > span { background-color: #003cae; color: #fff; }
 
 .operateList { padding-left: 5px; width: 60%; float: left; height: 100%; }
 
+.leftContentShow { width: 300px; padding-right: 10px; float: left; }
+
+.leftContentShow img { display: block; width: 100%; }
+
+.rightContentShow { margin-left: 300px; position: relative; }
+
+.leftContentShow.pinch { display: none; }
+
+.leftContentShow.pinch + .rightContentShow { margin-left: 0; }
+
 /*# sourceMappingURL=operate.css.map */

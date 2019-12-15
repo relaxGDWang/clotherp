@@ -3,7 +3,8 @@ var CFG = {
     DEBUG: false,
     JDTYPE: 'form',
     //URL: 'http://192.168.3.192:8080/api/v1/',
-    URL: 'http://gadmin-dev.suishou.cc/api/v1/',
+    URL: 'http://erp-dev.suishou.cc/api/v1/',
+    imgURL:'http://www.relaxset.com/test/getImage.php', //检验时对应的图片读取地址
     //URL: 'http://erp.suishou.cc/api/v1/',
     //en: 'en_US',
     //cn: 'zh_Cn',

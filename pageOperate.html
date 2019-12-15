@@ -75,85 +75,90 @@
                     </template>
                 </ul>
 
-                <rex-cloth :len="UI.len" :status="editObject.status" :status_code="editObject.status_code" :pos="assistPosition" :select="showSelInfo.quantity" :fromwhere="editObject.start" :qualified="editObject.qualified" @changeposition="goChangePosition" :disabled="showSelInfo.disabled" v-if="editObject.bolt_id"></rex-cloth><!-- :flaws="editObject.defects" -->
+                <div class="leftContentShow" :class="{'pinch':op==='cut'}">
+                    <img id="showCheckImage"/>
+                </div>
+                <div class="rightContentShow">
+                    <rex-cloth :len="UI.len" :status="editObject.status" :status_code="editObject.status_code" :pos="assistPosition" :select="showSelInfo.quantity" :fromwhere="editObject.start" :qualified="editObject.qualified" @changeposition="goChangePosition" :disabled="showSelInfo.disabled" v-if="editObject.bolt_id"></rex-cloth><!-- :flaws="editObject.defects" -->
 
-                <div class="operateShow" v-if="editObject.bolt_id">
-                    <div class="operate">
-                        <span class="fa fa-legal"></span>
-                        <div class="textShow unselect">
-                            <strong class="real" @click="resetCounter()">{{currentPosition===''? '---.--': currentPosition.toFixed(2)}}</strong>
-                            <strong class="assist" @click="resetCounter2()">/ {{assistPosition===''? '---.--': assistPosition.toFixed(2)}}</strong>
+                    <div class="operateShow" v-if="editObject.bolt_id">
+                        <div class="operate">
+                            <span class="fa fa-legal"></span>
+                            <div class="textShow unselect">
+                                <strong class="real" @click="resetCounter()">{{currentPosition===''? '---.--': currentPosition.toFixed(2)}}</strong>
+                                <strong class="assist" @click="resetCounter2()">/ {{assistPosition===''? '---.--': assistPosition.toFixed(2)}}</strong>
+                            </div>
+                        </div>
+                        <div class="buttonList">
+                            <ul class="nohead">
+                                <li>
+                                    <button class="rexButton" color="info" @click="operateFlaw()" :disabled="UI.len===0 || locked">
+                                        <span class="fa fa-tag"></span><span>新增疵点</span>
+                                    </button>
+                                </li>
+                                <li v-if="op==='cut'">
+                                    <button class="rexButton" color="info" @click="resetLength()" :disabled="UI.len===0 || locked">
+                                        <span class="fa fa-edit"></span><span>布长修正</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="info" @click="printRequest(editObject.print_data,1)"  :disabled="editObject.examine===1 || UI.len===0 || locked"><!-- printDoing('show') -->
+                                        <span class="fa fa-barcode"></span><span>打印标签</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="rexButton" color="warning" @click="cutBlock()" :disabled="UI.len===0 || locked || !!showSelInfo.disabled">
+                                        <span class="fa fa-trello fa-rotate-90"></span><span>布段分裁</span>
+                                    </button>
+                                </li>
+                                <li v-if="op==='cut' && UI.sel!='free'">
+                                    <button class="rexButton" color="warning" @click="askCut2('order')" :disabled="UI.len===0 || !UI.sel || locked || !!showSelInfo.disabled">
+                                        <span class="fa fa-cut"></span><span>完成裁剪</span>
+                                    </button>
+                                </li>
+                                <li v-if="op==='cut' && UI.sel==='free'">
+                                    <button class="rexButton" color="alert" @click="askCut2('order')" :disabled="UI.len===0 || !UI.sel || locked">
+                                        <span class="fa fa-cut"></span><span>自由裁剪</span>
+                                    </button>
+                                </li>
+                                <li v-if="op==='check'">
+                                    <button class="rexButton" color="warning" @click="askFinish()" :disabled="locked || !!showSelInfo.disabled">
+                                        <span class="fa fa-check-square-o"></span><span>完成检验</span>
+                                    </button>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="buttonList">
-                        <ul class="nohead">
-                            <li>
-                                <button class="rexButton" color="info" @click="operateFlaw()" :disabled="UI.len===0 || locked">
-                                    <span class="fa fa-tag"></span><span>新增疵点</span>
-                                </button>
-                            </li>
-                            <li v-if="op==='cut'">
-                                <button class="rexButton" color="info" @click="resetLength()" :disabled="UI.len===0 || locked">
-                                    <span class="fa fa-edit"></span><span>布长修正</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="rexButton" color="info" @click="printRequest(editObject.print_data,1)"  :disabled="editObject.examine===1 || UI.len===0 || locked"><!-- printDoing('show') -->
-                                    <span class="fa fa-barcode"></span><span>打印标签</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="rexButton" color="warning" @click="cutBlock()" :disabled="UI.len===0 || locked || !!showSelInfo.disabled">
-                                    <span class="fa fa-trello fa-rotate-90"></span><span>布段分裁</span>
-                                </button>
-                            </li>
-                            <li v-if="op==='cut' && UI.sel!='free'">
-                                <button class="rexButton" color="warning" @click="askCut2('order')" :disabled="UI.len===0 || !UI.sel || locked || !!showSelInfo.disabled">
-                                    <span class="fa fa-cut"></span><span>完成裁剪</span>
-                                </button>
-                            </li>
-                            <li v-if="op==='cut' && UI.sel==='free'">
-                                <button class="rexButton" color="alert" @click="askCut2('order')" :disabled="UI.len===0 || !UI.sel || locked">
-                                    <span class="fa fa-cut"></span><span>自由裁剪</span>
-                                </button>
-                            </li>
-                            <li v-if="op==='check'">
-                                <button class="rexButton" color="warning" @click="askFinish()" :disabled="locked || !!showSelInfo.disabled">
-                                    <span class="fa fa-check-square-o"></span><span>完成检验</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="elseList" v-if="editObject.bolt_id">
-                    <div class="flawList">
-                        <h3 class="fa fa-thumb-tack">疵点列表</h3>
-                        <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.bolt_id && editObject.defects.length>0">
-                            <li v-for="(item, index) in editObject.defects" :key="item.id">
-                                <span class="index" :class="{'point':(item.defect==='dot'),'block':(item.defect!=='dot')}">{{index+1}}</span>
-                                <span class="showtext">
-                                    <label>位置:</label><b>{{item.position}}</b> 米
-                                    <label>类型:</label><b>{{item.defect_type}}</b>
-                                </span>
-                                <span class="opButton" @click="operateFlaw(item.id)">&times;</span>
-                            </li>
-                        </transition-group>
-                        <ul class="nohead" v-if="editObject.defects.length===0">
-                            <li><span class="nodata">没有任何疵点信息</span></li>
-                        </ul>
-                    </div>
-                    <div class="operateList">
-                        <h3 class="fa fa-calendar">操作记录<button type="button" class="rexButton" color="info" size="S" @click="openRecordDetails(editObject.bolt_id)">查看更多 &gt;</button></h3>
-                        <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.history.length>0">
-                            <li v-for="(item, index) in editObject.history" class="cutRecord" :key="index">
-                                <span class="datetime">{{item.created_at}}</span>
-                                <span class="op"><span class="name">{{item.user}}</span> <span class="fa" :class="item.action_type_icon"> {{item.action_type}}</span> <b>{{item.content}}</b></span>
-                                <button class="rexButton" color="info" size="M" @click="printRequest(item.print_data,1)" v-if="item.print_data">打印</button>
-                            </li>
-                        </transition-group>
-                        <ul class="nohead" v-if="editObject.history.length===0">
-                            <li><span class="nodata">没有任何操作信息</span></li>
-                        </ul>
+                    <div class="elseList" v-if="editObject.bolt_id">
+                        <div class="flawList">
+                            <h3 class="fa fa-thumb-tack">疵点列表</h3>
+                            <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.bolt_id && editObject.defects.length>0">
+                                <li v-for="(item, index) in editObject.defects" :key="item.id">
+                                    <span class="index" :class="{'point':(item.defect==='dot'),'block':(item.defect!=='dot')}">{{index+1}}</span>
+                                    <span class="showtext">
+                                        <label>位置:</label><b>{{item.position}}</b> 米
+                                        <label>类型:</label><b>{{item.defect_type}}</b>
+                                    </span>
+                                    <span class="opButton" @click="operateFlaw(item.id)">&times;</span>
+                                </li>
+                            </transition-group>
+                            <ul class="nohead" v-if="editObject.defects.length===0">
+                                <li><span class="nodata">没有任何疵点信息</span></li>
+                            </ul>
+                        </div>
+                        <div class="operateList">
+                            <h3 class="fa fa-calendar">操作记录<button type="button" class="rexButton" color="info" size="S" @click="openRecordDetails(editObject.bolt_id)">查看更多 &gt;</button></h3>
+                            <transition-group name="list3" class="nohead" tag="ul" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" v-if="editObject.history.length>0">
+                                <li v-for="(item, index) in editObject.history" class="cutRecord" :key="index">
+                                    <span class="datetime">{{item.created_at}}</span>
+                                    <span class="op"><span class="name">{{item.user}}</span> <span class="fa" :class="item.action_type_icon"> {{item.action_type}}</span> <b>{{item.content}}</b></span>
+                                    <button class="rexButton" color="info" size="M" @click="printRequest(item.print_data,1)" v-if="item.print_data">打印</button>
+                                </li>
+                            </transition-group>
+                            <ul class="nohead" v-if="editObject.history.length===0">
+                                <li><span class="nodata">没有任何操作信息</span></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

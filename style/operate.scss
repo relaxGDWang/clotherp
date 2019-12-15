@@ -316,3 +316,10 @@ body{ font-size:16px;}
 }
 .flawList{ padding-right:5px; width:40%; float:left; height:100%;}
 .operateList{ padding-left:5px; width:60%; float:left; height:100%;}
+
+//检验功能的显示检验图片
+.leftContentShow{ width:$leftSide; padding-right:10px; float:left;}
+.leftContentShow img{ display:block; width:100%;}
+.rightContentShow{ margin-left:$leftSide; position:relative;}
+.leftContentShow.pinch{ display:none;}
+.leftContentShow.pinch+.rightContentShow{ margin-left:0;}

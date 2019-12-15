@@ -830,4 +830,11 @@ $(function(){
 
     //添加版本号
     $('.emptyShow .ver').text('V'+CFG.VER);
+
+    if (vu.op==='check'){
+        var imgDom=$('#showCheckImage');
+        setInterval(function(){
+            imgDom.attr('src',CFG.imgURL+'?'+Math.random());
+        },2000);
+    }
 });
