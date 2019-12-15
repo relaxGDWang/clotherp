@@ -835,6 +835,6 @@ $(function(){
         var imgDom=$('#showCheckImage');
         setInterval(function(){
             imgDom.attr('src',CFG.imgURL+'?'+Math.random());
-        },2000);
+        },CFG.imgURLTime*1000);
     }
 });
